@@ -10,6 +10,7 @@ interface TributeEntry {
   is_paid: boolean;
   created_at: string;
   expires_at: string | null;
+  status?: string;
 }
 
 interface GuestbookListProps {
