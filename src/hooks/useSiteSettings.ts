@@ -5,9 +5,9 @@ export const useSiteSettings = () => {
   const { data: settings } = useQuery({
     queryKey: ["site_settings"],
     queryFn: async () => {
-      const { data } = await supabase.from("site_settings" as any).select("key, value");
+      const { data } = await supabase.from("site_settings").select("key, value");
       const map: Record<string, string> = {};
-      (data as any[])?.forEach((row: any) => { map[row.key] = row.value; });
+      data?.forEach((row) => { map[row.key] = row.value || ""; });
       return map;
     },
     staleTime: 60_000,
@@ -15,6 +15,12 @@ export const useSiteSettings = () => {
 
   return {
     adsEnabled: settings?.ads_enabled === "true",
+    adsPremiumExempt: settings?.ads_premium_exempt === "true",
     adsenseCode: settings?.adsense_code || "",
+    planFreeMaxPhotos: parseInt(settings?.plan_free_max_photos || "5", 10),
+    planPremiumPrice: parseFloat(settings?.plan_premium_price || "49.99"),
+    planPremiumLifetimePrice: parseFloat(settings?.plan_premium_lifetime_price || "99.99"),
+    planBusinessPrice: parseFloat(settings?.plan_business_price || "199.99"),
+    settings: settings || {},
   };
 };
