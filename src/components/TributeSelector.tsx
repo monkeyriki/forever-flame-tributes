@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { tributeTiers, TributeTier } from "@/data/tributeTiers";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { loadProfanityWords, checkProfanity } from "@/lib/profanityFilter";
 
 interface TributeSelectorProps {
   memorialId: string;
@@ -27,6 +28,14 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
   const [selected, setSelected] = useState<TributeTier>(tributeTiers[0]);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [profanityWords, setProfanityWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    loadProfanityWords(async () => {
+      const { data } = await supabase.from("profanity_words").select("word");
+      return (data || []).map((r) => r.word);
+    }).then(setProfanityWords);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +50,10 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     }
 
     setSending(true);
+
+    // Profanity bypass detection
+    const isFlagged = checkProfanity(message, profanityWords);
+
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
       sender_name: "Visitatore",
@@ -48,12 +61,17 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       item_type: selected.name,
       tier: selected.tier,
       is_paid: false,
+      status: isFlagged ? "flagged" : "approved",
     });
 
     if (error) {
       toast.error("Errore nell'invio del tributo");
     } else {
-      toast.success("Tributo inviato!");
+      if (isFlagged) {
+        toast.info("Il tuo tributo è in attesa di revisione da parte di un moderatore.");
+      } else {
+        toast.success("Tributo inviato!");
+      }
       setMessage("");
       setSelected(tributeTiers[0]);
       onTributeAdded();
