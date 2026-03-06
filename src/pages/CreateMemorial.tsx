@@ -68,6 +68,7 @@ const CreateMemorial = () => {
         death_date: form.death_date || null,
         location: form.location,
         image_url,
+        video_url: form.video_url || "",
         tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
         is_draft: isDraft,
         visibility: form.visibility,
