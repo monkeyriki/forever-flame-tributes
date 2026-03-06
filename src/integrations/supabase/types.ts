@@ -122,27 +122,39 @@ export type Database = {
       tributes: {
         Row: {
           created_at: string
+          expires_at: string | null
           id: string
+          is_paid: boolean
           item_type: string | null
           memorial_id: string
           message: string | null
           sender_name: string
+          stripe_session_id: string | null
+          tier: string
         }
         Insert: {
           created_at?: string
+          expires_at?: string | null
           id?: string
+          is_paid?: boolean
           item_type?: string | null
           memorial_id: string
           message?: string | null
           sender_name?: string
+          stripe_session_id?: string | null
+          tier?: string
         }
         Update: {
           created_at?: string
+          expires_at?: string | null
           id?: string
+          is_paid?: boolean
           item_type?: string | null
           memorial_id?: string
           message?: string | null
           sender_name?: string
+          stripe_session_id?: string | null
+          tier?: string
         }
         Relationships: [
           {
