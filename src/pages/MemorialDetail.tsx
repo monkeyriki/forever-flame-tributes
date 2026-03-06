@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -7,22 +7,19 @@ import {
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { QRCodeCanvas } from "qrcode.react";
+import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
-import { mockMemorials, virtualTributes } from "@/data/mockData";
+import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
+import PasswordGate from "@/components/PasswordGate";
+import { supabase } from "@/integrations/supabase/client";
+import { virtualTributes } from "@/data/mockData";
 import { GuestbookEntry } from "@/types/memorial";
-
-const mockGuestbook: GuestbookEntry[] = [
-  { id: "1", authorName: "Laura M.", message: "Mancherai a tutti noi. Riposa in pace.", createdAt: "2025-03-01" },
-  { id: "2", authorName: "Marco F.", message: "Un grande uomo, un amico speciale. Ti porterò sempre nel cuore.", createdAt: "2025-02-28", tribute: virtualTributes[0] },
-  { id: "3", authorName: "Silvia R.", message: "La tua gentilezza resterà per sempre nei nostri ricordi.", createdAt: "2025-02-27" },
-];
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
-  // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  // Vimeo
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   return null;
@@ -30,12 +27,40 @@ const getVideoEmbedUrl = (url: string): string | null => {
 
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const memorial = mockMemorials.find((m) => m.id === id);
   const [newMessage, setNewMessage] = useState("");
-  const [guestbook, setGuestbook] = useState<GuestbookEntry[]>(mockGuestbook);
   const [selectedTribute, setSelectedTribute] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
+  const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
+
+  // Fetch memorial from Supabase
+  const { data: memorial, isLoading } = useQuery({
+    queryKey: ["memorial", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("memorials")
+        .select("*")
+        .eq("id", id!)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  // Fetch tributes
+  const { data: tributes = [], refetch: refetchTributes } = useQuery({
+    queryKey: ["tributes", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("tributes")
+        .select("*")
+        .eq("memorial_id", id!)
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!id,
+  });
 
   const handleDownloadQr = useCallback(() => {
     const canvas = qrRef.current?.querySelector("canvas");
@@ -46,6 +71,34 @@ const MemorialDetail = () => {
     a.download = `qr-${id}.png`;
     a.click();
   }, [id]);
+
+  const handleSubmitMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !id) return;
+
+    const tribute = selectedTribute ? virtualTributes.find(t => t.id === selectedTribute) : null;
+
+    await supabase.from("tributes").insert({
+      memorial_id: id,
+      sender_name: "Visitatore",
+      message: newMessage,
+      item_type: tribute?.name || "message",
+    });
+
+    setNewMessage("");
+    setSelectedTribute(null);
+    refetchTributes();
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p className="text-muted-foreground">Caricamento...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!memorial) {
     return (
@@ -58,34 +111,37 @@ const MemorialDetail = () => {
     );
   }
 
-  const fullName = memorial.lastName
-    ? `${memorial.firstName} ${memorial.lastName}`
-    : memorial.firstName;
-  const birthYear = new Date(memorial.birthDate).getFullYear();
-  const deathYear = new Date(memorial.deathDate).getFullYear();
+  // Password protection gate
+  const isPasswordProtected = memorial.visibility === "password" && (memorial as any).password_hash;
+  if (isPasswordProtected && !passwordUnlocked) {
+    const name = memorial.last_name
+      ? `${memorial.first_name} ${memorial.last_name}`
+      : memorial.first_name;
+    return (
+      <Layout>
+        <PasswordGate
+          memorialName={name}
+          onUnlock={() => {
+            const attempt = sessionStorage.getItem("memorial_pin_attempt") || "";
+            if (attempt === (memorial as any).password_hash) {
+              setPasswordUnlocked(true);
+            }
+          }}
+        />
+      </Layout>
+    );
+  }
+
+  const fullName = memorial.last_name
+    ? `${memorial.first_name} ${memorial.last_name}`
+    : memorial.first_name;
+  const birthYear = memorial.birth_date ? new Date(memorial.birth_date).getFullYear() : "?";
+  const deathYear = memorial.death_date ? new Date(memorial.death_date).getFullYear() : "?";
   const memorialUrl = `${window.location.origin}/memorial/${memorial.id}`;
   const ogTitle = `In Memoria di ${fullName}`;
   const ogDescription = memorial.bio?.slice(0, 155) || `Memoriale dedicato a ${fullName}`;
-
-  // Mock video URL for demo - in production this comes from the DB
-  const videoUrl = (memorial as any).videoUrl || "";
-  const embedUrl = getVideoEmbedUrl(videoUrl);
-
-
-  const handleSubmitMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
-    const entry: GuestbookEntry = {
-      id: String(Date.now()),
-      authorName: "Visitatore",
-      message: newMessage,
-      createdAt: new Date().toISOString().split("T")[0],
-      tribute: selectedTribute ? virtualTributes.find(t => t.id === selectedTribute) : undefined,
-    };
-    setGuestbook([entry, ...guestbook]);
-    setNewMessage("");
-    setSelectedTribute(null);
-  };
+  const embedUrl = getVideoEmbedUrl(memorial.video_url || "");
+  const tags = memorial.tags || [];
 
   return (
     <>
@@ -95,12 +151,12 @@ const MemorialDetail = () => {
         <meta property="og:type" content="profile" />
         <meta property="og:title" content={`${ogTitle} – Memoria Eterna`} />
         <meta property="og:description" content={ogDescription} />
-        <meta property="og:image" content={memorial.photoUrl} />
+        <meta property="og:image" content={memorial.image_url || ""} />
         <meta property="og:url" content={memorialUrl} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${ogTitle} – Memoria Eterna`} />
         <meta name="twitter:description" content={ogDescription} />
-        <meta name="twitter:image" content={memorial.photoUrl} />
+        <meta name="twitter:image" content={memorial.image_url || ""} />
       </Helmet>
 
       <Layout>
@@ -114,6 +170,8 @@ const MemorialDetail = () => {
           </Link>
         </div>
 
+        <AdBanner position="top" />
+
         {/* Profile */}
         <section className="container mx-auto px-4 py-8 md:py-12">
           <div className="mx-auto max-w-3xl">
@@ -124,9 +182,10 @@ const MemorialDetail = () => {
             >
               <div className="mb-6 h-40 w-40 overflow-hidden rounded-full border-4 border-secondary shadow-card md:h-52 md:w-52">
                 <img
-                  src={memorial.photoUrl}
+                  src={memorial.image_url || "/placeholder.svg"}
                   alt={fullName}
                   className="h-full w-full object-cover"
+                  loading="lazy"
                 />
               </div>
 
@@ -139,33 +198,35 @@ const MemorialDetail = () => {
               <div className="mb-4 flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span className="text-sm">{birthYear} – {deathYear}</span>
-                <span className="text-border">•</span>
-                <MapPin className="h-4 w-4" />
-                <span className="text-sm">{memorial.location}</span>
+                {memorial.location && (
+                  <>
+                    <span className="text-border">•</span>
+                    <MapPin className="h-4 w-4" />
+                    <span className="text-sm">{memorial.location}</span>
+                  </>
+                )}
               </div>
 
-              <div className="mb-6 flex gap-2">
-                {memorial.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {tags.length > 0 && (
+                <div className="mb-6 flex flex-wrap justify-center gap-2">
+                  {tags.map((tag: string) => (
+                    <span key={tag} className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               <p className="mb-8 max-w-xl text-base leading-relaxed text-muted-foreground">
                 {memorial.bio}
               </p>
 
-              <div className="flex items-center gap-4">
-                <button className="flex items-center gap-1.5 rounded-md bg-secondary px-4 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80">
-                  <Share2 className="h-4 w-4" /> Condividi
-                </button>
+              {/* Share & QR */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <ShareButtons url={memorialUrl} title={ogTitle} />
                 <button
                   onClick={() => setShowQr(true)}
-                  className="flex items-center gap-1.5 rounded-md bg-secondary px-4 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80"
+                  className="flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary"
                 >
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
@@ -182,27 +243,15 @@ const MemorialDetail = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="relative mx-4 w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-card"
             >
-              <button
-                onClick={() => setShowQr(false)}
-                className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary"
-              >
+              <button onClick={() => setShowQr(false)} className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary">
                 <X className="h-5 w-5" />
               </button>
-              <h3 className="mb-1 text-center font-serif text-lg font-semibold text-foreground">
-                QR Code
-              </h3>
+              <h3 className="mb-1 text-center font-serif text-lg font-semibold text-foreground">QR Code</h3>
               <p className="mb-6 text-center text-xs text-muted-foreground">
-                Scansiona o scarica per condividere il memoriale di {memorial.firstName}
+                Scansiona o scarica per condividere il memoriale di {memorial.first_name}
               </p>
-              <div ref={qrRef} className="flex justify-center mb-6">
-                <QRCodeCanvas
-                  value={memorialUrl}
-                  size={200}
-                  level="H"
-                  includeMargin
-                  bgColor="#FFFFFF"
-                  fgColor="#2C2C2C"
-                />
+              <div ref={qrRef} className="mb-6 flex justify-center">
+                <QRCodeCanvas value={memorialUrl} size={200} level="H" includeMargin bgColor="#FFFFFF" fgColor="#2C2C2C" />
               </div>
               <button
                 onClick={handleDownloadQr}
@@ -238,12 +287,8 @@ const MemorialDetail = () => {
         <section className="container mx-auto px-4 py-8">
           <div className="mx-auto flex max-w-md justify-center gap-12">
             <div className="text-center">
-              <p className="font-serif text-3xl font-semibold text-warm-gold">{memorial.tributeCount}</p>
+              <p className="font-serif text-3xl font-semibold text-accent">{tributes.length}</p>
               <p className="text-xs text-muted-foreground">Tributi</p>
-            </div>
-            <div className="text-center">
-              <p className="font-serif text-3xl font-semibold text-foreground">{guestbook.length}</p>
-              <p className="text-xs text-muted-foreground">Messaggi</p>
             </div>
           </div>
         </section>
@@ -255,9 +300,8 @@ const MemorialDetail = () => {
               Tributi Virtuali
             </h2>
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Lascia un dono simbolico in memoria di {memorial.firstName}
+              Lascia un dono simbolico in memoria di {memorial.first_name}
             </p>
-
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {virtualTributes.map((tribute) => (
                 <button
@@ -274,11 +318,6 @@ const MemorialDetail = () => {
                   </span>
                   <p className="text-xs font-medium text-foreground">{tribute.name}</p>
                   <p className="text-xs text-muted-foreground">€{tribute.price.toFixed(2)}</p>
-                  {tribute.animated && (
-                    <span className="absolute right-1.5 top-1.5 rounded-full bg-warm-gold px-1.5 py-0.5 text-[10px] text-accent-foreground">
-                      ✨
-                    </span>
-                  )}
                 </button>
               ))}
             </div>
@@ -315,7 +354,7 @@ const MemorialDetail = () => {
             </form>
 
             <div className="space-y-4">
-              {guestbook.map((entry, i) => (
+              {tributes.map((entry: any, i: number) => (
                 <motion.div
                   key={entry.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -324,21 +363,29 @@ const MemorialDetail = () => {
                   className="rounded-lg border border-border bg-card p-4 shadow-soft"
                 >
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium text-foreground">{entry.authorName}</span>
-                    <span className="text-xs text-muted-foreground">{entry.createdAt}</span>
+                    <span className="text-sm font-medium text-foreground">{entry.sender_name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(entry.created_at).toLocaleDateString("it-IT")}
+                    </span>
                   </div>
                   <p className="text-sm leading-relaxed text-muted-foreground">{entry.message}</p>
-                  {entry.tribute && (
-                    <div className="mt-2 flex items-center gap-1 text-xs text-warm-gold">
-                      <span>{entry.tribute.icon}</span>
-                      <span>Ha lasciato un tributo: {entry.tribute.name}</span>
+                  {entry.item_type && entry.item_type !== "message" && (
+                    <div className="mt-2 text-xs text-accent">
+                      🕯️ Tributo: {entry.item_type}
                     </div>
                   )}
                 </motion.div>
               ))}
+              {tributes.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  Nessun messaggio ancora. Sii il primo a lasciare un tributo.
+                </p>
+              )}
             </div>
           </div>
         </section>
+
+        <AdBanner position="sidebar" />
       </Layout>
     </>
   );

@@ -24,6 +24,7 @@ const CreateMemorial = () => {
     visibility: "public",
     tags: "",
     video_url: "",
+    password_hash: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -72,7 +73,8 @@ const CreateMemorial = () => {
         tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
         is_draft: isDraft,
         visibility: form.visibility,
-      });
+        password_hash: form.visibility === "password" ? form.password_hash : "",
+      } as any);
 
       if (error) throw error;
 
@@ -208,21 +210,12 @@ const CreateMemorial = () => {
                 <label className="mb-1 block text-sm font-medium text-foreground">Foto</label>
                 <div className="flex items-center gap-4">
                   {imagePreview && (
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="h-20 w-20 rounded-lg object-cover"
-                    />
+                    <img src={imagePreview} alt="Preview" className="h-20 w-20 rounded-lg object-cover" />
                   )}
                   <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-secondary">
                     <Upload className="h-4 w-4" />
                     Carica immagine
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
+                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 </div>
               </div>
@@ -254,25 +247,43 @@ const CreateMemorial = () => {
                 <label className="mb-2 block text-sm font-medium text-foreground">Visibilità</label>
                 <div className="flex gap-3">
                   {[
-                    { value: "public", label: "Pubblico" },
-                    { value: "unlisted", label: "Non elencato" },
-                    { value: "password", label: "Protetto" },
+                    { value: "public", label: "🌍 Pubblico", desc: "Visibile e indicizzato nella Directory" },
+                    { value: "unlisted", label: "🔗 Non elencato", desc: "Accessibile solo tramite link diretto o QR" },
+                    { value: "password", label: "🔒 Protetto", desc: "Richiede una password per accedere" },
                   ].map((v) => (
                     <button
                       key={v.value}
                       type="button"
                       onClick={() => updateField("visibility", v.value)}
-                      className={`rounded-md border px-4 py-2 text-sm transition-colors ${
+                      className={`flex-1 rounded-md border px-3 py-2.5 text-left transition-colors ${
                         form.visibility === v.value
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:bg-secondary"
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:bg-secondary"
                       }`}
                     >
-                      {v.label}
+                      <span className={`block text-sm font-medium ${form.visibility === v.value ? "text-primary" : "text-foreground"}`}>
+                        {v.label}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">{v.desc}</span>
                     </button>
                   ))}
                 </div>
               </div>
+
+              {/* Password field (conditional) */}
+              {form.visibility === "password" && (
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Password di accesso *</label>
+                  <input
+                    type="text"
+                    value={form.password_hash}
+                    onChange={(e) => updateField("password_hash", e.target.value)}
+                    placeholder="Inserisci la password che i visitatori dovranno usare"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">I visitatori dovranno inserire questa password per visualizzare il memoriale.</p>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex flex-col gap-3 pt-2 sm:flex-row">
@@ -286,7 +297,7 @@ const CreateMemorial = () => {
                 </button>
                 <button
                   onClick={() => handleSubmit(false)}
-                  disabled={submitting || !form.first_name}
+                  disabled={submitting || !form.first_name || (form.visibility === "password" && !form.password_hash)}
                   className="flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                 >
                   <Eye className="h-4 w-4" />
