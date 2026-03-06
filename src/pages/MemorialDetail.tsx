@@ -296,7 +296,7 @@ const MemorialDetail = () => {
           </div>
         </section>
 
-        <AdBanner position="sidebar" />
+        <AdBanner position="sidebar" memorialPlan={(memorial as any).plan} />
       </Layout>
     </>
   );
