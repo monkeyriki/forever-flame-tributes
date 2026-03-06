@@ -76,8 +76,8 @@ const MemorialDetail = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-20 text-center">
-          <p className="text-muted-foreground">Caricamento...</p>
+        <div className="container mx-auto px-4 py-20">
+          <SkeletonMemorialDetail />
         </div>
       </Layout>
     );
