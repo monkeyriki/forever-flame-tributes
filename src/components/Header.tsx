@@ -156,6 +156,24 @@ const Header = () => {
               <div className="golden-divider my-2" />
               {user ? (
                 <>
+                  {(isB2B || isAdmin) && (
+                    <Link
+                      to="/dashboard/b2b"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      📊 Dashboard
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      🛡️ Admin
+                    </Link>
+                  )}
                   <button
                     onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
                     className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
