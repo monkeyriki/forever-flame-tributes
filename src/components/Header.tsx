@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search, LogOut } from "lucide-react";
+import { Menu, X, Search, LogOut, LayoutDashboard, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { isAdmin, isB2B } = useUserRole();
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -67,6 +69,24 @@ const Header = () => {
 
           {user ? (
             <>
+              {(isB2B || isAdmin) && (
+                <Link
+                  to="/dashboard/b2b"
+                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </Link>
+              )}
               <button
                 onClick={handleCreateClick}
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -136,6 +156,24 @@ const Header = () => {
               <div className="golden-divider my-2" />
               {user ? (
                 <>
+                  {(isB2B || isAdmin) && (
+                    <Link
+                      to="/dashboard/b2b"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      📊 Dashboard
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      🛡️ Admin
+                    </Link>
+                  )}
                   <button
                     onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
                     className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"

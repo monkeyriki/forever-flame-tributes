@@ -10,6 +10,9 @@ import Directory from "./pages/Directory";
 import MemorialDetail from "./pages/MemorialDetail";
 import Auth from "./pages/Auth";
 import CreateMemorial from "./pages/CreateMemorial";
+import B2BDashboard from "./pages/B2BDashboard";
+import AdminPanel from "./pages/AdminPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +31,22 @@ const App = () => (
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/create" element={<CreateMemorial />} />
+              <Route
+                path="/dashboard/b2b"
+                element={
+                  <ProtectedRoute requiredRole="b2b_partner">
+                    <B2BDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
