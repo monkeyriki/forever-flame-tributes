@@ -207,8 +207,10 @@ const Directory = () => {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="py-20 text-center">
-              <p className="text-muted-foreground">Caricamento...</p>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
           ) : paginated.length > 0 ? (
             <>
