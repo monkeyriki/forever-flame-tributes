@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, ArrowRight, Heart, Users } from "lucide-react";
-import { HelmetProvider, Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
 import MemorialCard from "@/components/MemorialCard";
 import { mockMemorials } from "@/data/mockData";
