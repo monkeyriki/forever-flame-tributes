@@ -153,7 +153,7 @@ const MemorialDetail = () => {
           </Link>
         </div>
 
-        <AdBanner position="top" />
+        <AdBanner position="top" memorialPlan={(memorial as any).plan} />
 
         {/* Profile */}
         <section className="container mx-auto px-4 py-8 md:py-12">
