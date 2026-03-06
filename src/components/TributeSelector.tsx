@@ -50,6 +50,10 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     }
 
     setSending(true);
+
+    // Profanity bypass detection
+    const isFlagged = checkProfanity(message, profanityWords);
+
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
       sender_name: "Visitatore",
@@ -57,6 +61,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       item_type: selected.name,
       tier: selected.tier,
       is_paid: false,
+      status: isFlagged ? "flagged" : "approved",
     });
 
     if (error) {
