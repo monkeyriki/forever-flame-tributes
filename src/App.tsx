@@ -10,6 +10,9 @@ import Directory from "./pages/Directory";
 import MemorialDetail from "./pages/MemorialDetail";
 import Auth from "./pages/Auth";
 import CreateMemorial from "./pages/CreateMemorial";
+import B2BDashboard from "./pages/B2BDashboard";
+import AdminPanel from "./pages/AdminPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
