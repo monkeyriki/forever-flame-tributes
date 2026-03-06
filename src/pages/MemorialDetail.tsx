@@ -12,9 +12,9 @@ import Layout from "@/components/Layout";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import PasswordGate from "@/components/PasswordGate";
+import TributeSelector from "@/components/TributeSelector";
+import GuestbookList from "@/components/GuestbookList";
 import { supabase } from "@/integrations/supabase/client";
-import { virtualTributes } from "@/data/mockData";
-import { GuestbookEntry } from "@/types/memorial";
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
