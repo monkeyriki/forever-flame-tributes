@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Calendar, Heart, MessageSquare, Share2,
-  QrCode, ChevronLeft, Send
+  QrCode, ChevronLeft, Send, Download, X, Play
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { QRCodeCanvas } from "qrcode.react";
 import Layout from "@/components/Layout";
 import { mockMemorials, virtualTributes } from "@/data/mockData";
 import { GuestbookEntry } from "@/types/memorial";
@@ -16,12 +17,35 @@ const mockGuestbook: GuestbookEntry[] = [
   { id: "3", authorName: "Silvia R.", message: "La tua gentilezza resterà per sempre nei nostri ricordi.", createdAt: "2025-02-27" },
 ];
 
+const getVideoEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  return null;
+};
+
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const memorial = mockMemorials.find((m) => m.id === id);
   const [newMessage, setNewMessage] = useState("");
   const [guestbook, setGuestbook] = useState<GuestbookEntry[]>(mockGuestbook);
   const [selectedTribute, setSelectedTribute] = useState<string | null>(null);
+  const [showQr, setShowQr] = useState(false);
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadQr = useCallback(() => {
+    const canvas = qrRef.current?.querySelector("canvas");
+    if (!canvas) return;
+    const url = canvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `qr-${id}.png`;
+    a.click();
+  }, [id]);
 
   if (!memorial) {
     return (
@@ -39,6 +63,14 @@ const MemorialDetail = () => {
     : memorial.firstName;
   const birthYear = new Date(memorial.birthDate).getFullYear();
   const deathYear = new Date(memorial.deathDate).getFullYear();
+  const memorialUrl = `${window.location.origin}/memorial/${memorial.id}`;
+  const ogTitle = `In Memoria di ${fullName}`;
+  const ogDescription = memorial.bio?.slice(0, 155) || `Memoriale dedicato a ${fullName}`;
+
+  // Mock video URL for demo - in production this comes from the DB
+  const videoUrl = (memorial as any).videoUrl || "";
+  const embedUrl = getVideoEmbedUrl(videoUrl);
+
 
   const handleSubmitMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,11 +90,17 @@ const MemorialDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{fullName} – Memoria Eterna</title>
-        <meta name="description" content={memorial.bio} />
-        <meta property="og:title" content={`${fullName} – Memoria Eterna`} />
-        <meta property="og:description" content={memorial.bio} />
+        <title>{ogTitle} – Memoria Eterna</title>
+        <meta name="description" content={ogDescription} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${ogTitle} – Memoria Eterna`} />
+        <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={memorial.photoUrl} />
+        <meta property="og:url" content={memorialUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${ogTitle} – Memoria Eterna`} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={memorial.photoUrl} />
       </Helmet>
 
       <Layout>
@@ -125,7 +163,10 @@ const MemorialDetail = () => {
                 <button className="flex items-center gap-1.5 rounded-md bg-secondary px-4 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80">
                   <Share2 className="h-4 w-4" /> Condividi
                 </button>
-                <button className="flex items-center gap-1.5 rounded-md bg-secondary px-4 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80">
+                <button
+                  onClick={() => setShowQr(true)}
+                  className="flex items-center gap-1.5 rounded-md bg-secondary px-4 py-2 text-sm text-secondary-foreground transition-colors hover:bg-secondary/80"
+                >
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
               </div>
@@ -133,7 +174,65 @@ const MemorialDetail = () => {
           </div>
         </section>
 
+        {/* QR Code Modal */}
+        {showQr && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative mx-4 w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-card"
+            >
+              <button
+                onClick={() => setShowQr(false)}
+                className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-secondary"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <h3 className="mb-1 text-center font-serif text-lg font-semibold text-foreground">
+                QR Code
+              </h3>
+              <p className="mb-6 text-center text-xs text-muted-foreground">
+                Scansiona o scarica per condividere il memoriale di {memorial.firstName}
+              </p>
+              <div ref={qrRef} className="flex justify-center mb-6">
+                <QRCodeCanvas
+                  value={memorialUrl}
+                  size={200}
+                  level="H"
+                  includeMargin
+                  bgColor="#FFFFFF"
+                  fgColor="#2C2C2C"
+                />
+              </div>
+              <button
+                onClick={handleDownloadQr}
+                className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Download className="h-4 w-4" /> Scarica PNG
+              </button>
+            </motion.div>
+          </div>
+        )}
+
         <div className="golden-divider mx-auto max-w-3xl" />
+
+        {/* Video Embed */}
+        {embedUrl && (
+          <section className="container mx-auto max-w-3xl px-4 py-8">
+            <h2 className="mb-4 text-center font-serif text-2xl font-semibold text-foreground">
+              <Play className="mr-2 inline h-5 w-5" /> Video
+            </h2>
+            <div className="aspect-video overflow-hidden rounded-lg border border-border shadow-soft">
+              <iframe
+                src={embedUrl}
+                title={`Video in memoria di ${fullName}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full"
+              />
+            </div>
+          </section>
+        )}
 
         {/* Stats */}
         <section className="container mx-auto px-4 py-8">
@@ -194,7 +293,6 @@ const MemorialDetail = () => {
               Libro delle Condoglianze
             </h2>
 
-            {/* New entry form */}
             <form onSubmit={handleSubmitMessage} className="mb-8 rounded-lg border border-border bg-card p-4 shadow-soft">
               <textarea
                 value={newMessage}
@@ -216,7 +314,6 @@ const MemorialDetail = () => {
               </div>
             </form>
 
-            {/* Entries */}
             <div className="space-y-4">
               {guestbook.map((entry, i) => (
                 <motion.div

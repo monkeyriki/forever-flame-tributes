@@ -23,6 +23,7 @@ const CreateMemorial = () => {
     location: "",
     visibility: "public",
     tags: "",
+    video_url: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -67,6 +68,7 @@ const CreateMemorial = () => {
         death_date: form.death_date || null,
         location: form.location,
         image_url,
+        video_url: form.video_url || "",
         tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
         is_draft: isDraft,
         visibility: form.visibility,
@@ -223,6 +225,17 @@ const CreateMemorial = () => {
                     />
                   </label>
                 </div>
+              </div>
+
+              {/* Video URL */}
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Video (YouTube / Vimeo)</label>
+                <input
+                  value={form.video_url}
+                  onChange={(e) => updateField("video_url", e.target.value)}
+                  placeholder="es. https://www.youtube.com/watch?v=..."
+                  className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
               </div>
 
               {/* Tags */}
