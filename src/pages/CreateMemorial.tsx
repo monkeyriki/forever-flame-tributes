@@ -31,11 +31,17 @@ const CreateMemorial = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      toast({ title: "Compressione immagine..." });
+      const compressed = await compressImage(file);
+      setImageFile(compressed);
+      setImagePreview(URL.createObjectURL(compressed));
+      if (compressed.size < file.size) {
+        const saved = Math.round((1 - compressed.size / file.size) * 100);
+        toast({ title: `Immagine compressa (${saved}% più leggera)` });
+      }
     }
   };
 
