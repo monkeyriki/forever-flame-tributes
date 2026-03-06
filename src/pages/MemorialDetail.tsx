@@ -37,6 +37,16 @@ const MemorialDetail = () => {
   const [showQr, setShowQr] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
+  const handleDownloadQr = useCallback(() => {
+    const canvas = qrRef.current?.querySelector("canvas");
+    if (!canvas) return;
+    const url = canvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `qr-${id}.png`;
+    a.click();
+  }, [id]);
+
   if (!memorial) {
     return (
       <Layout>
