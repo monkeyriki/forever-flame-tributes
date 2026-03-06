@@ -26,6 +26,7 @@ export type Database = {
           is_draft: boolean
           last_name: string
           location: string | null
+          password_hash: string | null
           tags: string[] | null
           type: string
           updated_at: string
@@ -44,6 +45,7 @@ export type Database = {
           is_draft?: boolean
           last_name?: string
           location?: string | null
+          password_hash?: string | null
           tags?: string[] | null
           type?: string
           updated_at?: string
@@ -62,6 +64,7 @@ export type Database = {
           is_draft?: boolean
           last_name?: string
           location?: string | null
+          password_hash?: string | null
           tags?: string[] | null
           type?: string
           updated_at?: string
@@ -92,6 +95,27 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string | null
+          value: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: string | null
         }
         Relationships: []
       }
