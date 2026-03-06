@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Search, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -14,6 +17,19 @@ const Header = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleCreateClick = () => {
+    if (user) {
+      navigate("/create");
+    } else {
+      navigate("/auth");
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
@@ -48,12 +64,39 @@ const Header = () => {
             <Search className="h-4 w-4" />
             Cerca
           </Link>
-          <Link
-            to="/create"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Crea Memoriale
-          </Link>
+
+          {user ? (
+            <>
+              <button
+                onClick={handleCreateClick}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Crea Memoriale
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                title="Esci"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Accedi
+              </Link>
+              <button
+                onClick={handleCreateClick}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Crea Memoriale
+              </button>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -91,13 +134,38 @@ const Header = () => {
                 </Link>
               ))}
               <div className="golden-divider my-2" />
-              <Link
-                to="/create"
-                onClick={() => setIsMenuOpen(false)}
-                className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
-              >
-                Crea Memoriale
-              </Link>
+              {user ? (
+                <>
+                  <button
+                    onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
+                    className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
+                  >
+                    Crea Memoriale
+                  </button>
+                  <button
+                    onClick={() => { setIsMenuOpen(false); handleSignOut(); }}
+                    className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
+                  >
+                    Esci
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
+                  >
+                    Accedi / Registrati
+                  </Link>
+                  <button
+                    onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
+                    className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
+                  >
+                    Crea Memoriale
+                  </button>
+                </>
+              )}
             </nav>
           </motion.div>
         )}
