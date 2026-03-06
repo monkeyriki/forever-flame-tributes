@@ -71,15 +71,6 @@ const MemorialDetail = () => {
   const videoUrl = (memorial as any).videoUrl || "";
   const embedUrl = getVideoEmbedUrl(videoUrl);
 
-  const handleDownloadQr = useCallback(() => {
-    const canvas = qrRef.current?.querySelector("canvas");
-    if (!canvas) return;
-    const url = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `qr-${memorial.id}.png`;
-    a.click();
-  }, [memorial.id]);
 
   const handleSubmitMessage = (e: React.FormEvent) => {
     e.preventDefault();
