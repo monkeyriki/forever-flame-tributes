@@ -227,6 +227,17 @@ const CreateMemorial = () => {
                 </div>
               </div>
 
+              {/* Video URL */}
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Video (YouTube / Vimeo)</label>
+                <input
+                  value={form.video_url}
+                  onChange={(e) => updateField("video_url", e.target.value)}
+                  placeholder="es. https://www.youtube.com/watch?v=..."
+                  className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+
               {/* Tags */}
               <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Tag</label>
