@@ -2,8 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  MapPin, Calendar, Heart, MessageSquare, Share2,
-  QrCode, ChevronLeft, Send, Download, X, Play
+  MapPin, Calendar, MessageSquare, Share2,
+  QrCode, ChevronLeft, Download, X, Play
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { QRCodeCanvas } from "qrcode.react";
