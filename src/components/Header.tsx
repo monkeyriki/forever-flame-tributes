@@ -10,6 +10,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { isAdmin, isB2B } = useUserRole();
 
   const navLinks = [
     { to: "/", label: "Home" },
