@@ -70,23 +70,8 @@ const MemorialDetail = () => {
     a.click();
   }, [id]);
 
-  const handleSubmitMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !id) return;
 
-    const tribute = selectedTribute ? virtualTributes.find(t => t.id === selectedTribute) : null;
 
-    await supabase.from("tributes").insert({
-      memorial_id: id,
-      sender_name: "Visitatore",
-      message: newMessage,
-      item_type: tribute?.name || "message",
-    });
-
-    setNewMessage("");
-    setSelectedTribute(null);
-    refetchTributes();
-  };
 
   if (isLoading) {
     return (
