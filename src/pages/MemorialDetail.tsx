@@ -14,6 +14,7 @@ import ShareButtons from "@/components/ShareButtons";
 import PasswordGate from "@/components/PasswordGate";
 import TributeSelector from "@/components/TributeSelector";
 import GuestbookList from "@/components/GuestbookList";
+import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 
 const getVideoEmbedUrl = (url: string): string | null => {
@@ -76,8 +77,8 @@ const MemorialDetail = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-20 text-center">
-          <p className="text-muted-foreground">Caricamento...</p>
+        <div className="container mx-auto px-4 py-20">
+          <SkeletonMemorialDetail />
         </div>
       </Layout>
     );

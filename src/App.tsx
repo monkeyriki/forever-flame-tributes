@@ -14,6 +14,9 @@ import B2BDashboard from "./pages/B2BDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import UserSettings from "./pages/UserSettings";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +34,9 @@ const App = () => (
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/create" element={<CreateMemorial />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
+              <Route path="/settings" element={<UserSettings />} />
               <Route
                 path="/dashboard/b2b"
                 element={

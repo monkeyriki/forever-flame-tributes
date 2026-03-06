@@ -4,8 +4,8 @@ const Footer = () => {
   return (
     <footer className="border-t border-border bg-card">
       <div className="container mx-auto px-4 py-10 md:py-14">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-2">
+        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+          <div className="sm:col-span-2 md:col-span-2">
             <Link to="/" className="mb-3 flex items-center gap-2">
               <span className="text-2xl">🕊️</span>
               <span className="font-serif text-xl font-semibold text-foreground">
@@ -31,21 +31,26 @@ const Footer = () => {
 
           <div>
             <h4 className="mb-3 font-serif text-sm font-semibold text-foreground">
-              Informazioni
+              Legale
             </h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/privacy" className="transition-colors hover:text-primary">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="transition-colors hover:text-primary">Termini di Servizio</Link></li>
-              <li><Link to="/contact" className="transition-colors hover:text-primary">Contatti</Link></li>
+              <li><Link to="/cookie-policy" className="transition-colors hover:text-primary">Cookie Policy</Link></li>
+              <li><Link to="/settings" className="transition-colors hover:text-primary">Impostazioni Account</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="golden-divider my-8" />
 
-        <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Memoria Eterna. Tutti i diritti riservati.
-        </p>
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Memoria Eterna. Tutti i diritti riservati.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            GDPR & CCPA Compliant
+          </p>
+        </div>
       </div>
     </footer>
   );
