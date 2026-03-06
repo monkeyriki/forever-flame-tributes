@@ -28,6 +28,14 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
   const [selected, setSelected] = useState<TributeTier>(tributeTiers[0]);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [profanityWords, setProfanityWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    loadProfanityWords(async () => {
+      const { data } = await supabase.from("profanity_words").select("word");
+      return (data || []).map((r) => r.word);
+    }).then(setProfanityWords);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
