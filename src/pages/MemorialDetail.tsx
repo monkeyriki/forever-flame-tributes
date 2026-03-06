@@ -27,8 +27,6 @@ const getVideoEmbedUrl = (url: string): string | null => {
 
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [newMessage, setNewMessage] = useState("");
-  const [selectedTribute, setSelectedTribute] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
