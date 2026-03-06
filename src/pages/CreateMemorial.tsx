@@ -23,6 +23,7 @@ const CreateMemorial = () => {
     location: "",
     visibility: "public",
     tags: "",
+    video_url: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
