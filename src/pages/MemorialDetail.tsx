@@ -14,6 +14,7 @@ import ShareButtons from "@/components/ShareButtons";
 import PasswordGate from "@/components/PasswordGate";
 import TributeSelector from "@/components/TributeSelector";
 import GuestbookList from "@/components/GuestbookList";
+import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 
 const getVideoEmbedUrl = (url: string): string | null => {
