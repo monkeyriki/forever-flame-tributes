@@ -67,7 +67,11 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     if (error) {
       toast.error("Errore nell'invio del tributo");
     } else {
-      toast.success("Tributo inviato!");
+      if (isFlagged) {
+        toast.info("Il tuo tributo è in attesa di revisione da parte di un moderatore.");
+      } else {
+        toast.success("Tributo inviato!");
+      }
       setMessage("");
       setSelected(tributeTiers[0]);
       onTributeAdded();
