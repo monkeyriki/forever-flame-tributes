@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import MemorialCard from "@/components/MemorialCard";
 import AdBanner from "@/components/AdBanner";
+import { SkeletonCard } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 import { Memorial } from "@/types/memorial";
 import {
