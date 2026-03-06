@@ -2,8 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  MapPin, Calendar, Heart, MessageSquare, Share2,
-  QrCode, ChevronLeft, Send, Download, X, Play
+  MapPin, Calendar, MessageSquare, Share2,
+  QrCode, ChevronLeft, Download, X, Play
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { QRCodeCanvas } from "qrcode.react";
@@ -12,9 +12,9 @@ import Layout from "@/components/Layout";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import PasswordGate from "@/components/PasswordGate";
+import TributeSelector from "@/components/TributeSelector";
+import GuestbookList from "@/components/GuestbookList";
 import { supabase } from "@/integrations/supabase/client";
-import { virtualTributes } from "@/data/mockData";
-import { GuestbookEntry } from "@/types/memorial";
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
@@ -27,8 +27,6 @@ const getVideoEmbedUrl = (url: string): string | null => {
 
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [newMessage, setNewMessage] = useState("");
-  const [selectedTribute, setSelectedTribute] = useState<string | null>(null);
   const [showQr, setShowQr] = useState(false);
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
@@ -72,23 +70,8 @@ const MemorialDetail = () => {
     a.click();
   }, [id]);
 
-  const handleSubmitMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !id) return;
 
-    const tribute = selectedTribute ? virtualTributes.find(t => t.id === selectedTribute) : null;
 
-    await supabase.from("tributes").insert({
-      memorial_id: id,
-      sender_name: "Visitatore",
-      message: newMessage,
-      item_type: tribute?.name || "message",
-    });
-
-    setNewMessage("");
-    setSelectedTribute(null);
-    refetchTributes();
-  };
 
   if (isLoading) {
     return (
@@ -293,38 +276,7 @@ const MemorialDetail = () => {
           </div>
         </section>
 
-        {/* Virtual Tributes */}
-        <section className="bg-card py-10 md:py-14">
-          <div className="container mx-auto max-w-3xl px-4">
-            <h2 className="mb-2 text-center font-serif text-2xl font-semibold text-foreground">
-              Tributi Virtuali
-            </h2>
-            <p className="mb-6 text-center text-sm text-muted-foreground">
-              Lascia un dono simbolico in memoria di {memorial.first_name}
-            </p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {virtualTributes.map((tribute) => (
-                <button
-                  key={tribute.id}
-                  onClick={() => setSelectedTribute(selectedTribute === tribute.id ? null : tribute.id)}
-                  className={`relative rounded-lg border p-4 text-center transition-all ${
-                    selectedTribute === tribute.id
-                      ? "border-primary bg-primary/5 shadow-soft"
-                      : "border-border bg-background hover:border-primary/30"
-                  }`}
-                >
-                  <span className={`mb-1 inline-block text-2xl ${tribute.animated ? "animate-candle-flicker" : ""}`}>
-                    {tribute.icon}
-                  </span>
-                  <p className="text-xs font-medium text-foreground">{tribute.name}</p>
-                  <p className="text-xs text-muted-foreground">€{tribute.price.toFixed(2)}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Guestbook */}
+        {/* Tributes & Guestbook */}
         <section className="py-10 md:py-14">
           <div className="container mx-auto max-w-3xl px-4">
             <h2 className="mb-6 text-center font-serif text-2xl font-semibold text-foreground">
@@ -332,56 +284,15 @@ const MemorialDetail = () => {
               Libro delle Condoglianze
             </h2>
 
-            <form onSubmit={handleSubmitMessage} className="mb-8 rounded-lg border border-border bg-card p-4 shadow-soft">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Scrivi un messaggio di condoglianze..."
-                rows={3}
-                className="mb-3 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            <div className="mb-8">
+              <TributeSelector
+                memorialId={memorial.id}
+                firstName={memorial.first_name}
+                onTributeAdded={() => refetchTributes()}
               />
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">
-                  {selectedTribute && `Tributo selezionato: ${virtualTributes.find(t => t.id === selectedTribute)?.name}`}
-                </p>
-                <button
-                  type="submit"
-                  className="flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-                >
-                  <Send className="h-3.5 w-3.5" /> Invia
-                </button>
-              </div>
-            </form>
-
-            <div className="space-y-4">
-              {tributes.map((entry: any, i: number) => (
-                <motion.div
-                  key={entry.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="rounded-lg border border-border bg-card p-4 shadow-soft"
-                >
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium text-foreground">{entry.sender_name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(entry.created_at).toLocaleDateString("it-IT")}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{entry.message}</p>
-                  {entry.item_type && entry.item_type !== "message" && (
-                    <div className="mt-2 text-xs text-accent">
-                      🕯️ Tributo: {entry.item_type}
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-              {tributes.length === 0 && (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  Nessun messaggio ancora. Sii il primo a lasciare un tributo.
-                </p>
-              )}
             </div>
+
+            <GuestbookList tributes={tributes as any} />
           </div>
         </section>
 
