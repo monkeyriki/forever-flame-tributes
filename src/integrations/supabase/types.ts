@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      banned_users: {
+        Row: {
+          banned_by: string | null
+          created_at: string
+          email: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          banned_by?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          banned_by?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       memorials: {
         Row: {
           bio: string | null
@@ -27,6 +51,7 @@ export type Database = {
           last_name: string
           location: string | null
           password_hash: string | null
+          plan: string
           tags: string[] | null
           type: string
           updated_at: string
@@ -46,6 +71,7 @@ export type Database = {
           last_name?: string
           location?: string | null
           password_hash?: string | null
+          plan?: string
           tags?: string[] | null
           type?: string
           updated_at?: string
@@ -65,12 +91,28 @@ export type Database = {
           last_name?: string
           location?: string | null
           password_hash?: string | null
+          plan?: string
           tags?: string[] | null
           type?: string
           updated_at?: string
           user_id?: string
           video_url?: string | null
           visibility?: string
+        }
+        Relationships: []
+      }
+      profanity_words: {
+        Row: {
+          id: string
+          word: string
+        }
+        Insert: {
+          id?: string
+          word: string
+        }
+        Update: {
+          id?: string
+          word?: string
         }
         Relationships: []
       }
@@ -119,6 +161,93 @@ export type Database = {
         }
         Relationships: []
       }
+      store_items: {
+        Row: {
+          category: string
+          created_at: string
+          emoji: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          tier: string
+          type: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          emoji?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          tier?: string
+          type?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          emoji?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          tier?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          memorial_id: string | null
+          tribute_id: string | null
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          memorial_id?: string | null
+          tribute_id?: string | null
+          type?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          memorial_id?: string | null
+          tribute_id?: string | null
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_tribute_id_fkey"
+            columns: ["tribute_id"]
+            isOneToOne: false
+            referencedRelation: "tributes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tributes: {
         Row: {
           created_at: string
@@ -129,6 +258,7 @@ export type Database = {
           memorial_id: string
           message: string | null
           sender_name: string
+          status: string
           stripe_session_id: string | null
           tier: string
         }
@@ -141,6 +271,7 @@ export type Database = {
           memorial_id: string
           message?: string | null
           sender_name?: string
+          status?: string
           stripe_session_id?: string | null
           tier?: string
         }
@@ -153,6 +284,7 @@ export type Database = {
           memorial_id?: string
           message?: string | null
           sender_name?: string
+          status?: string
           stripe_session_id?: string | null
           tier?: string
         }
@@ -189,6 +321,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_approve_tribute: {
+        Args: { tribute_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

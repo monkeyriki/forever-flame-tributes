@@ -1,13 +1,16 @@
+import { useMemorialPlan } from "@/hooks/useMemorialPlan";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface AdBannerProps {
   position: "top" | "sidebar";
+  memorialPlan?: string;
 }
 
-const AdBanner = ({ position }: AdBannerProps) => {
-  const { adsEnabled, adsenseCode } = useSiteSettings();
+const AdBanner = ({ position, memorialPlan }: AdBannerProps) => {
+  const { adsenseCode } = useSiteSettings();
+  const { showAds } = useMemorialPlan(memorialPlan);
 
-  if (!adsEnabled) return null;
+  if (!showAds) return null;
 
   return (
     <div

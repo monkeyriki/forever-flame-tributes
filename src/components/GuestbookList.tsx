@@ -10,6 +10,7 @@ interface TributeEntry {
   is_paid: boolean;
   created_at: string;
   expires_at: string | null;
+  status?: string;
 }
 
 interface GuestbookListProps {
@@ -23,9 +24,10 @@ const tierIcon = (itemType: string | null): string | null => {
 };
 
 const GuestbookList = ({ tributes }: GuestbookListProps) => {
-  // Sort: premium (non-expired) first, then by date desc
+  // Filter out flagged tributes, sort: premium first, then date desc
   const now = new Date();
-  const sorted = [...tributes].sort((a, b) => {
+  const visible = tributes.filter((t) => t.status !== "flagged");
+  const sorted = [...visible].sort((a, b) => {
     const aPremium = a.tier === "premium" && a.is_paid && (!a.expires_at || new Date(a.expires_at) > now);
     const bPremium = b.tier === "premium" && b.is_paid && (!b.expires_at || new Date(b.expires_at) > now);
     if (aPremium && !bPremium) return -1;
