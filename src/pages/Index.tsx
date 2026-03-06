@@ -213,7 +213,7 @@ const Index = () => {
           </div>
         </section>
       </Layout>
-    </HelmetProvider>
+    </>
   );
 };
 
