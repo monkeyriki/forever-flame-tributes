@@ -31,6 +31,22 @@ const App = () => (
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/create" element={<CreateMemorial />} />
+              <Route
+                path="/dashboard/b2b"
+                element={
+                  <ProtectedRoute requiredRole="b2b_partner">
+                    <B2BDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
