@@ -22,7 +22,7 @@ const Index = () => {
   };
 
   return (
-    <HelmetProvider>
+    <>
       <Helmet>
         <title>Memoria Eterna – Memoriali e Necrologi Digitali</title>
         <meta
