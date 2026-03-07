@@ -18,8 +18,9 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/#features", label: "Funzionalità", isAnchor: true },
+    { to: "/#about", label: "Chi Siamo", isAnchor: true },
     { to: "/directory/human", label: "Memoriali" },
+    { to: "/#features", label: "Funzionalità", isAnchor: true },
     { to: "/#testimonials", label: "Testimonianze", isAnchor: true },
   ];
 
