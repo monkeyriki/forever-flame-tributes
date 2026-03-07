@@ -57,7 +57,7 @@ const Header = () => {
             className="h-8 w-8 animate-flame-flicker"
           />
           <span className="font-display text-xl font-bold tracking-wide text-foreground">
-            Per Sempre Ricordati
+            Per Sempre <span className="text-primary">Ricordati</span>
           </span>
         </Link>
 
