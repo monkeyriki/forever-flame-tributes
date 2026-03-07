@@ -47,8 +47,13 @@ const UsersTab = () => {
 
   const changeRoleMutation = useMutation({
     mutationFn: async ({ userId, newRole }: { userId: string; newRole: string }) => {
-      const { error } = await supabase.from("profiles").update({ role: newRole as any }).eq("id", userId);
+      // Remove existing roles
+      await supabase.from("user_roles").delete().eq("user_id", userId);
+      // Insert new role into user_roles table (secure)
+      const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: newRole as any });
       if (error) throw error;
+      // Also sync profile role for display purposes
+      await supabase.from("profiles").update({ role: newRole as any }).eq("id", userId);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-profiles"] });
