@@ -4,10 +4,17 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Upload, Save, Eye } from "lucide-react";
 import Layout from "@/components/Layout";
+import MultiImageUpload from "@/components/MultiImageUpload";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { compressImage } from "@/lib/imageCompression";
+
+interface GalleryItem {
+  file: File;
+  preview: string;
+  caption: string;
+}
 
 const CreateMemorial = () => {
   const { user } = useAuth();
@@ -29,6 +36,7 @@ const CreateMemorial = () => {
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +74,7 @@ const CreateMemorial = () => {
         image_url = urlData.publicUrl;
       }
 
-      const { error } = await supabase.from("memorials").insert({
+      const { data: memorial, error } = await supabase.from("memorials").insert({
         user_id: user.id,
         type: form.type,
         first_name: form.first_name,
@@ -81,9 +89,34 @@ const CreateMemorial = () => {
         is_draft: isDraft,
         visibility: form.visibility,
         password_hash: form.visibility === "password" ? form.password_hash : "",
-      } as any);
+      } as any).select("id").single();
 
       if (error) throw error;
+
+      // Upload gallery images
+      if (galleryImages.length > 0 && memorial) {
+        const uploads = galleryImages.map(async (img, index) => {
+          const ext = img.file.name.split(".").pop();
+          const path = `${user.id}/gallery/${memorial.id}/${Date.now()}_${index}.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("memorial-images")
+            .upload(path, img.file);
+          if (upErr) throw upErr;
+
+          const { data: urlData } = supabase.storage
+            .from("memorial-images")
+            .getPublicUrl(path);
+
+          return supabase.from("memorial_images").insert({
+            memorial_id: memorial.id,
+            url: urlData.publicUrl,
+            caption: img.caption,
+            sort_order: index,
+          } as any);
+        });
+
+        await Promise.all(uploads);
+      }
 
       toast({
         title: isDraft ? "Draft saved" : "Memorial published",
@@ -212,20 +245,27 @@ const CreateMemorial = () => {
                 />
               </div>
 
-              {/* Image */}
+              {/* Main Image */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">Photo</label>
+                <label className="mb-1 block text-sm font-medium text-foreground">Main Photo</label>
                 <div className="flex items-center gap-4">
                   {imagePreview && (
                     <img src={imagePreview} alt="Preview" className="h-20 w-20 rounded-lg object-cover" />
                   )}
                   <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-secondary">
                     <Upload className="h-4 w-4" />
-                    Upload image
+                    Upload main image
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 </div>
               </div>
+
+              {/* Gallery Images */}
+              <MultiImageUpload
+                images={galleryImages}
+                onChange={setGalleryImages}
+                maxImages={20}
+              />
 
               {/* Video URL */}
               <div>
