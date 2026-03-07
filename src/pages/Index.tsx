@@ -32,9 +32,16 @@ const Index = () => {
       </Helmet>
 
       <Layout>
-        {/* CTA + Search */}
-        <section className="py-16 md:py-20">
-          <div className="mx-auto max-w-3xl px-4 text-center">
+        {/* Hero with background image */}
+        <section className="relative flex min-h-[75vh] items-center justify-center overflow-hidden">
+          <img
+            src={heroBg}
+            alt="A peaceful memorial landscape"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-background/70" />
+
+          <div className="relative z-10 mx-auto max-w-3xl px-4 py-20 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -62,7 +69,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="mx-auto mt-8 flex max-w-lg items-center overflow-hidden rounded-lg border border-border bg-card shadow-card"
+              className="mx-auto mt-8 flex max-w-lg items-center overflow-hidden rounded-lg border border-border bg-card/90 shadow-card backdrop-blur-sm"
             >
               <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
               <input
@@ -79,20 +86,6 @@ const Index = () => {
                 Search
               </button>
             </motion.form>
-          </div>
-        </section>
-
-        {/* Hero Image */}
-        <section className="w-full">
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="overflow-hidden rounded-xl">
-              <img
-                src={heroBg}
-                alt="A peaceful memorial landscape"
-                className="h-[300px] w-full object-cover md:h-[400px]"
-                loading="lazy"
-              />
-            </div>
           </div>
         </section>
 
