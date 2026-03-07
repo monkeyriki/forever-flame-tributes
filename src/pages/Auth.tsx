@@ -23,19 +23,19 @@ const Auth = () => {
     try {
       if (isLogin) {
         await signIn(email, password);
-        toast({ title: "Bentornato!", description: "Accesso effettuato con successo." });
+        toast({ title: "Welcome back!", description: "Signed in successfully." });
         navigate("/");
       } else {
         await signUp(email, password, fullName);
         toast({
-          title: "Registrazione completata",
-          description: "Controlla la tua email per confermare l'account.",
+          title: "Registration complete",
+          description: "Check your email to confirm your account.",
         });
       }
     } catch (error: any) {
       toast({
-        title: "Errore",
-        description: error.message || "Si è verificato un errore.",
+        title: "Error",
+        description: error.message || "An error occurred.",
         variant: "destructive",
       });
     } finally {
@@ -46,7 +46,7 @@ const Auth = () => {
   return (
     <>
       <Helmet>
-        <title>{isLogin ? "Accedi" : "Registrati"} – Memoria Eterna</title>
+        <title>{isLogin ? "Sign In" : "Register"} – Eternal Memory</title>
       </Helmet>
       <Layout>
         <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
@@ -58,12 +58,12 @@ const Auth = () => {
             <div className="mb-6 text-center">
               <span className="mb-2 inline-block text-3xl">🕊️</span>
               <h1 className="font-serif text-2xl font-semibold text-foreground">
-                {isLogin ? "Accedi" : "Crea il tuo account"}
+                {isLogin ? "Sign In" : "Create your account"}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isLogin
-                  ? "Entra per gestire i tuoi memoriali"
-                  : "Registrati per creare memoriali e tributi"}
+                  ? "Sign in to manage your memorials"
+                  : "Register to create memorials and tributes"}
               </p>
             </div>
 
@@ -72,11 +72,8 @@ const Auth = () => {
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Nome completo"
-                    required={!isLogin}
+                    type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Full name" required={!isLogin}
                     className="w-full rounded-md border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
@@ -84,33 +81,25 @@ const Auth = () => {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
-                  required
+                  type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email" required
                   className="w-full rounded-md border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  required
-                  minLength={6}
+                  type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password" required minLength={6}
                   className="w-full rounded-md border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               <button
-                type="submit"
-                disabled={submitting}
+                type="submit" disabled={submitting}
                 className="flex w-full items-center justify-center gap-2 rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
               >
-                {submitting ? "Caricamento..." : isLogin ? "Accedi" : "Registrati"}
+                {submitting ? "Loading..." : isLogin ? "Sign In" : "Register"}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
@@ -120,7 +109,7 @@ const Auth = () => {
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-sm text-muted-foreground transition-colors hover:text-primary"
               >
-                {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Accedi"}
+                {isLogin ? "Don't have an account? Register" : "Already have an account? Sign In"}
               </button>
             </div>
           </motion.div>

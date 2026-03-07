@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -32,7 +32,6 @@ const MemorialDetail = () => {
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
-  // Fetch memorial from Supabase
   const { data: memorial, isLoading } = useQuery({
     queryKey: ["memorial", id],
     queryFn: async () => {
@@ -47,7 +46,6 @@ const MemorialDetail = () => {
     enabled: !!id,
   });
 
-  // Fetch tributes
   const { data: tributes = [], refetch: refetchTributes } = useQuery({
     queryKey: ["tributes", id],
     queryFn: async () => {
@@ -71,9 +69,6 @@ const MemorialDetail = () => {
     a.click();
   }, [id]);
 
-
-
-
   if (isLoading) {
     return (
       <Layout>
@@ -88,14 +83,13 @@ const MemorialDetail = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="mb-4 font-serif text-3xl text-foreground">Memoriale non trovato</h1>
-          <Link to="/" className="text-primary hover:underline">Torna alla Home</Link>
+          <h1 className="mb-4 font-serif text-3xl text-foreground">Memorial not found</h1>
+          <Link to="/" className="text-primary hover:underline">Return to Home</Link>
         </div>
       </Layout>
     );
   }
 
-  // Password protection gate
   const isPasswordProtected = memorial.visibility === "password" && (memorial as any).password_hash;
   if (isPasswordProtected && !passwordUnlocked) {
     const name = memorial.last_name
@@ -122,46 +116,44 @@ const MemorialDetail = () => {
   const birthYear = memorial.birth_date ? new Date(memorial.birth_date).getFullYear() : "?";
   const deathYear = memorial.death_date ? new Date(memorial.death_date).getFullYear() : "?";
   const memorialUrl = `${window.location.origin}/memorial/${memorial.id}`;
-  const ogTitle = `In Memoria di ${fullName}`;
-  const ogDescription = memorial.bio?.slice(0, 155) || `Memoriale dedicato a ${fullName}`;
+  const ogTitle = `In Memory of ${fullName}`;
+  const ogDescription = memorial.bio?.slice(0, 155) || `Memorial dedicated to ${fullName}`;
   const embedUrl = getVideoEmbedUrl(memorial.video_url || "");
   const tags = memorial.tags || [];
 
   const isPublic = memorial.visibility === "public";
-  const shouldNoIndex = !isPublic; // unlisted or password-protected
+  const shouldNoIndex = !isPublic;
 
   return (
     <>
       <Helmet>
-        <title>{ogTitle} – Memoria Eterna</title>
+        <title>{ogTitle} – Eternal Memory</title>
         <meta name="description" content={ogDescription} />
         {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
         <link rel="canonical" href={memorialUrl} />
         <meta property="og:type" content="profile" />
-        <meta property="og:title" content={`${ogTitle} – Memoria Eterna`} />
+        <meta property="og:title" content={`${ogTitle} – Eternal Memory`} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={memorial.image_url || ""} />
         <meta property="og:url" content={memorialUrl} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${ogTitle} – Memoria Eterna`} />
+        <meta name="twitter:title" content={`${ogTitle} – Eternal Memory`} />
         <meta name="twitter:description" content={ogDescription} />
         <meta name="twitter:image" content={memorial.image_url || ""} />
       </Helmet>
 
       <Layout>
-        {/* Back */}
         <div className="container mx-auto px-4 pt-6">
           <Link
             to={`/directory/${memorial.type}`}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
           >
-            <ChevronLeft className="h-4 w-4" /> Torna alla directory
+            <ChevronLeft className="h-4 w-4" /> Back to directory
           </Link>
         </div>
 
         <AdBanner position="top" memorialPlan={(memorial as any).plan} />
 
-        {/* Profile */}
         <section className="container mx-auto px-4 py-8 md:py-12">
           <div className="mx-auto max-w-3xl">
             <motion.div
@@ -210,7 +202,6 @@ const MemorialDetail = () => {
                 {memorial.bio}
               </p>
 
-              {/* Share & QR */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ShareButtons url={memorialUrl} title={ogTitle} />
                 <button
@@ -224,7 +215,6 @@ const MemorialDetail = () => {
           </div>
         </section>
 
-        {/* QR Code Modal */}
         {showQr && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
             <motion.div
@@ -237,7 +227,7 @@ const MemorialDetail = () => {
               </button>
               <h3 className="mb-1 text-center font-serif text-lg font-semibold text-foreground">QR Code</h3>
               <p className="mb-6 text-center text-xs text-muted-foreground">
-                Scansiona o scarica per condividere il memoriale di {memorial.first_name}
+                Scan or download to share {memorial.first_name}'s memorial
               </p>
               <div ref={qrRef} className="mb-6 flex justify-center">
                 <QRCodeCanvas value={memorialUrl} size={200} level="H" includeMargin bgColor="#FFFFFF" fgColor="#2C2C2C" />
@@ -246,7 +236,7 @@ const MemorialDetail = () => {
                 onClick={handleDownloadQr}
                 className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                <Download className="h-4 w-4" /> Scarica PNG
+                <Download className="h-4 w-4" /> Download PNG
               </button>
             </motion.div>
           </div>
@@ -254,7 +244,6 @@ const MemorialDetail = () => {
 
         <div className="golden-divider mx-auto max-w-3xl" />
 
-        {/* Video Embed */}
         {embedUrl && (
           <section className="container mx-auto max-w-3xl px-4 py-8">
             <h2 className="mb-4 text-center font-serif text-2xl font-semibold text-foreground">
@@ -263,7 +252,7 @@ const MemorialDetail = () => {
             <div className="aspect-video overflow-hidden rounded-lg border border-border shadow-soft">
               <iframe
                 src={embedUrl}
-                title={`Video in memoria di ${fullName}`}
+                title={`Video in memory of ${fullName}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full"
@@ -272,22 +261,20 @@ const MemorialDetail = () => {
           </section>
         )}
 
-        {/* Stats */}
         <section className="container mx-auto px-4 py-8">
           <div className="mx-auto flex max-w-md justify-center gap-12">
             <div className="text-center">
               <p className="font-serif text-3xl font-semibold text-accent">{tributes.length}</p>
-              <p className="text-xs text-muted-foreground">Tributi</p>
+              <p className="text-xs text-muted-foreground">Tributes</p>
             </div>
           </div>
         </section>
 
-        {/* Tributes & Guestbook */}
         <section className="py-10 md:py-14">
           <div className="container mx-auto max-w-3xl px-4">
             <h2 className="mb-6 text-center font-serif text-2xl font-semibold text-foreground">
               <MessageSquare className="mr-2 inline h-5 w-5" />
-              Libro delle Condoglianze
+              Condolence Book
             </h2>
 
             <div className="mb-8">

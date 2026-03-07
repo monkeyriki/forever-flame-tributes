@@ -24,10 +24,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Memoria Eterna – Memoriali e Necrologi Digitali</title>
+        <title>Eternal Memory – Digital Memorials & Obituaries</title>
         <meta
           name="description"
-          content="Crea memoriali digitali duraturi per onorare i tuoi cari. Uno spazio rispettoso per ricordare esseri umani e animali domestici."
+          content="Create lasting digital memorials to honor your loved ones. A respectful space to remember humans and beloved pets."
         />
       </Helmet>
 
@@ -48,12 +48,12 @@ const Index = () => {
             >
               <span className="mb-4 inline-block text-4xl">🕊️</span>
               <h1 className="mb-4 font-serif text-4xl font-light leading-tight text-foreground md:text-6xl">
-                Un ricordo che dura
-                <span className="block font-semibold text-primary">per sempre</span>
+                A memory that lasts
+                <span className="block font-semibold text-primary">forever</span>
               </h1>
               <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Crea uno spazio digitale dedicato alla memoria dei tuoi cari.
-                Un tributo rispettoso e duraturo, accessibile a tutti.
+                Create a digital space dedicated to the memory of your loved ones.
+                A respectful and lasting tribute, accessible to everyone.
               </p>
             </motion.div>
 
@@ -69,14 +69,14 @@ const Index = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cerca un memoriale..."
+                placeholder="Search for a memorial..."
                 className="flex-1 bg-transparent px-3 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               <button
                 type="submit"
                 className="mr-1.5 rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Cerca
+                Search
               </button>
             </motion.form>
           </div>
@@ -92,10 +92,10 @@ const Index = () => {
               className="mb-10 text-center"
             >
               <h2 className="mb-2 font-serif text-3xl font-semibold text-foreground">
-                Esplora i Memoriali
+                Explore Memorials
               </h2>
               <p className="text-muted-foreground">
-                Scegli la categoria per trovare o creare un tributo
+                Choose a category to find or create a tribute
               </p>
             </motion.div>
 
@@ -109,14 +109,14 @@ const Index = () => {
                 </div>
                 <div className="text-center">
                   <h3 className="mb-1 font-serif text-xl font-semibold text-foreground">
-                    Memoriali Umani
+                    Human Memorials
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Onora la memoria delle persone care
+                    Honor the memory of your loved ones
                   </p>
                 </div>
                 <span className="flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Esplora <ArrowRight className="h-4 w-4" />
+                  Explore <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
 
@@ -129,14 +129,14 @@ const Index = () => {
                 </div>
                 <div className="text-center">
                   <h3 className="mb-1 font-serif text-xl font-semibold text-foreground">
-                    Memoriali Animali
+                    Pet Memorials
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Un tributo ai compagni a quattro zampe
+                    A tribute to our four-legged companions
                   </p>
                 </div>
                 <span className="flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Esplora <ArrowRight className="h-4 w-4" />
+                  Explore <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             </div>
@@ -149,17 +149,17 @@ const Index = () => {
             <div className="mb-10 flex items-end justify-between">
               <div>
                 <h2 className="mb-2 font-serif text-3xl font-semibold text-foreground">
-                  Memoriali Recenti
+                  Recent Memorials
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Gli ultimi tributi pubblicati dalla comunità
+                  The latest tributes published by the community
                 </p>
               </div>
               <Link
                 to="/directory/human"
                 className="hidden items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80 md:flex"
               >
-                Vedi tutti <ArrowRight className="h-4 w-4" />
+                View all <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
@@ -182,7 +182,7 @@ const Index = () => {
                 to="/directory/human"
                 className="inline-flex items-center gap-1 text-sm font-medium text-primary"
               >
-                Vedi tutti i memoriali <ArrowRight className="h-4 w-4" />
+                View all memorials <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -198,16 +198,16 @@ const Index = () => {
             >
               <Heart className="mx-auto mb-4 h-8 w-8 text-warm-gold" />
               <h2 className="mb-3 font-serif text-3xl font-semibold text-foreground">
-                Crea un Memoriale
+                Create a Memorial
               </h2>
               <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                Dedica uno spazio speciale alla memoria di chi ami. Semplice, rispettoso e per sempre.
+                Dedicate a special space to the memory of those you love. Simple, respectful, and forever.
               </p>
               <Link
                 to="/create"
                 className="inline-flex rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Inizia Ora
+                Get Started
               </Link>
             </motion.div>
           </div>

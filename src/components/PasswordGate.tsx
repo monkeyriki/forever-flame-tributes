@@ -10,10 +10,8 @@ const PasswordGate = ({ onUnlock, memorialName }: PasswordGateProps) => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
 
-  // We pass pin to parent for verification
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Store pin in sessionStorage and let parent verify
     sessionStorage.setItem("memorial_pin_attempt", pin);
     onUnlock();
   };
@@ -26,30 +24,23 @@ const PasswordGate = ({ onUnlock, memorialName }: PasswordGateProps) => {
             <Lock className="h-8 w-8 text-muted-foreground" />
           </div>
         </div>
-        <h2 className="mb-2 font-serif text-xl font-semibold text-foreground">
-          Memoriale Protetto
-        </h2>
+        <h2 className="mb-2 font-serif text-xl font-semibold text-foreground">Protected Memorial</h2>
         <p className="mb-6 text-sm text-muted-foreground">
-          Il memoriale di <strong>{memorialName}</strong> è protetto da password.
+          The memorial for <strong>{memorialName}</strong> is password protected.
         </p>
         <form onSubmit={handleSubmit}>
           <input
-            type="password"
-            value={pin}
+            type="password" value={pin}
             onChange={(e) => { setPin(e.target.value); setError(false); }}
-            placeholder="Inserisci la password..."
+            placeholder="Enter password..."
             className="mb-3 w-full rounded-md border border-border bg-background px-4 py-3 text-center text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
             autoFocus
           />
-          {error && (
-            <p className="mb-3 text-sm text-destructive">Password errata. Riprova.</p>
-          )}
-          <button
-            type="submit"
-            disabled={!pin}
+          {error && <p className="mb-3 text-sm text-destructive">Wrong password. Try again.</p>}
+          <button type="submit" disabled={!pin}
             className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
-            Accedi al Memoriale
+            Access Memorial
           </button>
         </form>
       </div>

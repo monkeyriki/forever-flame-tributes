@@ -5,89 +5,89 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy – Memoria Eterna</title>
-        <meta name="description" content="Informativa sulla privacy di Memoria Eterna. Come raccogliamo, utilizziamo e proteggiamo i tuoi dati personali." />
+        <title>Privacy Policy – Eternal Memory</title>
+        <meta name="description" content="Eternal Memory privacy policy. How we collect, use, and protect your personal data." />
       </Helmet>
       <Layout>
         <div className="container mx-auto max-w-3xl px-4 py-12 md:py-16">
           <h1 className="mb-8 font-serif text-3xl font-semibold text-foreground md:text-4xl">
-            Informativa sulla Privacy
+            Privacy Policy
           </h1>
           <div className="prose prose-sm max-w-none text-muted-foreground space-y-6">
-            <p className="text-sm text-muted-foreground">Ultimo aggiornamento: {new Date().toLocaleDateString("it-IT")}</p>
+            <p className="text-sm text-muted-foreground">Last updated: {new Date().toLocaleDateString("en-US")}</p>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">1. Titolare del Trattamento</h2>
-              <p>Memoria Eterna ("noi", "nostro", "Piattaforma") è il titolare del trattamento dei dati personali raccolti attraverso il sito web. Ci impegniamo a proteggere la privacy dei nostri utenti in conformità con il Regolamento Generale sulla Protezione dei Dati (GDPR – Regolamento UE 2016/679) e il California Consumer Privacy Act (CCPA).</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">1. Data Controller</h2>
+              <p>Eternal Memory ("we", "our", "Platform") is the data controller for personal data collected through the website. We are committed to protecting our users' privacy in compliance with the General Data Protection Regulation (GDPR – EU Regulation 2016/679) and the California Consumer Privacy Act (CCPA).</p>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">2. Dati Raccolti</h2>
-              <p>Raccogliamo le seguenti categorie di dati personali:</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">2. Data Collected</h2>
+              <p>We collect the following categories of personal data:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li><strong>Dati di registrazione:</strong> nome, indirizzo email, password (criptata)</li>
-                <li><strong>Dati dei memoriali:</strong> nomi, date, luoghi, foto, video, biografie delle persone commemorate</li>
-                <li><strong>Dati di pagamento:</strong> elaborati in modo sicuro tramite Stripe. Non memorizziamo i dati della carta di credito</li>
-                <li><strong>Dati di navigazione:</strong> indirizzo IP, tipo di browser, pagine visitate, cookie tecnici</li>
-                <li><strong>Contributi degli utenti:</strong> messaggi nel guestbook, tributi virtuali</li>
+                <li><strong>Registration data:</strong> name, email address, password (encrypted)</li>
+                <li><strong>Memorial data:</strong> names, dates, locations, photos, videos, biographies of commemorated individuals</li>
+                <li><strong>Payment data:</strong> processed securely via Stripe. We do not store credit card data</li>
+                <li><strong>Browsing data:</strong> IP address, browser type, pages visited, technical cookies</li>
+                <li><strong>User contributions:</strong> guestbook messages, virtual tributes</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">3. Finalità del Trattamento</h2>
-              <p>Utilizziamo i dati personali per:</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">3. Purpose of Processing</h2>
+              <p>We use personal data to:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li>Fornire e gestire il servizio di memoriali digitali</li>
-                <li>Elaborare pagamenti per tributi virtuali e abbonamenti premium</li>
-                <li>Inviare notifiche relative all'account e ai memoriali</li>
-                <li>Moderare i contenuti per garantire il rispetto della community</li>
-                <li>Migliorare il servizio attraverso analisi aggregate e anonimizzate</li>
-                <li>Adempiere agli obblighi legali</li>
+                <li>Provide and manage the digital memorial service</li>
+                <li>Process payments for virtual tributes and premium subscriptions</li>
+                <li>Send notifications related to accounts and memorials</li>
+                <li>Moderate content to ensure community respect</li>
+                <li>Improve the service through aggregated and anonymized analytics</li>
+                <li>Comply with legal obligations</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">4. Base Giuridica</h2>
-              <p>Il trattamento dei dati si basa su: consenso dell'utente, esecuzione del contratto di servizio, legittimo interesse del titolare, e obblighi di legge.</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">4. Legal Basis</h2>
+              <p>Data processing is based on: user consent, performance of the service contract, legitimate interest of the controller, and legal obligations.</p>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">5. Condivisione dei Dati</h2>
-              <p>Non vendiamo i dati personali. Condividiamo i dati solo con:</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">5. Data Sharing</h2>
+              <p>We do not sell personal data. We share data only with:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li><strong>Supabase:</strong> hosting del database e autenticazione</li>
-                <li><strong>Stripe:</strong> elaborazione dei pagamenti</li>
-                <li><strong>Google AdSense:</strong> pubblicità (solo per utenti Free, con possibilità di disattivazione tramite upgrade)</li>
+                <li><strong>Supabase:</strong> database hosting and authentication</li>
+                <li><strong>Stripe:</strong> payment processing</li>
+                <li><strong>Google AdSense:</strong> advertising (Free plan users only, with option to disable via upgrade)</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">6. Diritti dell'Utente (GDPR/CCPA)</h2>
-              <p>Hai il diritto di:</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">6. User Rights (GDPR/CCPA)</h2>
+              <p>You have the right to:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li><strong>Accesso:</strong> richiedere una copia dei tuoi dati personali</li>
-                <li><strong>Rettifica:</strong> correggere dati inesatti</li>
-                <li><strong>Cancellazione:</strong> eliminare il tuo account e tutti i dati associati tramite la funzione "Elimina Account"</li>
-                <li><strong>Portabilità:</strong> ricevere i tuoi dati in formato strutturato</li>
-                <li><strong>Opposizione:</strong> opporti al trattamento per finalità di marketing</li>
-                <li><strong>Revoca del consenso:</strong> in qualsiasi momento</li>
+                <li><strong>Access:</strong> request a copy of your personal data</li>
+                <li><strong>Rectification:</strong> correct inaccurate data</li>
+                <li><strong>Deletion:</strong> delete your account and all associated data via the "Delete Account" feature</li>
+                <li><strong>Portability:</strong> receive your data in a structured format</li>
+                <li><strong>Objection:</strong> object to processing for marketing purposes</li>
+                <li><strong>Withdraw consent:</strong> at any time</li>
               </ul>
-              <p className="mt-2">Per i residenti in California (CCPA): hai inoltre il diritto di sapere quali dati raccogliamo, richiederne la cancellazione e non essere discriminato per l'esercizio dei tuoi diritti.</p>
+              <p className="mt-2">For California residents (CCPA): you also have the right to know what data we collect, request its deletion, and not be discriminated against for exercising your rights.</p>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">7. Conservazione dei Dati</h2>
-              <p>I dati personali vengono conservati per la durata dell'account attivo. Alla cancellazione dell'account, tutti i dati vengono eliminati entro 30 giorni, salvo obblighi di legge.</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">7. Data Retention</h2>
+              <p>Personal data is retained for the duration of the active account. Upon account deletion, all data is removed within 30 days, unless required by law.</p>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">8. Sicurezza</h2>
-              <p>Implementiamo misure tecniche e organizzative adeguate, tra cui crittografia dei dati in transito (TLS), Row Level Security a livello di database e autenticazione sicura.</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">8. Security</h2>
+              <p>We implement appropriate technical and organizational measures, including data encryption in transit (TLS), Row Level Security at the database level, and secure authentication.</p>
             </section>
 
             <section>
-              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">9. Contatti</h2>
-              <p>Per esercitare i tuoi diritti o per domande sulla privacy, contattaci all'indirizzo email indicato nella pagina Contatti.</p>
+              <h2 className="font-serif text-xl font-semibold text-foreground mb-3">9. Contact</h2>
+              <p>To exercise your rights or for privacy inquiries, contact us at the email address provided on the Contact page.</p>
             </section>
           </div>
         </div>

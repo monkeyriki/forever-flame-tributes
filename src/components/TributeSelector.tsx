@@ -41,22 +41,19 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     e.preventDefault();
     if (!message.trim()) return;
 
-    // For paid tiers, we'd redirect to Stripe here (coming soon)
     if (selected.tier !== "base") {
-      toast.info("Pagamento Stripe in arrivo!", {
-        description: `Il tributo "${selected.name}" a €${selected.price.toFixed(2)} richiede il pagamento. L'integrazione Stripe sarà attiva a breve.`,
+      toast.info("Stripe payment coming soon!", {
+        description: `The "${selected.name}" tribute at €${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
       });
       return;
     }
 
     setSending(true);
-
-    // Profanity bypass detection
     const isFlagged = checkProfanity(message, profanityWords);
 
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
-      sender_name: "Visitatore",
+      sender_name: "Visitor",
       message,
       item_type: selected.name,
       tier: selected.tier,
@@ -65,12 +62,12 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     });
 
     if (error) {
-      toast.error("Errore nell'invio del tributo");
+      toast.error("Error sending tribute");
     } else {
       if (isFlagged) {
-        toast.info("Il tuo tributo è in attesa di revisione da parte di un moderatore.");
+        toast.info("Your tribute is pending review by a moderator.");
       } else {
-        toast.success("Tributo inviato!");
+        toast.success("Tribute sent!");
       }
       setMessage("");
       setSelected(tributeTiers[0]);
@@ -82,70 +79,50 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
   return (
     <div className="rounded-xl border border-border bg-card p-5 shadow-soft">
       <h3 className="mb-1 font-serif text-lg font-semibold text-foreground">
-        Lascia un tributo per {firstName}
+        Leave a tribute for {firstName}
       </h3>
-      <p className="mb-5 text-xs text-muted-foreground">Scegli il tipo di tributo</p>
+      <p className="mb-5 text-xs text-muted-foreground">Choose the type of tribute</p>
 
-      {/* Tier selector */}
       <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {tributeTiers.map((tier) => {
           const isSelected = selected.id === tier.id;
           return (
             <button
-              key={tier.id}
-              type="button"
-              onClick={() => setSelected(tier)}
-              className={`relative rounded-lg border p-3.5 text-center transition-all ${
-                isSelected ? tierSelectedColors[tier.tier] : tierColors[tier.tier]
-              }`}
+              key={tier.id} type="button" onClick={() => setSelected(tier)}
+              className={`relative rounded-lg border p-3.5 text-center transition-all ${isSelected ? tierSelectedColors[tier.tier] : tierColors[tier.tier]}`}
             >
               {tier.tier === "premium" && (
-                <span className="absolute -right-1 -top-1 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">
-                  TOP
-                </span>
+                <span className="absolute -right-1 -top-1 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">TOP</span>
               )}
-              <span
-                className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}
-              >
-                {tier.icon}
-              </span>
+              <span className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}>{tier.icon}</span>
               <p className="text-xs font-medium text-foreground">{tier.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {tier.price === 0 ? "Gratis" : `€${tier.price.toFixed(2)}`}
+                {tier.price === 0 ? "Free" : `€${tier.price.toFixed(2)}`}
               </p>
-              {tier.duration && (
-                <p className="mt-0.5 text-[10px] text-accent">{tier.duration}</p>
-              )}
+              {tier.duration && <p className="mt-0.5 text-[10px] text-accent">{tier.duration}</p>}
             </button>
           );
         })}
       </div>
 
-      {/* Message form */}
       <form onSubmit={handleSubmit}>
         <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Scrivi un messaggio di condoglianze..."
-          rows={3}
+          value={message} onChange={(e) => setMessage(e.target.value)}
+          placeholder="Write a condolence message..." rows={3}
           className="mb-3 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
             {selected.tier !== "base" && (
-              <>
-                <span className="mr-1">{selected.icon}</span>
-                {selected.name} – €{selected.price.toFixed(2)}
-              </>
+              <><span className="mr-1">{selected.icon}</span>{selected.name} – €{selected.price.toFixed(2)}</>
             )}
           </p>
           <button
-            type="submit"
-            disabled={sending || !message.trim()}
+            type="submit" disabled={sending || !message.trim()}
             className="flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             <Send className="h-3.5 w-3.5" />
-            {selected.tier === "base" ? "Invia" : `Paga €${selected.price.toFixed(2)}`}
+            {selected.tier === "base" ? "Send" : `Pay €${selected.price.toFixed(2)}`}
           </button>
         </div>
       </form>

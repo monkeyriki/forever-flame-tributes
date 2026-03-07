@@ -34,13 +34,13 @@ const CreateMemorial = () => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      toast({ title: "Compressione immagine..." });
+      toast({ title: "Compressing image..." });
       const compressed = await compressImage(file);
       setImageFile(compressed);
       setImagePreview(URL.createObjectURL(compressed));
       if (compressed.size < file.size) {
         const saved = Math.round((1 - compressed.size / file.size) * 100);
-        toast({ title: `Immagine compressa (${saved}% più leggera)` });
+        toast({ title: `Image compressed (${saved}% smaller)` });
       }
     }
   };
@@ -86,16 +86,16 @@ const CreateMemorial = () => {
       if (error) throw error;
 
       toast({
-        title: isDraft ? "Bozza salvata" : "Memoriale pubblicato",
+        title: isDraft ? "Draft saved" : "Memorial published",
         description: isDraft
-          ? "Il memoriale è stato salvato come bozza."
-          : "Il memoriale è ora visibile al pubblico.",
+          ? "The memorial has been saved as a draft."
+          : "The memorial is now publicly visible.",
       });
       navigate("/");
     } catch (error: any) {
       toast({
-        title: "Errore",
-        description: error.message || "Impossibile salvare il memoriale.",
+        title: "Error",
+        description: error.message || "Unable to save the memorial.",
         variant: "destructive",
       });
     } finally {
@@ -109,7 +109,7 @@ const CreateMemorial = () => {
   return (
     <>
       <Helmet>
-        <title>Crea Memoriale – Memoria Eterna</title>
+        <title>Create Memorial – Eternal Memory</title>
       </Helmet>
       <Layout>
         <div className="container mx-auto max-w-2xl px-4 py-12">
@@ -118,16 +118,16 @@ const CreateMemorial = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="mb-2 font-serif text-3xl font-semibold text-foreground">
-              Crea un Memoriale
+              Create a Memorial
             </h1>
             <p className="mb-8 text-sm text-muted-foreground">
-              Compila i dettagli per creare un tributo duraturo
+              Fill in the details to create a lasting tribute
             </p>
 
             <div className="space-y-6 rounded-xl border border-border bg-card p-6 shadow-soft">
               {/* Type */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-foreground">Tipo</label>
+                <label className="mb-2 block text-sm font-medium text-foreground">Type</label>
                 <div className="flex gap-3">
                   {(["human", "pet"] as const).map((t) => (
                     <button
@@ -140,7 +140,7 @@ const CreateMemorial = () => {
                           : "border-border text-muted-foreground hover:bg-secondary"
                       }`}
                     >
-                      {t === "human" ? "👤 Umano" : "🐾 Animale"}
+                      {t === "human" ? "👤 Human" : "🐾 Pet"}
                     </button>
                   ))}
                 </div>
@@ -149,7 +149,7 @@ const CreateMemorial = () => {
               {/* Names */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Nome *</label>
+                  <label className="mb-1 block text-sm font-medium text-foreground">First Name *</label>
                   <input
                     value={form.first_name}
                     onChange={(e) => updateField("first_name", e.target.value)}
@@ -158,7 +158,7 @@ const CreateMemorial = () => {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Cognome</label>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Last Name</label>
                   <input
                     value={form.last_name}
                     onChange={(e) => updateField("last_name", e.target.value)}
@@ -170,7 +170,7 @@ const CreateMemorial = () => {
               {/* Dates */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Data di nascita</label>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Date of Birth</label>
                   <input
                     type="date"
                     value={form.birth_date}
@@ -179,7 +179,7 @@ const CreateMemorial = () => {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Data di morte</label>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Date of Death</label>
                   <input
                     type="date"
                     value={form.death_date}
@@ -191,37 +191,37 @@ const CreateMemorial = () => {
 
               {/* Location */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">Luogo</label>
+                <label className="mb-1 block text-sm font-medium text-foreground">Location</label>
                 <input
                   value={form.location}
                   onChange={(e) => updateField("location", e.target.value)}
-                  placeholder="es. Roma, Italia"
+                  placeholder="e.g. New York, USA"
                   className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               {/* Bio */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">Biografia</label>
+                <label className="mb-1 block text-sm font-medium text-foreground">Biography</label>
                 <textarea
                   value={form.bio}
                   onChange={(e) => updateField("bio", e.target.value)}
                   rows={4}
-                  placeholder="Racconta la storia di questa persona..."
+                  placeholder="Tell the story of this person..."
                   className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               {/* Image */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">Foto</label>
+                <label className="mb-1 block text-sm font-medium text-foreground">Photo</label>
                 <div className="flex items-center gap-4">
                   {imagePreview && (
                     <img src={imagePreview} alt="Preview" className="h-20 w-20 rounded-lg object-cover" />
                   )}
                   <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-secondary">
                     <Upload className="h-4 w-4" />
-                    Carica immagine
+                    Upload image
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 </div>
@@ -233,30 +233,30 @@ const CreateMemorial = () => {
                 <input
                   value={form.video_url}
                   onChange={(e) => updateField("video_url", e.target.value)}
-                  placeholder="es. https://www.youtube.com/watch?v=..."
+                  placeholder="e.g. https://www.youtube.com/watch?v=..."
                   className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               {/* Tags */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-foreground">Tag</label>
+                <label className="mb-1 block text-sm font-medium text-foreground">Tags</label>
                 <input
                   value={form.tags}
                   onChange={(e) => updateField("tags", e.target.value)}
-                  placeholder="es. nonno, veterano, musicista (separati da virgola)"
+                  placeholder="e.g. grandpa, veteran, musician (comma separated)"
                   className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               {/* Visibility */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-foreground">Visibilità</label>
+                <label className="mb-2 block text-sm font-medium text-foreground">Visibility</label>
                 <div className="flex gap-3">
                   {[
-                    { value: "public", label: "🌍 Pubblico", desc: "Visibile e indicizzato nella Directory" },
-                    { value: "unlisted", label: "🔗 Non elencato", desc: "Accessibile solo tramite link diretto o QR" },
-                    { value: "password", label: "🔒 Protetto", desc: "Richiede una password per accedere" },
+                    { value: "public", label: "🌍 Public", desc: "Visible and indexed in the Directory" },
+                    { value: "unlisted", label: "🔗 Unlisted", desc: "Accessible only via direct link or QR" },
+                    { value: "password", label: "🔒 Protected", desc: "Requires a password to access" },
                   ].map((v) => (
                     <button
                       key={v.value}
@@ -280,15 +280,15 @@ const CreateMemorial = () => {
               {/* Password field (conditional) */}
               {form.visibility === "password" && (
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Password di accesso *</label>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Access Password *</label>
                   <input
                     type="text"
                     value={form.password_hash}
                     onChange={(e) => updateField("password_hash", e.target.value)}
-                    placeholder="Inserisci la password che i visitatori dovranno usare"
+                    placeholder="Enter the password visitors will need to use"
                     className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
-                  <p className="mt-1 text-xs text-muted-foreground">I visitatori dovranno inserire questa password per visualizzare il memoriale.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Visitors will need to enter this password to view the memorial.</p>
                 </div>
               )}
 
@@ -300,7 +300,7 @@ const CreateMemorial = () => {
                   className="flex items-center justify-center gap-2 rounded-md border border-border px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50"
                 >
                   <Save className="h-4 w-4" />
-                  Salva come bozza
+                  Save as Draft
                 </button>
                 <button
                   onClick={() => handleSubmit(false)}
@@ -308,7 +308,7 @@ const CreateMemorial = () => {
                   className="flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                 >
                   <Eye className="h-4 w-4" />
-                  Pubblica memoriale
+                  Publish Memorial
                 </button>
               </div>
             </div>
