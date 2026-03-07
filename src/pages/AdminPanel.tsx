@@ -42,10 +42,7 @@ const AdminPanel = () => {
   const { data: flaggedCount = 0 } = useQuery({
     queryKey: ["admin-flagged-count"],
     queryFn: async () => {
-      const { count, error } = await supabase
-        .from("tributes")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "flagged" as any);
+      const { count, error } = await supabase.from("tributes").select("*", { count: "exact", head: true }).eq("status", "flagged" as any);
       if (error) throw error;
       return count || 0;
     },
@@ -53,42 +50,38 @@ const AdminPanel = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Admin Panel — Eternal Memory</title>
-      </Helmet>
-
+      <Helmet><title>Admin Panel — Eternal Memory</title></Helmet>
       <div className="container mx-auto py-10 px-4 space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Pannello Super Admin</h1>
-          <p className="text-muted-foreground font-sans">Gestione globale della piattaforma</p>
+          <h1 className="text-3xl font-bold text-foreground">Super Admin Panel</h1>
+          <p className="text-muted-foreground font-sans">Global platform management</p>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Utenti</CardTitle>
+              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Users</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent><div className="text-3xl font-bold text-foreground">{profiles.length}</div></CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Memoriali</CardTitle>
+              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Memorials</CardTitle>
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent><div className="text-3xl font-bold text-foreground">{memorialCount}</div></CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Tributi</CardTitle>
+              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Tributes</CardTitle>
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent><div className="text-3xl font-bold text-foreground">{tributeCount}</div></CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Segnalati</CardTitle>
+              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Flagged</CardTitle>
               <Shield className="h-4 w-4 text-destructive" />
             </CardHeader>
             <CardContent><div className="text-3xl font-bold text-destructive">{flaggedCount}</div></CardContent>
@@ -102,16 +95,14 @@ const AdminPanel = () => {
           </Card>
         </div>
 
-        {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1">
-            <TabsTrigger value="users"><Users className="mr-1 h-4 w-4" />Utenti</TabsTrigger>
+            <TabsTrigger value="users"><Users className="mr-1 h-4 w-4" />Users</TabsTrigger>
             <TabsTrigger value="store"><Package className="mr-1 h-4 w-4" />Store</TabsTrigger>
-            <TabsTrigger value="moderation"><MessageSquare className="mr-1 h-4 w-4" />Moderazione</TabsTrigger>
-            <TabsTrigger value="settings"><Settings className="mr-1 h-4 w-4" />Piani & Ads</TabsTrigger>
-            <TabsTrigger value="revenue"><BarChart3 className="mr-1 h-4 w-4" />Ricavi</TabsTrigger>
+            <TabsTrigger value="moderation"><MessageSquare className="mr-1 h-4 w-4" />Moderation</TabsTrigger>
+            <TabsTrigger value="settings"><Settings className="mr-1 h-4 w-4" />Plans & Ads</TabsTrigger>
+            <TabsTrigger value="revenue"><BarChart3 className="mr-1 h-4 w-4" />Revenue</TabsTrigger>
           </TabsList>
-
           <TabsContent value="users"><UsersTab /></TabsContent>
           <TabsContent value="store"><StoreItemsTab /></TabsContent>
           <TabsContent value="moderation"><ModerationTab /></TabsContent>

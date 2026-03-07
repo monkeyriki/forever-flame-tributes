@@ -18,36 +18,25 @@ const MemorialCard = ({ memorial }: MemorialCardProps) => {
       className="group block overflow-hidden rounded-lg border border-border bg-card shadow-soft transition-all duration-300 hover:shadow-card"
     >
       <div className="aspect-[4/3] overflow-hidden">
-        <img
-          src={memorial.photoUrl}
-          alt={fullName}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
+        <img src={memorial.photoUrl} alt={fullName}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
       </div>
       <div className="p-4">
         <div className="mb-1 flex items-center gap-1.5">
           {memorial.type === "pet" && <span className="text-sm">🐾</span>}
-          <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-            {fullName}
-          </h3>
+          <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{fullName}</h3>
         </div>
         <p className="mb-2 text-sm text-muted-foreground">{lifespan}</p>
         <div className="mb-3 flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="h-3 w-3" />
-          <span>{memorial.location}</span>
+          <MapPin className="h-3 w-3" /><span>{memorial.location}</span>
         </div>
-        <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-          {memorial.bio}
-        </p>
+        <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{memorial.bio}</p>
         <div className="flex items-center gap-4 border-t border-border pt-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
-            <Heart className="h-3.5 w-3.5 text-warm-gold" />
-            {memorial.tributeCount} tributi
+            <Heart className="h-3.5 w-3.5 text-warm-gold" />{memorial.tributeCount} tributes
           </span>
           <span className="flex items-center gap-1">
-            <MessageSquare className="h-3.5 w-3.5" />
-            {memorial.guestbookEntries} messaggi
+            <MessageSquare className="h-3.5 w-3.5" />{memorial.guestbookEntries} messages
           </span>
         </div>
       </div>

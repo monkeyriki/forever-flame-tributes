@@ -14,8 +14,8 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/directory/human", label: "Memoriali Umani" },
-    { to: "/directory/pet", label: "Memoriali Animali" },
+    { to: "/directory/human", label: "Human Memorials" },
+    { to: "/directory/pet", label: "Pet Memorials" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -39,7 +39,7 @@ const Header = () => {
         <Link to="/" className="flex items-center gap-2">
           <span className="text-2xl">🕊️</span>
           <span className="font-serif text-xl font-semibold tracking-wide text-foreground md:text-2xl">
-            Memoria Eterna
+            Eternal Memory
           </span>
         </Link>
 
@@ -64,7 +64,7 @@ const Header = () => {
             className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Search className="h-4 w-4" />
-            Cerca
+            Search
           </Link>
 
           {user ? (
@@ -97,12 +97,12 @@ const Header = () => {
                 onClick={handleCreateClick}
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Crea Memoriale
+                Create Memorial
               </button>
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                title="Esci"
+                title="Sign Out"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -113,13 +113,13 @@ const Header = () => {
                 to="/auth"
                 className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
-                Accedi
+                Sign In
               </Link>
               <button
                 onClick={handleCreateClick}
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Crea Memoriale
+                Create Memorial
               </button>
             </>
           )}
@@ -184,13 +184,13 @@ const Header = () => {
                     onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
                     className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
                   >
-                    Crea Memoriale
+                    Create Memorial
                   </button>
                   <button
                     onClick={() => { setIsMenuOpen(false); handleSignOut(); }}
                     className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
                   >
-                    Esci
+                    Sign Out
                   </button>
                 </>
               ) : (
@@ -200,13 +200,13 @@ const Header = () => {
                     onClick={() => setIsMenuOpen(false)}
                     className="rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
                   >
-                    Accedi / Registrati
+                    Sign In / Register
                   </Link>
                   <button
                     onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
                     className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
                   >
-                    Crea Memoriale
+                    Create Memorial
                   </button>
                 </>
               )}

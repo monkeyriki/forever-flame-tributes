@@ -21,7 +21,7 @@ const AdBanner = ({ position, memorialPlan }: AdBannerProps) => {
       {adsenseCode ? (
         <div dangerouslySetInnerHTML={{ __html: adsenseCode }} />
       ) : (
-        <span>📢 Spazio pubblicitario ({position === "top" ? "Banner" : "Sidebar"})</span>
+        <span>📢 Ad space ({position === "top" ? "Banner" : "Sidebar"})</span>
       )}
     </div>
   );

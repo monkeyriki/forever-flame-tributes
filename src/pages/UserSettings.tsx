@@ -22,7 +22,7 @@ const UserSettings = () => {
   const [deleting, setDeleting] = useState(false);
 
   const handleDeleteAccount = async () => {
-    if (confirmText !== "ELIMINA") return;
+    if (confirmText !== "DELETE") return;
     if (!user) return;
 
     setDeleting(true);
@@ -34,10 +34,10 @@ const UserSettings = () => {
       if (error) throw error;
 
       await signOut();
-      toast({ title: "Account eliminato", description: "Tutti i tuoi dati sono stati cancellati." });
+      toast({ title: "Account deleted", description: "All your data has been removed." });
       navigate("/");
     } catch (e: any) {
-      toast({ title: "Errore", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
       setDeleting(false);
     }
@@ -47,7 +47,7 @@ const UserSettings = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <p className="text-muted-foreground">Devi accedere per vedere le impostazioni.</p>
+          <p className="text-muted-foreground">You must sign in to view settings.</p>
         </div>
       </Layout>
     );
@@ -56,21 +56,20 @@ const UserSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Impostazioni Account – Memoria Eterna</title>
+        <title>Account Settings – Eternal Memory</title>
       </Helmet>
       <Layout>
         <div className="container mx-auto max-w-2xl px-4 py-12">
           <h1 className="mb-8 font-serif text-3xl font-semibold text-foreground">
-            Impostazioni Account
+            Account Settings
           </h1>
 
           <div className="space-y-6">
-            {/* Account info */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg font-sans">
                   <User className="mr-2 inline h-5 w-5" />
-                  Informazioni Account
+                  Account Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -79,47 +78,42 @@ const UserSettings = () => {
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">ID Utente</p>
+                  <p className="text-sm font-medium text-foreground">User ID</p>
                   <p className="text-xs text-muted-foreground font-mono">{user.id}</p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Privacy */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg font-sans">
                   <Shield className="mr-2 inline h-5 w-5" />
-                  Privacy e Dati
+                  Privacy & Data
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Puoi richiedere l'eliminazione completa del tuo account e di tutti i dati associati
-                  (memoriali, tributi, profilo). Questa azione è irreversibile.
+                  You can request complete deletion of your account and all associated data
+                  (memorials, tributes, profile). This action is irreversible.
                 </p>
               </CardContent>
             </Card>
 
-            {/* Danger zone */}
             <Card className="border-destructive/30">
               <CardHeader>
                 <CardTitle className="text-lg font-sans text-destructive">
                   <Trash2 className="mr-2 inline h-5 w-5" />
-                  Zona Pericolosa
+                  Danger Zone
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="mb-4 text-sm text-muted-foreground">
-                  L'eliminazione dell'account è permanente. Verranno cancellati tutti i memoriali,
-                  tributi ricevuti, dati del profilo e ogni altro dato associato.
+                  Account deletion is permanent. All memorials, received tributes, profile data,
+                  and any other associated data will be deleted.
                 </p>
-                <Button
-                  variant="destructive"
-                  onClick={() => setDeleteDialog(true)}
-                >
+                <Button variant="destructive" onClick={() => setDeleteDialog(true)}>
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Elimina Account
+                  Delete Account
                 </Button>
               </CardContent>
             </Card>
@@ -129,32 +123,32 @@ const UserSettings = () => {
         <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
           <DialogContent className="max-w-sm">
             <DialogHeader>
-              <DialogTitle className="text-destructive">Conferma Eliminazione</DialogTitle>
+              <DialogTitle className="text-destructive">Confirm Deletion</DialogTitle>
               <DialogDescription>
-                Questa azione è irreversibile. Tutti i tuoi dati verranno eliminati permanentemente.
+                This action is irreversible. All your data will be permanently deleted.
               </DialogDescription>
             </DialogHeader>
             <div>
               <p className="mb-2 text-sm text-foreground">
-                Digita <strong>ELIMINA</strong> per confermare:
+                Type <strong>DELETE</strong> to confirm:
               </p>
               <Input
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
-                placeholder="ELIMINA"
+                placeholder="DELETE"
                 className="font-mono"
               />
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDeleteDialog(false)}>
-                Annulla
+                Cancel
               </Button>
               <Button
                 variant="destructive"
                 onClick={handleDeleteAccount}
-                disabled={confirmText !== "ELIMINA" || deleting}
+                disabled={confirmText !== "DELETE" || deleting}
               >
-                {deleting ? "Eliminazione..." : "Elimina definitivamente"}
+                {deleting ? "Deleting..." : "Delete permanently"}
               </Button>
             </DialogFooter>
           </DialogContent>
