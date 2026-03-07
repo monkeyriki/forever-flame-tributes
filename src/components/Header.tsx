@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search, LogOut, LayoutDashboard, Shield, Settings } from "lucide-react";
+import { Search, User, Menu, X, LogOut, LayoutDashboard, Shield, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import flameIcon from "@/assets/flame-icon.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -14,7 +18,7 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/directory/human", label: "Human Memorials" },
+    { to: "/directory/human", label: "Memoriali" },
     { to: "/directory/pet", label: "Pet Memorials" },
   ];
 
@@ -33,13 +37,26 @@ const Header = () => {
     navigate("/");
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/directory/human?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-2xl">🕊️</span>
-          <span className="font-serif text-xl font-semibold tracking-wide text-foreground md:text-2xl">
-            Eternal Memory
+          <img
+            src={flameIcon}
+            alt="Flame"
+            className="h-8 w-8 animate-flame-flicker"
+          />
+          <span className="font-display text-xl font-bold tracking-wide text-foreground">
+            Per Sempre Ricordati
           </span>
         </Link>
 
@@ -49,7 +66,7 @@ const Header = () => {
             <Link
               key={link.to}
               to={link.to}
-              className={`font-sans text-sm tracking-wide transition-colors hover:text-primary ${
+              className={`font-body text-sm tracking-wide transition-colors hover:text-primary ${
                 isActive(link.to) ? "text-primary font-medium" : "text-muted-foreground"
               }`}
             >
@@ -58,13 +75,18 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Link
-            to="/directory/human"
-            className="flex items-center gap-1.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <Search className="h-4 w-4" />
-          </Link>
+        {/* Desktop right side */}
+        <div className="hidden items-center gap-3 md:flex">
+          <form onSubmit={handleSearch} className="flex items-center gap-1 rounded-lg border border-border bg-card px-2">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Cerca..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 w-32 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+          </form>
 
           {user ? (
             <>
@@ -74,7 +96,6 @@ const Header = () => {
                   className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
                 </Link>
               )}
               {isAdmin && (
@@ -83,7 +104,6 @@ const Header = () => {
                   className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   <Shield className="h-4 w-4" />
-                  Admin
                 </Link>
               )}
               <Link
@@ -92,35 +112,23 @@ const Header = () => {
               >
                 <Settings className="h-4 w-4" />
               </Link>
-              <button
-                onClick={handleCreateClick}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Create Memorial
-              </button>
+              <Button onClick={handleCreateClick} size="sm">
+                Crea Memoriale
+              </Button>
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                title="Sign Out"
+                title="Esci"
               >
                 <LogOut className="h-4 w-4" />
               </button>
             </>
           ) : (
-            <>
-              <Link
-                to="/auth"
-                className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Sign In
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/auth">
+                <User className="h-4 w-4 mr-1" /> Accedi
               </Link>
-              <button
-                onClick={handleCreateClick}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Create Memorial
-              </button>
-            </>
+            </Button>
           )}
         </div>
 
@@ -162,52 +170,31 @@ const Header = () => {
               {user ? (
                 <>
                   {(isB2B || isAdmin) && (
-                    <Link
-                      to="/dashboard/b2b"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/dashboard/b2b" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       📊 Dashboard
                     </Link>
                   )}
                   {isAdmin && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       🛡️ Admin
                     </Link>
                   )}
-                  <button
-                    onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
-                    className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
-                  >
-                    Create Memorial
-                  </button>
+                  <Button onClick={() => { setIsMenuOpen(false); handleCreateClick(); }} className="mt-1">
+                    Crea Memoriale
+                  </Button>
                   <button
                     onClick={() => { setIsMenuOpen(false); handleSignOut(); }}
                     className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
                   >
-                    Sign Out
+                    Esci
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
-                  >
-                    Sign In / Register
+                <Button variant="outline" asChild className="mt-1">
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <User className="h-4 w-4 mr-1" /> Accedi
                   </Link>
-                  <button
-                    onClick={() => { setIsMenuOpen(false); handleCreateClick(); }}
-                    className="rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
-                  >
-                    Create Memorial
-                  </button>
-                </>
+                </Button>
               )}
             </nav>
           </motion.div>

@@ -1,246 +1,26 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Search, ArrowRight, Heart, Users } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
-import MemorialCard from "@/components/MemorialCard";
-import { mockMemorials } from "@/data/mockData";
-import heroBg from "@/assets/hero-bg.jpg";
+import HeroSection from "@/components/HeroSection";
+import RecentMemorials from "@/components/RecentMemorials";
+import FeaturesSection from "@/components/FeaturesSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 
 const Index = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-
-  const featuredMemorials = mockMemorials.slice(0, 3);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/directory/human?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   return (
     <>
       <Helmet>
-        <title>Eternal Memory – Digital Memorials & Obituaries</title>
+        <title>Per Sempre Ricordati – Memoriali Online</title>
         <meta
           name="description"
-          content="Create lasting digital memorials to honor your loved ones. A respectful space to remember humans and beloved pets."
+          content="Crea memoriali online per onorare e ricordare le persone care. Uno spazio rispettoso per preservare i ricordi."
         />
       </Helmet>
 
       <Layout>
-        {/* Title + CTA */}
-        <section className="py-16 md:py-20">
-          <div className="mx-auto max-w-3xl px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <span className="mb-4 inline-block text-4xl">🕊️</span>
-              <h1 className="mb-4 font-serif text-4xl font-light leading-tight text-foreground md:text-6xl">
-                A memory that lasts
-                <span className="block font-semibold text-primary">forever</span>
-              </h1>
-              <Link
-                to="/create"
-                className="inline-flex rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Create Memorial
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Description + Search */}
-        <section className="pb-12 md:pb-16">
-          <div className="mx-auto max-w-3xl px-4 text-center">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg"
-            >
-              Create a digital space dedicated to the memory of your loved ones.
-              A respectful and lasting tribute, accessible to everyone.
-            </motion.p>
-
-            <motion.form
-              onSubmit={handleSearch}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="mx-auto flex max-w-lg items-center overflow-hidden rounded-lg border border-border bg-card shadow-card"
-            >
-              <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for a memorial..."
-                className="flex-1 bg-transparent px-3 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="mr-1.5 rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Search
-              </button>
-            </motion.form>
-          </div>
-        </section>
-
-        {/* Hero Image */}
-        <section className="w-full pb-16 md:pb-20">
-          <div className="mx-auto max-w-6xl px-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="overflow-hidden rounded-2xl"
-            >
-              <img
-                src={heroBg}
-                alt="A peaceful memorial landscape"
-                className="h-[300px] w-full object-cover md:h-[450px]"
-              />
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="mb-10 text-center"
-            >
-              <h2 className="mb-2 font-serif text-3xl font-semibold text-foreground">
-                Explore Memorials
-              </h2>
-              <p className="text-muted-foreground">
-                Choose a category to find or create a tribute
-              </p>
-            </motion.div>
-
-            <div className="mx-auto grid max-w-2xl gap-6 md:grid-cols-2">
-              <Link
-                to="/directory/human"
-                className="group flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 shadow-soft transition-all hover:shadow-card"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
-                  <Users className="h-7 w-7 text-primary" />
-                </div>
-                <div className="text-center">
-                  <h3 className="mb-1 font-serif text-xl font-semibold text-foreground">
-                    Human Memorials
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Honor the memory of your loved ones
-                  </p>
-                </div>
-                <span className="flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Explore <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-
-              <Link
-                to="/directory/pet"
-                className="group flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 shadow-soft transition-all hover:shadow-card"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
-                  <span className="text-2xl">🐾</span>
-                </div>
-                <div className="text-center">
-                  <h3 className="mb-1 font-serif text-xl font-semibold text-foreground">
-                    Pet Memorials
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    A tribute to our four-legged companions
-                  </p>
-                </div>
-                <span className="flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Explore <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Featured */}
-        <section className="bg-card py-16 md:py-20">
-          <div className="container mx-auto px-4">
-            <div className="mb-10 flex items-end justify-between">
-              <div>
-                <h2 className="mb-2 font-serif text-3xl font-semibold text-foreground">
-                  Recent Memorials
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  The latest tributes published by the community
-                </p>
-              </div>
-              <Link
-                to="/directory/human"
-                className="hidden items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80 md:flex"
-              >
-                View all <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredMemorials.map((memorial, i) => (
-                <motion.div
-                  key={memorial.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <MemorialCard memorial={memorial} />
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-8 text-center md:hidden">
-              <Link
-                to="/directory/human"
-                className="inline-flex items-center gap-1 text-sm font-medium text-primary"
-              >
-                View all memorials <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-16 md:py-20">
-          <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Heart className="mx-auto mb-4 h-8 w-8 text-warm-gold" />
-              <h2 className="mb-3 font-serif text-3xl font-semibold text-foreground">
-                Create a Memorial
-              </h2>
-              <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                Dedicate a special space to the memory of those you love. Simple, respectful, and forever.
-              </p>
-              <Link
-                to="/create"
-                className="inline-flex rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Get Started
-              </Link>
-            </motion.div>
-          </div>
-        </section>
+        <HeroSection />
+        <RecentMemorials />
+        <FeaturesSection />
+        <TestimonialsSection />
       </Layout>
     </>
   );

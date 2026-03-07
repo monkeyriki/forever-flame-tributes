@@ -14,8 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["Cormorant Garamond", "Georgia", "serif"],
-        sans: ["Source Sans 3", "system-ui", "sans-serif"],
+        display: ["'Playfair Display'", "serif"],
+        body: ["'Source Sans 3'", "sans-serif"],
+        serif: ["'Playfair Display'", "serif"],
+        sans: ["'Source Sans 3'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,16 +53,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        sage: {
+          DEFAULT: "hsl(var(--sage))",
+          dark: "hsl(var(--sage-dark))",
         },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
+        },
+        "warm-gray": "hsl(var(--warm-gray))",
         warm: {
           gold: "hsl(var(--warm-gold))",
           "gold-light": "hsl(var(--warm-gold-light))",
@@ -72,6 +73,16 @@ export default {
         },
         olive: {
           muted: "hsl(var(--olive-muted))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
         },
       },
       borderRadius: {
@@ -93,6 +104,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "flame-flicker": {
+          "0%, 100%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
+          "50%": { transform: "scale(1.05) rotate(1deg)", opacity: "0.9" },
+        },
         "candle-flicker": {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.8", transform: "scale(1.05)" },
@@ -105,8 +120,9 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "flame-flicker": "flame-flicker 2s ease-in-out infinite",
         "candle-flicker": "candle-flicker 3s ease-in-out infinite",
-        "fade-up": "fade-up 0.6s ease-out",
+        "fade-up": "fade-up 0.6s ease-out forwards",
       },
     },
   },
