@@ -14,6 +14,7 @@ import ShareButtons from "@/components/ShareButtons";
 import PasswordGate from "@/components/PasswordGate";
 import TributeSelector from "@/components/TributeSelector";
 import GuestbookList from "@/components/GuestbookList";
+import MemorialGallery from "@/components/MemorialGallery";
 import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,6 +58,23 @@ const MemorialDetail = () => {
         .eq("memorial_id", id!)
         .order("created_at", { ascending: false });
       return data || [];
+    },
+    enabled: !!id,
+  });
+
+  const { data: galleryImages = [] } = useQuery({
+    queryKey: ["memorial_images", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("memorial_images" as any)
+        .select("*")
+        .eq("memorial_id", id!)
+        .order("sort_order", { ascending: true });
+      return (data || []).map((img: any) => ({
+        id: img.id,
+        url: img.url,
+        caption: img.caption || "",
+      }));
     },
     enabled: !!id,
   });
@@ -255,6 +273,9 @@ const MemorialDetail = () => {
         )}
 
         <div className="golden-divider mx-auto max-w-3xl" />
+
+        {/* Gallery Section */}
+        {galleryImages.length > 0 && <MemorialGallery images={galleryImages} />}
 
         {embedUrl && (
           <section className="container mx-auto max-w-3xl px-4 py-8">

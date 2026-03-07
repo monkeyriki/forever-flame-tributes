@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, Calendar, Tag, ArrowUpDown } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, Calendar, Tag, ArrowUpDown, X } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
@@ -22,7 +22,8 @@ const Directory = () => {
   const initialQuery = searchParams.get("q") || "";
 
   const [query, setQuery] = useState(initialQuery);
-  const [locationFilter, setLocationFilter] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [yearBirthFilter, setYearBirthFilter] = useState("");
   const [yearDeathFilter, setYearDeathFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
@@ -35,7 +36,17 @@ const Directory = () => {
   const categoryLabel = isHuman ? "Human Memorials" : "Pet Memorials";
   const categoryEmoji = isHuman ? "🕊️" : "🐾";
 
-  useEffect(() => { setPage(1); }, [query, locationFilter, yearBirthFilter, yearDeathFilter, tagFilter, sortBy, type]);
+  const hasActiveFilters = city || state || yearBirthFilter || yearDeathFilter || tagFilter;
+
+  const clearFilters = () => {
+    setCity("");
+    setState("");
+    setYearBirthFilter("");
+    setYearDeathFilter("");
+    setTagFilter("");
+  };
+
+  useEffect(() => { setPage(1); }, [query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy, type]);
 
   const { data: dbMemorials = [], isLoading } = useQuery({
     queryKey: ["directory", memorialType],
@@ -59,7 +70,12 @@ const Directory = () => {
     let result = dbMemorials.filter((m) => {
       const fullName = `${m.firstName} ${m.lastName}`.toLowerCase();
       if (query && !fullName.includes(query.toLowerCase())) return false;
-      if (locationFilter && !m.location.toLowerCase().includes(locationFilter.toLowerCase())) return false;
+
+      // Location: city and state filter
+      const loc = m.location.toLowerCase();
+      if (city && !loc.includes(city.toLowerCase())) return false;
+      if (state && !loc.includes(state.toLowerCase())) return false;
+
       if (yearBirthFilter && !m.birthDate.startsWith(yearBirthFilter)) return false;
       if (yearDeathFilter && !m.deathDate.startsWith(yearDeathFilter)) return false;
       if (tagFilter) {
@@ -73,7 +89,7 @@ const Directory = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return result;
-  }, [dbMemorials, query, locationFilter, yearBirthFilter, yearDeathFilter, tagFilter, sortBy]);
+  }, [dbMemorials, query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -96,6 +112,7 @@ const Directory = () => {
           </div>
 
           <div className="mx-auto mb-10 max-w-2xl">
+            {/* Search Bar */}
             <div className="flex items-center gap-2 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
               <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
               <input
@@ -105,38 +122,121 @@ const Directory = () => {
               />
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`mr-2 rounded-md p-2 transition-colors ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                className={`mr-2 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
               >
                 <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Filters</span>
+                {hasActiveFilters && (
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
+                    !
+                  </span>
+                )}
               </button>
             </div>
 
+            {/* Filter Panel */}
             {showFilters && (
-              <div className="mt-3 space-y-3 rounded-lg border border-border bg-card p-4 shadow-soft">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <input type="text" value={locationFilter} onChange={(e) => setLocationFilter(e.target.value)}
-                    placeholder="Filter by location (e.g. New York)..."
-                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+              <div className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4 shadow-soft">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-medium text-foreground">Advanced Filters</h3>
+                  {hasActiveFilters && (
+                    <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                      <X className="h-3 w-3" /> Clear all
+                    </button>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <input type="text" value={yearBirthFilter} onChange={(e) => setYearBirthFilter(e.target.value)}
-                    placeholder="Birth year (e.g. 1950)..."
-                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
-                  <input type="text" value={yearDeathFilter} onChange={(e) => setYearDeathFilter(e.target.value)}
-                    placeholder="Death year (e.g. 2024)..."
-                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+
+                {/* Location */}
+                <div>
+                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5" /> Location
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text" value={city} onChange={(e) => setCity(e.target.value)}
+                      placeholder="City"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <input
+                      type="text" value={state} onChange={(e) => setState(e.target.value)}
+                      placeholder="State / Province"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Tag className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <input type="text" value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}
-                    placeholder="Filter by tag (e.g. Veteran, Golden Retriever)..."
-                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+
+                {/* Lifespan */}
+                <div>
+                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Calendar className="h-3.5 w-3.5" /> Lifespan
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text" value={yearBirthFilter} onChange={(e) => setYearBirthFilter(e.target.value)}
+                      placeholder="Birth year (e.g. 1950)"
+                      maxLength={4}
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <input
+                      type="text" value={yearDeathFilter} onChange={(e) => setYearDeathFilter(e.target.value)}
+                      placeholder="Death year (e.g. 2024)"
+                      maxLength={4}
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Tag className="h-3.5 w-3.5" /> Tags
+                  </label>
+                  <input
+                    type="text" value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}
+                    placeholder={isHuman ? "e.g. Veteran, Musician, Teacher" : "e.g. Golden Retriever, Labrador"}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
                 </div>
               </div>
             )}
 
+            {/* Active filter pills */}
+            {hasActiveFilters && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {city && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+                    City: {city}
+                    <button onClick={() => setCity("")}><X className="h-3 w-3" /></button>
+                  </span>
+                )}
+                {state && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+                    State: {state}
+                    <button onClick={() => setState("")}><X className="h-3 w-3" /></button>
+                  </span>
+                )}
+                {yearBirthFilter && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+                    Born: {yearBirthFilter}
+                    <button onClick={() => setYearBirthFilter("")}><X className="h-3 w-3" /></button>
+                  </span>
+                )}
+                {yearDeathFilter && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+                    Died: {yearDeathFilter}
+                    <button onClick={() => setYearDeathFilter("")}><X className="h-3 w-3" /></button>
+                  </span>
+                )}
+                {tagFilter && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+                    Tag: {tagFilter}
+                    <button onClick={() => setTagFilter("")}><X className="h-3 w-3" /></button>
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Sort */}
             <div className="mt-3 flex items-center justify-end gap-2">
               <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortOption)}
