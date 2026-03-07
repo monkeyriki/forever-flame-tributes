@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Send } from "lucide-react";
-import { motion } from "framer-motion";
 import { tributeTiers, TributeTier } from "@/data/tributeTiers";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { loadProfanityWords, checkProfanity } from "@/lib/profanityFilter";
+import { Input } from "@/components/ui/input";
 
 interface TributeSelectorProps {
   memorialId: string;
@@ -27,6 +27,7 @@ const tierSelectedColors: Record<string, string> = {
 const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelectorProps) => {
   const [selected, setSelected] = useState<TributeTier>(tributeTiers[0]);
   const [message, setMessage] = useState("");
+  const [senderName, setSenderName] = useState("");
   const [sending, setSending] = useState(false);
   const [profanityWords, setProfanityWords] = useState<string[]>([]);
 
@@ -53,7 +54,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
 
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
-      sender_name: "Visitor",
+      sender_name: senderName.trim() || "Anonymous",
       message,
       item_type: selected.name,
       tier: selected.tier,
@@ -70,6 +71,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         toast.success("Tribute sent!");
       }
       setMessage("");
+      setSenderName("");
       setSelected(tributeTiers[0]);
       onTributeAdded();
     }
@@ -81,7 +83,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       <h3 className="mb-1 font-serif text-lg font-semibold text-foreground">
         Leave a tribute for {firstName}
       </h3>
-      <p className="mb-5 text-xs text-muted-foreground">Choose the type of tribute</p>
+      <p className="mb-5 text-xs text-muted-foreground">Choose the type of tribute — no account required</p>
 
       <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {tributeTiers.map((tier) => {
@@ -105,11 +107,17 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         })}
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <Input
+          value={senderName}
+          onChange={(e) => setSenderName(e.target.value)}
+          placeholder="Your name (optional)"
+          className="text-sm"
+        />
         <textarea
           value={message} onChange={(e) => setMessage(e.target.value)}
           placeholder="Write a condolence message..." rows={3}
-          className="mb-3 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">

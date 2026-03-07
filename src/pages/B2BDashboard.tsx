@@ -13,23 +13,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Eye, Heart, Plus, Upload, Trash2 } from "lucide-react";
+import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image } from "lucide-react";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
+
+const B2B_FREE_LIMIT = 5;
 
 const B2BDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [csvData, setCsvData] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
 
   const { data: memorials = [], isLoading } = useQuery({
     queryKey: ["b2b-memorials", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.from("memorials").select("*").eq("user_id", user!.id).order("created_at", { ascending: false });
       if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  // Load partner's branding logo from their first memorial or stored preference
+  useQuery({
+    queryKey: ["b2b-logo", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("memorials").select("b2b_logo_url").eq("user_id", user!.id).not("b2b_logo_url", "eq", "").limit(1);
+      if (data?.[0]?.b2b_logo_url) setLogoUrl(data[0].b2b_logo_url);
       return data;
     },
     enabled: !!user,
@@ -52,6 +67,8 @@ const B2BDashboard = () => {
   const totalMemorials = memorials.length;
   const totalTributes = Object.values(tributeCounts).reduce((sum, c) => sum + c, 0);
   const publishedCount = memorials.filter((m) => !m.is_draft).length;
+  const hasSubscription = false; // Placeholder for Stripe subscription check
+  const isAtLimit = !hasSubscription && totalMemorials >= B2B_FREE_LIMIT;
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -64,6 +81,26 @@ const B2BDashboard = () => {
     },
   });
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    const ext = file.name.split(".").pop();
+    const path = `b2b-logos/${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("memorial-images").upload(path, file);
+    if (error) {
+      toast({ title: "Upload failed", variant: "destructive" });
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("memorial-images").getPublicUrl(path);
+    const newUrl = urlData.publicUrl;
+    setLogoUrl(newUrl);
+
+    // Update all existing memorials with new logo
+    await supabase.from("memorials").update({ b2b_logo_url: newUrl } as any).eq("user_id", user.id);
+    toast({ title: "Agency logo updated on all memorials" });
+    queryClient.invalidateQueries({ queryKey: ["b2b-memorials"] });
+  };
+
   const handleImport = async () => {
     const lines = csvData.trim().split("\n");
     if (lines.length < 2) {
@@ -72,6 +109,16 @@ const B2BDashboard = () => {
     }
     const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
     const rows = lines.slice(1);
+
+    if (!hasSubscription && totalMemorials + rows.length > B2B_FREE_LIMIT) {
+      toast({
+        title: "Subscription required",
+        description: `Free plan allows ${B2B_FREE_LIMIT} memorials. Upgrade to import more.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     let imported = 0;
     for (const row of rows) {
       const cols = row.split(",").map((c) => c.trim());
@@ -87,7 +134,8 @@ const B2BDashboard = () => {
         type: record["type"] || record["tipo"] || "human",
         is_draft: true,
         visibility: "public",
-      });
+        b2b_logo_url: logoUrl,
+      } as any);
       if (!error) imported++;
     }
     toast({ title: `${imported} memorials imported as drafts` });
@@ -104,6 +152,18 @@ const B2BDashboard = () => {
     reader.readAsText(file);
   };
 
+  const handleNewMemorial = () => {
+    if (isAtLimit) {
+      toast({
+        title: "Memorial limit reached",
+        description: `Free plan allows ${B2B_FREE_LIMIT} memorials. Upgrade your subscription to create more.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    window.location.href = "/create";
+  };
+
   return (
     <Layout>
       <Helmet><title>B2B Dashboard — Eternal Memory</title></Helmet>
@@ -117,11 +177,28 @@ const B2BDashboard = () => {
             <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
               <Upload className="mr-2 h-4 w-4" />Import CSV
             </Button>
-            <Button onClick={() => (window.location.href = "/create")}>
+            <Button onClick={handleNewMemorial}>
               <Plus className="mr-2 h-4 w-4" />New Memorial
             </Button>
           </div>
         </div>
+
+        {/* Subscription gate banner */}
+        {isAtLimit && (
+          <Card className="border-yellow-300 bg-yellow-50 dark:border-yellow-700 dark:bg-yellow-950/30">
+            <CardContent className="flex items-center gap-3 py-4">
+              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <div>
+                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                  Free plan limit reached ({B2B_FREE_LIMIT} memorials)
+                </p>
+                <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                  Upgrade to a B2B subscription to create unlimited memorials. Stripe integration coming soon.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card>
@@ -154,6 +231,30 @@ const B2BDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* B2B Branding */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-sans">Agency Branding</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center gap-4">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Agency logo" className="h-12 max-w-[160px] rounded border border-border object-contain p-1" />
+            ) : (
+              <div className="flex h-12 w-32 items-center justify-center rounded border border-dashed border-border text-xs text-muted-foreground">
+                No logo
+              </div>
+            )}
+            <div>
+              <Button variant="outline" size="sm" onClick={() => logoInputRef.current?.click()}>
+                <Image className="mr-2 h-3.5 w-3.5" />
+                {logoUrl ? "Change Logo" : "Upload Logo"}
+              </Button>
+              <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+              <p className="mt-1 text-xs text-muted-foreground">Displayed on all your memorials</p>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
