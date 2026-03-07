@@ -51,10 +51,16 @@ const Index = () => {
                 A memory that lasts
                 <span className="block font-semibold text-primary">forever</span>
               </h1>
-              <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+              <p className="mx-auto mb-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
                 Create a digital space dedicated to the memory of your loved ones.
                 A respectful and lasting tribute, accessible to everyone.
               </p>
+              <Link
+                to="/create"
+                className="inline-flex rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Create Memorial
+              </Link>
             </motion.div>
 
             <motion.form
@@ -62,7 +68,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="mx-auto flex max-w-lg items-center overflow-hidden rounded-lg border border-border bg-card shadow-card"
+              className="mx-auto mt-8 flex max-w-lg items-center overflow-hidden rounded-lg border border-border bg-card shadow-card"
             >
               <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
               <input
