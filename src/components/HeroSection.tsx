@@ -41,15 +41,22 @@ const HeroSection = () => {
             Voglio condividere i ricordi di
           </p>
 
-          <div className="flex items-center gap-2 bg-card rounded-xl p-2 shadow-card">
+          <div className="flex flex-col sm:flex-row items-stretch gap-3 bg-card rounded-xl p-4 shadow-card">
             <Input
               type="text"
-              placeholder="Nome e cognome..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+              placeholder="Nome"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="border border-border bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
             />
-            <Button type="submit" className="rounded-lg px-6 whitespace-nowrap">
+            <Input
+              type="text"
+              placeholder="Cognome"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="border border-border bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            <Button type="submit" className="rounded-lg px-8 whitespace-nowrap uppercase tracking-wider">
               Inizia <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
