@@ -127,11 +127,16 @@ const MemorialDetail = () => {
   const embedUrl = getVideoEmbedUrl(memorial.video_url || "");
   const tags = memorial.tags || [];
 
+  const isPublic = memorial.visibility === "public";
+  const shouldNoIndex = !isPublic; // unlisted or password-protected
+
   return (
     <>
       <Helmet>
         <title>{ogTitle} – Memoria Eterna</title>
         <meta name="description" content={ogDescription} />
+        {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
+        <link rel="canonical" href={memorialUrl} />
         <meta property="og:type" content="profile" />
         <meta property="og:title" content={`${ogTitle} – Memoria Eterna`} />
         <meta property="og:description" content={ogDescription} />
