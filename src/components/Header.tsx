@@ -18,8 +18,9 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/#features", label: "Funzionalità", isAnchor: true },
     { to: "/directory/human", label: "Memoriali" },
-    { to: "/directory/pet", label: "Pet Memorials" },
+    { to: "/#testimonials", label: "Testimonianze", isAnchor: true },
   ];
 
   const isActive = (path: string) => location.pathname === path;
