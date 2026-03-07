@@ -18,8 +18,9 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/#features", label: "Funzionalità", isAnchor: true },
     { to: "/directory/human", label: "Memoriali" },
-    { to: "/directory/pet", label: "Pet Memorials" },
+    { to: "/#testimonials", label: "Testimonianze", isAnchor: true },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -56,7 +57,7 @@ const Header = () => {
             className="h-8 w-8 animate-flame-flicker"
           />
           <span className="font-display text-xl font-bold tracking-wide text-foreground">
-            Per Sempre Ricordati
+            Per Sempre <span className="text-primary">Ricordati</span>
           </span>
         </Link>
 
@@ -77,14 +78,14 @@ const Header = () => {
 
         {/* Desktop right side */}
         <div className="hidden items-center gap-3 md:flex">
-          <form onSubmit={handleSearch} className="flex items-center gap-1 rounded-lg border border-border bg-card px-2">
+          <form onSubmit={handleSearch} className="flex items-center rounded-lg border border-border bg-card px-3">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Cerca..."
+              placeholder="Cerca un memoriale..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-8 w-32 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-9 w-40 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </form>
 
