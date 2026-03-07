@@ -6,13 +6,15 @@ import { ChevronRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/directory/human?q=${encodeURIComponent(searchQuery)}`);
+    const query = `${firstName} ${lastName}`.trim();
+    if (query) {
+      navigate(`/directory/human?q=${encodeURIComponent(query)}`);
     }
   };
 
