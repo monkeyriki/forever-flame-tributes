@@ -16,6 +16,7 @@ import TributeSelector from "@/components/TributeSelector";
 import GuestbookList from "@/components/GuestbookList";
 import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
@@ -28,6 +29,7 @@ const getVideoEmbedUrl = (url: string): string | null => {
 
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [showQr, setShowQr] = useState(false);
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
@@ -110,6 +112,8 @@ const MemorialDetail = () => {
     );
   }
 
+  const isOwner = !!user && user.id === memorial.user_id;
+
   const fullName = memorial.last_name
     ? `${memorial.first_name} ${memorial.last_name}`
     : memorial.first_name;
@@ -120,6 +124,7 @@ const MemorialDetail = () => {
   const ogDescription = memorial.bio?.slice(0, 155) || `Memorial dedicated to ${fullName}`;
   const embedUrl = getVideoEmbedUrl(memorial.video_url || "");
   const tags = memorial.tags || [];
+  const b2bLogo = (memorial as any).b2b_logo_url;
 
   const isPublic = memorial.visibility === "public";
   const shouldNoIndex = !isPublic;
@@ -211,6 +216,13 @@ const MemorialDetail = () => {
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
               </div>
+
+              {b2bLogo && (
+                <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>Managed by</span>
+                  <img src={b2bLogo} alt="Partner" className="h-6 max-w-[120px] object-contain" />
+                </div>
+              )}
             </motion.div>
           </div>
         </section>
@@ -285,7 +297,11 @@ const MemorialDetail = () => {
               />
             </div>
 
-            <GuestbookList tributes={tributes as any} />
+            <GuestbookList
+              tributes={tributes as any}
+              isOwner={isOwner}
+              onTributeModerated={() => refetchTributes()}
+            />
           </div>
         </section>
 

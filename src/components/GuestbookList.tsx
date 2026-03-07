@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { tributeTiers } from "@/data/tributeTiers";
+import { Badge } from "@/components/ui/badge";
+import OwnerTributeActions from "@/components/OwnerTributeActions";
 
 interface TributeEntry {
   id: string;
@@ -15,6 +17,8 @@ interface TributeEntry {
 
 interface GuestbookListProps {
   tributes: TributeEntry[];
+  isOwner?: boolean;
+  onTributeModerated?: () => void;
 }
 
 const tierIcon = (itemType: string | null): string | null => {
@@ -23,9 +27,10 @@ const tierIcon = (itemType: string | null): string | null => {
   return found?.icon || null;
 };
 
-const GuestbookList = ({ tributes }: GuestbookListProps) => {
+const GuestbookList = ({ tributes, isOwner = false, onTributeModerated }: GuestbookListProps) => {
   const now = new Date();
-  const visible = tributes.filter((t) => t.status !== "flagged");
+  // Owners see all tributes including flagged; guests don't
+  const visible = isOwner ? tributes : tributes.filter((t) => t.status !== "flagged");
   const sorted = [...visible].sort((a, b) => {
     const aPremium = a.tier === "premium" && a.is_paid && (!a.expires_at || new Date(a.expires_at) > now);
     const bPremium = b.tier === "premium" && b.is_paid && (!b.expires_at || new Date(b.expires_at) > now);
@@ -33,6 +38,8 @@ const GuestbookList = ({ tributes }: GuestbookListProps) => {
     if (!aPremium && bPremium) return 1;
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
+
+  const flaggedCount = tributes.filter((t) => t.status === "flagged").length;
 
   if (sorted.length === 0) {
     return (
@@ -44,15 +51,29 @@ const GuestbookList = ({ tributes }: GuestbookListProps) => {
 
   return (
     <div className="space-y-4">
+      {isOwner && flaggedCount > 0 && (
+        <div className="flex items-center gap-2 rounded-md border border-yellow-300 bg-yellow-50 px-4 py-2 dark:border-yellow-700 dark:bg-yellow-950/30">
+          <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+            ⚠️ {flaggedCount} tribute{flaggedCount > 1 ? "s" : ""} pending review
+          </span>
+        </div>
+      )}
       {sorted.map((entry, i) => {
         const icon = tierIcon(entry.item_type);
         const isPremiumActive = entry.tier === "premium" && entry.is_paid && (!entry.expires_at || new Date(entry.expires_at) > now);
+        const isFlagged = entry.status === "flagged";
 
         return (
           <motion.div
             key={entry.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.04 }}
-            className={`rounded-lg border p-4 shadow-soft ${isPremiumActive ? "border-accent/30 bg-accent/5" : "border-border bg-card"}`}
+            className={`rounded-lg border p-4 shadow-soft ${
+              isFlagged
+                ? "border-yellow-300 bg-yellow-50/50 dark:border-yellow-700 dark:bg-yellow-950/20"
+                : isPremiumActive
+                  ? "border-accent/30 bg-accent/5"
+                  : "border-border bg-card"
+            }`}
           >
             <div className="mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
@@ -61,10 +82,22 @@ const GuestbookList = ({ tributes }: GuestbookListProps) => {
                 {isPremiumActive && (
                   <span className="ml-1 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">⭐ Premium</span>
                 )}
+                {isFlagged && isOwner && (
+                  <Badge variant="outline" className="ml-1 border-yellow-400 text-yellow-700 text-[10px]">Flagged</Badge>
+                )}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {new Date(entry.created_at).toLocaleDateString("en-US")}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(entry.created_at).toLocaleDateString("en-US")}
+                </span>
+                {isOwner && onTributeModerated && (
+                  <OwnerTributeActions
+                    tributeId={entry.id}
+                    status={entry.status || "approved"}
+                    onActionComplete={onTributeModerated}
+                  />
+                )}
+              </div>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">{entry.message}</p>
           </motion.div>
