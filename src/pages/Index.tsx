@@ -32,15 +32,9 @@ const Index = () => {
       </Helmet>
 
       <Layout>
-        {/* Hero */}
-        <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${heroBg})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
-
-          <div className="relative z-10 mx-auto max-w-3xl px-4 py-20 text-center">
+        {/* CTA + Search */}
+        <section className="py-16 md:py-20">
+          <div className="mx-auto max-w-3xl px-4 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -85,6 +79,20 @@ const Index = () => {
                 Search
               </button>
             </motion.form>
+          </div>
+        </section>
+
+        {/* Hero Image */}
+        <section className="w-full">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="overflow-hidden rounded-xl">
+              <img
+                src={heroBg}
+                alt="A peaceful memorial landscape"
+                className="h-[300px] w-full object-cover md:h-[400px]"
+                loading="lazy"
+              />
+            </div>
           </div>
         </section>
 
