@@ -33,8 +33,8 @@ const RecentMemorials = () => {
                 className="group bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-card transition-shadow"
               >
                 <div className="aspect-[4/3] bg-accent flex items-center justify-center overflow-hidden">
-                  {m.imageUrl ? (
-                    <img src={m.imageUrl} alt={fullName} className="h-full w-full object-cover" />
+                  {m.photoUrl ? (
+                    <img src={m.photoUrl} alt={fullName} className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-5xl text-sage-dark/30 font-display">
                       {m.firstName.charAt(0)}
