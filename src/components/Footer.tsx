@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <Link to="/" className="mb-3 flex items-center gap-2">
+            <Link to="/" className="mb-3 flex items-center gap-2" aria-label="Eternal Memory - Home">
               <img src={flameIcon} alt="Flame" className="h-7 w-7" />
               <span className="font-display text-xl font-bold text-foreground">
                 Eternal Memory
