@@ -204,6 +204,7 @@ const UserSettings = () => {
               </CardContent>
             </Card>
 
+            <Card className="border-destructive/30">
               <CardHeader>
                 <CardTitle className="text-lg font-sans text-destructive">
                   <Trash2 className="mr-2 inline h-5 w-5" />
