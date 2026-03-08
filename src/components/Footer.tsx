@@ -41,7 +41,7 @@ const Footer = () => {
                 <li><Link to="/settings" className="transition-colors hover:text-primary">Account</Link></li>
               </ul>
             </div>
-          </div>
+          </nav>
 
           {/* Empty spacer for alignment */}
           <div />
