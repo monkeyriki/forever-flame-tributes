@@ -192,3 +192,19 @@
     top: 0;
   }
 }
+
+/* Mobile tap optimization */
+@layer base {
+  button, a, [role="button"], select, input[type="file"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Ensure minimum touch target size (44x44px WCAG 2.5.5) */
+  @media (pointer: coarse) {
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+}

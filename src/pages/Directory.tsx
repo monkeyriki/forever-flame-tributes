@@ -129,13 +129,15 @@ const Directory = () => {
             <div className="mb-2 flex items-center justify-center gap-2">
               <a
                 href="/directory/human"
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                aria-current={isHuman ? "page" : undefined}
               >
                 🕊️ People
               </a>
               <a
                 href="/directory/pet"
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${!isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${!isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                aria-current={!isHuman ? "page" : undefined}
               >
                 🐾 Pets
               </a>
@@ -143,6 +145,27 @@ const Directory = () => {
             <p className="text-muted-foreground">
               {filtered.length} {filtered.length === 1 ? "memorial found" : "memorials found"}
             </p>
+
+            {/* Quick tag filters - always visible */}
+            {allTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap justify-center gap-1.5" role="group" aria-label="Filter by tag">
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
+                      selectedTags.includes(tag)
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    }`}
+                    aria-pressed={selectedTags.includes(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mx-auto mb-10 max-w-2xl">
@@ -157,7 +180,9 @@ const Directory = () => {
               />
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`mr-2 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                aria-expanded={showFilters}
+                aria-controls="filter-panel"
+                className={`mr-2 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 <span className="hidden sm:inline">Filters</span>
@@ -171,7 +196,7 @@ const Directory = () => {
 
             {/* Filter Panel */}
             {showFilters && (
-              <div className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4 shadow-soft">
+              <div id="filter-panel" className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4 shadow-soft">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-foreground">Advanced Filters</h3>
                   {hasActiveFilters && (
@@ -186,16 +211,16 @@ const Directory = () => {
                   <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5" /> Location
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="text" value={city} onChange={(e) => setCity(e.target.value)}
-                      placeholder="City"
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="City" aria-label="Filter by city"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                     <input
                       type="text" value={state} onChange={(e) => setState(e.target.value)}
-                      placeholder="State / Province"
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="State / Province" aria-label="Filter by state"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                   </div>
                 </div>
@@ -205,18 +230,18 @@ const Directory = () => {
                   <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" /> Lifespan
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="text" value={yearBirthFilter} onChange={(e) => setYearBirthFilter(e.target.value)}
-                      placeholder="Birth year (e.g. 1950)"
+                      placeholder="Birth year (e.g. 1950)" aria-label="Filter by birth year"
                       maxLength={4}
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                     <input
                       type="text" value={yearDeathFilter} onChange={(e) => setYearDeathFilter(e.target.value)}
-                      placeholder="Death year (e.g. 2024)"
+                      placeholder="Death year (e.g. 2024)" aria-label="Filter by death year"
                       maxLength={4}
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                   </div>
                 </div>
@@ -229,7 +254,8 @@ const Directory = () => {
                   <input
                     type="text" value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}
                     placeholder={isHuman ? "e.g. Veteran, Musician, Teacher" : "e.g. Golden Retriever, Labrador"}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    aria-label="Filter by tag name"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   />
                   {allTags.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
@@ -299,7 +325,8 @@ const Directory = () => {
             <div className="mt-3 flex items-center justify-end gap-2">
               <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+                aria-label="Sort memorials"
+                className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 <option value="recent">Most Recent</option>
                 <option value="updated">Recently Updated</option>
                 <option value="alpha">Alphabetical</option>

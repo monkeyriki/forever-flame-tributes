@@ -195,6 +195,32 @@ const MemorialDetail = () => {
         <meta name="twitter:title" content={`${ogTitle} – Eternal Memory`} />
         <meta name="twitter:description" content={ogDescription} />
         <meta name="twitter:image" content={memorial.image_url || ""} />
+        <script type="application/ld+json">
+          {JSON.stringify(
+            memorial.type === "pet"
+              ? {
+                  "@context": "https://schema.org",
+                  "@type": "Thing",
+                  name: fullName,
+                  description: ogDescription,
+                  image: memorial.image_url || undefined,
+                  url: memorialUrl,
+                }
+              : {
+                  "@context": "https://schema.org",
+                  "@type": "Person",
+                  name: fullName,
+                  givenName: memorial.first_name,
+                  familyName: memorial.last_name || undefined,
+                  birthDate: memorial.birth_date || undefined,
+                  deathDate: memorial.death_date || undefined,
+                  description: ogDescription,
+                  image: memorial.image_url || undefined,
+                  url: memorialUrl,
+                  ...(memorial.location ? { address: { "@type": "PostalAddress", addressLocality: memorial.location } } : {}),
+                }
+          )}
+        </script>
       </Helmet>
 
       <Layout>
