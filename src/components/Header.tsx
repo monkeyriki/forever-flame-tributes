@@ -50,9 +50,9 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+      <div className="container mx-auto flex items-center px-4 py-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2" aria-label="Eternal Memory - Home">
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
           <img
             src={flameIcon}
             alt="Flame"
