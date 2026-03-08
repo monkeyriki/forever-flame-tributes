@@ -158,7 +158,7 @@ const Header = () => {
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-border bg-background md:hidden"
           >
-            <nav className="container mx-auto flex flex-col gap-1 px-4 py-4">
+            <nav aria-label="Mobile navigation" className="container mx-auto flex flex-col gap-1 px-4 py-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
