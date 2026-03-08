@@ -10,12 +10,12 @@ const HeroSection = () => {
   const [lastName, setLastName] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
-    const query = `${firstName} ${lastName}`.trim();
-    if (query) {
-      navigate(`/directory/human?q=${encodeURIComponent(query)}`);
-    }
+    const params = new URLSearchParams();
+    if (firstName.trim()) params.set("first_name", firstName.trim());
+    if (lastName.trim()) params.set("last_name", lastName.trim());
+    navigate(`/create?${params.toString()}`);
   };
 
   return (
