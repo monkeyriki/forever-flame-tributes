@@ -130,7 +130,7 @@ const PricingPage = () => {
   const isCurrentPlan = (planKey: string) => {
     if (planKey === "free") return currentPlan === "free";
     if (planKey === "premium_annual" || planKey === "premium_lifetime") return currentPlan === "premium";
-    if (planKey === "business_annual") return currentPlan === "business";
+    if (planKey === "business_annual" || planKey === "business_monthly") return currentPlan === "business";
     return false;
   };
 
