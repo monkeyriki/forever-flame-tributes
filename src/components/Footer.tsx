@@ -11,11 +11,11 @@ const Footer = () => {
             <Link to="/" className="mb-3 flex items-center gap-2">
               <img src={flameIcon} alt="Flame" className="h-7 w-7" />
               <span className="font-display text-xl font-bold text-foreground">
-                Per Sempre Ricordati
+                Eternal Embrace
               </span>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Preserviamo i ricordi delle persone care con memoriali online belli e duraturi.
+              We preserve the memories of loved ones with beautiful and lasting online memorials.
             </p>
           </div>
 
@@ -23,17 +23,17 @@ const Footer = () => {
           <div className="grid grid-cols-2 gap-8">
             <div>
               <h4 className="mb-3 font-display text-sm font-semibold text-foreground uppercase tracking-wide">
-                Link Utili
+                Useful Links
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/directory/human" className="transition-colors hover:text-primary">Memoriali</Link></li>
+                <li><Link to="/directory/human" className="transition-colors hover:text-primary">Memorials</Link></li>
                 <li><Link to="/directory/pet" className="transition-colors hover:text-primary">Pet Memorials</Link></li>
-                <li><Link to="/create" className="transition-colors hover:text-primary">Crea Memoriale</Link></li>
+                <li><Link to="/create" className="transition-colors hover:text-primary">Create Memorial</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="mb-3 font-display text-sm font-semibold text-foreground uppercase tracking-wide">
-                Risorse
+                Resources
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/privacy" className="transition-colors hover:text-primary">Privacy</Link></li>
@@ -50,7 +50,7 @@ const Footer = () => {
         <div className="golden-divider my-8" />
 
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Per Sempre Ricordati. Tutti i diritti riservati.
+          © {new Date().getFullYear()} Eternal Embrace. All rights reserved.
         </p>
       </div>
     </footer>

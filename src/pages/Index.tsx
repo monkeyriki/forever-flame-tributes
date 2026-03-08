@@ -10,10 +10,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Per Sempre Ricordati – Memoriali Online</title>
+        <title>Eternal Embrace – Online Memorials</title>
         <meta
           name="description"
-          content="Crea memoriali online per onorare e ricordare le persone care. Uno spazio rispettoso per preservare i ricordi."
+          content="Create online memorials to honor and remember your loved ones. A respectful space to preserve memories."
         />
       </Helmet>
 

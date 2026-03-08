@@ -3,9 +3,9 @@ import { ChevronRight } from "lucide-react";
 import { mockMemorials } from "@/data/mockData";
 
 const stats = [
-  { value: "125.000+", label: "Famiglie" },
-  { value: "45.000.000+", label: "Visitatori" },
-  { value: "2.500.000+", label: "Tributi" },
+  { value: "125,000+", label: "Families" },
+  { value: "45,000,000+", label: "Visitors" },
+  { value: "2,500,000+", label: "Tributes" },
 ];
 
 const RecentMemorials = () => {
@@ -15,7 +15,7 @@ const RecentMemorials = () => {
     <section id="memorials" className="py-20 bg-background">
       <div className="container">
         <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-foreground mb-12 uppercase tracking-wide">
-          Memoriali Recenti
+          Recent Memorials
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -60,7 +60,7 @@ const RecentMemorials = () => {
         <div className="bg-card rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h3 className="font-display text-xl font-bold text-foreground mb-1">
-              La Nostra Comunità
+              Our Community
             </h3>
             <div className="flex gap-8 mt-4">
               {stats.map((s) => (
@@ -75,7 +75,7 @@ const RecentMemorials = () => {
             to="/directory/human"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
           >
-            Esplora tutti i memoriali <ChevronRight className="h-4 w-4" />
+            Explore all memorials <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
