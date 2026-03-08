@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, Mail } from "lucide-react";
 import { tributeTiers, TributeTier } from "@/data/tributeTiers";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -28,6 +28,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
   const [selected, setSelected] = useState<TributeTier>(tributeTiers[0]);
   const [message, setMessage] = useState("");
   const [senderName, setSenderName] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [profanityWords, setProfanityWords] = useState<string[]>([]);
 
@@ -60,6 +61,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       tier: selected.tier,
       is_paid: false,
       status: isFlagged ? "flagged" : "approved",
+      sender_email: senderEmail.trim() || null,
     });
 
     if (error) {
@@ -83,8 +85,24 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         },
       }).catch((err) => console.error("notify-tribute error:", err));
 
+      // Fire-and-forget receipt email to guest
+      if (senderEmail.trim()) {
+        supabase.functions.invoke("send-receipt", {
+          body: {
+            sender_email: senderEmail.trim(),
+            sender_name: senderName.trim() || "Anonymous",
+            memorial_name: firstName,
+            item_type: selected.name,
+            tier: selected.tier,
+            price: selected.price,
+            message,
+          },
+        }).catch((err) => console.error("send-receipt error:", err));
+      }
+
       setMessage("");
       setSenderName("");
+      setSenderEmail("");
       setSelected(tributeTiers[0]);
       onTributeAdded();
     }
@@ -127,6 +145,16 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
           placeholder="Your name (optional)"
           className="text-sm"
         />
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="email"
+            value={senderEmail}
+            onChange={(e) => setSenderEmail(e.target.value)}
+            placeholder="Your email for receipt (optional)"
+            className="pl-9 text-sm"
+          />
+        </div>
         <textarea
           value={message} onChange={(e) => setMessage(e.target.value)}
           placeholder="Write a condolence message..." rows={3}
