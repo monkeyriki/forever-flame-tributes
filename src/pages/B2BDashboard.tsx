@@ -315,6 +315,7 @@ const B2BDashboard = () => {
                       <TableHead>Type</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Tributes</TableHead>
+                      <TableHead>Views</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
