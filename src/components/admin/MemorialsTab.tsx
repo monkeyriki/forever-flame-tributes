@@ -9,7 +9,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { BookOpen, Trash2, Eye, EyeOff } from "lucide-react";
+import { BookOpen, Trash2, Eye, EyeOff, Pencil, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
