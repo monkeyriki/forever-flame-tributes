@@ -133,9 +133,13 @@ const MemorialDetail = () => {
       <Layout>
         <PasswordGate
           memorialName={name}
-          onUnlock={() => {
+          onUnlock={async () => {
             const attempt = sessionStorage.getItem("memorial_pin_attempt") || "";
-            if (attempt === (memorial as any).password_hash) {
+            const { data, error } = await supabase.rpc("verify_memorial_password", {
+              _memorial_id: id!,
+              _attempt: attempt,
+            });
+            if (data && !error) {
               setPasswordUnlocked(true);
             }
           }}
