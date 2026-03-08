@@ -15,14 +15,37 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { memorial_id, sender_name, sender_email, message, item_type, tier, price, return_url } = await req.json();
+    const { memorial_id, sender_name, sender_email, message, item_type, tier, return_url } = await req.json();
 
-    if (!memorial_id || !tier || !price || price <= 0) {
+    if (!memorial_id || !tier) {
       return new Response(JSON.stringify({ error: "Missing required fields" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Look up canonical price from store_items (server-side validation)
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    const { data: storeItem, error: storeError } = await supabaseAdmin
+      .from("store_items")
+      .select("price, name")
+      .eq("tier", tier)
+      .eq("type", item_type || "candle")
+      .eq("is_active", true)
+      .single();
+
+    if (storeError || !storeItem || storeItem.price <= 0) {
+      return new Response(JSON.stringify({ error: "Invalid item or tier" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const price = storeItem.price;
 
     // Create a pending tribute in Supabase
     const supabase = createClient(
