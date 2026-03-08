@@ -388,32 +388,7 @@ export type Database = {
       }
     }
     Views: {
-      memorial_views_safe: {
-        Row: {
-          id: string | null
-          memorial_id: string | null
-          viewed_at: string | null
-        }
-        Insert: {
-          id?: string | null
-          memorial_id?: string | null
-          viewed_at?: string | null
-        }
-        Update: {
-          id?: string | null
-          memorial_id?: string | null
-          viewed_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "memorial_views_memorial_id_fkey"
-            columns: ["memorial_id"]
-            isOneToOne: false
-            referencedRelation: "memorials"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       admin_approve_tribute: {
@@ -423,6 +398,18 @@ export type Database = {
       delete_user_account: {
         Args: { target_user_id: string }
         Returns: undefined
+      }
+      get_memorial_view_count: {
+        Args: { _memorial_id: string }
+        Returns: number
+      }
+      get_my_memorial_views: {
+        Args: { _memorial_id: string }
+        Returns: {
+          id: string
+          memorial_id: string
+          viewed_at: string
+        }[]
       }
       has_role: {
         Args: {
