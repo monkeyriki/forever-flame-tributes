@@ -261,6 +261,14 @@ const MemorialDetail = () => {
                 </button>
 
                 {isOwner && (
+                  <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                    <Link to={`/memorial/${memorial.id}/edit`}>
+                      <Pencil className="h-4 w-4" /> Edit
+                    </Link>
+                  </Button>
+                )}
+
+                {isOwner && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" size="sm" className="gap-1.5">
