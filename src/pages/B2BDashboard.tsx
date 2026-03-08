@@ -65,6 +65,20 @@ const B2BDashboard = () => {
     enabled: memorials.length > 0,
   });
 
+  const { data: viewCounts = {} } = useQuery({
+    queryKey: ["b2b-view-counts", user?.id],
+    queryFn: async () => {
+      const ids = memorials.map((m) => m.id);
+      if (ids.length === 0) return {};
+      const { data, error } = await supabase.from("memorial_views" as any).select("memorial_id").in("memorial_id", ids);
+      if (error) throw error;
+      const counts: Record<string, number> = {};
+      (data as any[]).forEach((v: any) => { counts[v.memorial_id] = (counts[v.memorial_id] || 0) + 1; });
+      return counts;
+    },
+    enabled: memorials.length > 0,
+  });
+
   const totalMemorials = memorials.length;
   const totalTributes = Object.values(tributeCounts).reduce((sum, c) => sum + c, 0);
   const publishedCount = memorials.filter((m) => !m.is_draft).length;
