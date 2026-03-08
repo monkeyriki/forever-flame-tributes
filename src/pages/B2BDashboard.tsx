@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image } from "lucide-react";
+import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image, Settings } from "lucide-react";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 
