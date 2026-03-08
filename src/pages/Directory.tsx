@@ -98,6 +98,9 @@ const Directory = () => {
         const searchTag = tagFilter.toLowerCase();
         if (!m.tags.some((t) => t.toLowerCase().includes(searchTag))) return false;
       }
+      if (selectedTags.length > 0) {
+        if (!selectedTags.every((st) => m.tags.some((t) => t.toLowerCase() === st.toLowerCase()))) return false;
+      }
       return true;
     });
     result.sort((a, b) => {
