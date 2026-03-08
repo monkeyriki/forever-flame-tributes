@@ -252,7 +252,7 @@ const MemorialDetail = () => {
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <ShareButtons url={memorialUrl} title={ogTitle} />
+                <ShareButtons url={memorialUrl} title={ogTitle} memorialId={id} />
                 <button
                   onClick={() => setShowQr(true)}
                   className="flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary"
