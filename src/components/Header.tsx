@@ -69,7 +69,7 @@ const Header = () => {
             <Link
               key={link.to}
               to={link.to}
-              className={`font-body text-sm tracking-wide transition-colors hover:text-primary ${
+              className={`whitespace-nowrap font-body text-sm tracking-wide transition-colors hover:text-primary ${
                 isActive(link.to) ? "text-primary font-medium" : "text-muted-foreground"
               }`}
             >
