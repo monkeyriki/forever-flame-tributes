@@ -19,7 +19,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[520px] flex items-center justify-center overflow-hidden">
+    <section aria-label="Create a memorial" className="relative min-h-[520px] flex items-center justify-center overflow-hidden">
       <img
         src={heroBg}
         alt=""
@@ -48,6 +48,7 @@ const HeroSection = () => {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="bg-background border-border"
+              aria-label="First name of the person to memorialize"
             />
             <Input
               type="text"
@@ -55,6 +56,7 @@ const HeroSection = () => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="bg-background border-border"
+              aria-label="Last name of the person to memorialize"
             />
             <Button
               type="submit"

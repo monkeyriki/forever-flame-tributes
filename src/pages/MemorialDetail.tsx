@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -56,6 +56,12 @@ const MemorialDetail = () => {
     },
     enabled: !!id,
   });
+
+  // Track page view
+  useEffect(() => {
+    if (!id) return;
+    supabase.from("memorial_views" as any).insert({ memorial_id: id } as any).then();
+  }, [id]);
 
   const { data: tributes = [], refetch: refetchTributes } = useQuery({
     queryKey: ["tributes", id],

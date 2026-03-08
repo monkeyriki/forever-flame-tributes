@@ -65,8 +65,23 @@ const B2BDashboard = () => {
     enabled: memorials.length > 0,
   });
 
+  const { data: viewCounts = {} } = useQuery({
+    queryKey: ["b2b-view-counts", user?.id],
+    queryFn: async () => {
+      const ids = memorials.map((m) => m.id);
+      if (ids.length === 0) return {};
+      const { data, error } = await supabase.from("memorial_views" as any).select("memorial_id").in("memorial_id", ids);
+      if (error) throw error;
+      const counts: Record<string, number> = {};
+      (data as any[]).forEach((v: any) => { counts[v.memorial_id] = (counts[v.memorial_id] || 0) + 1; });
+      return counts;
+    },
+    enabled: memorials.length > 0,
+  });
+
   const totalMemorials = memorials.length;
   const totalTributes = Object.values(tributeCounts).reduce((sum, c) => sum + c, 0);
+  const totalViews = Object.values(viewCounts).reduce((sum, c) => sum + c, 0);
   const publishedCount = memorials.filter((m) => !m.is_draft).length;
   const { subscribed: hasSubscription, plan, subscriptionEnd } = useSubscription();
   const isAtLimit = !hasSubscription && totalMemorials >= B2B_FREE_LIMIT;
@@ -241,8 +256,8 @@ const B2BDashboard = () => {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">—</div>
-              <p className="text-xs text-muted-foreground mt-1">Coming soon</p>
+              <div className="text-3xl font-bold text-foreground">{totalViews}</div>
+              <p className="text-xs text-muted-foreground mt-1">All-time page views</p>
             </CardContent>
           </Card>
           <Card>
@@ -300,6 +315,7 @@ const B2BDashboard = () => {
                       <TableHead>Type</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Tributes</TableHead>
+                      <TableHead>Views</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -317,6 +333,7 @@ const B2BDashboard = () => {
                           )}
                         </TableCell>
                         <TableCell>{tributeCounts[m.id] || 0}</TableCell>
+                        <TableCell>{viewCounts[m.id] || 0}</TableCell>
                         <TableCell>{format(new Date(m.created_at), "dd MMM yyyy", { locale: enUS })}</TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button size="icon" variant="ghost" onClick={() => (window.location.href = `/memorial/${m.id}`)}>

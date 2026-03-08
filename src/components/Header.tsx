@@ -49,10 +49,10 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
+    <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2" aria-label="Eternal Memory - Home">
           <img
             src={flameIcon}
             alt="Flame"
@@ -64,7 +64,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -80,8 +80,8 @@ const Header = () => {
 
         {/* Desktop right side */}
         <div className="hidden items-center gap-3 md:flex">
-          <form onSubmit={handleSearch} className="flex items-center rounded-lg border border-border bg-card px-3">
-            <Search className="h-4 w-4 text-muted-foreground" />
+          <form onSubmit={handleSearch} role="search" aria-label="Search memorials" className="flex items-center rounded-lg border border-border bg-card px-3">
+            <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
               type="text"
               placeholder="Search a memorial..."
@@ -96,7 +96,8 @@ const Header = () => {
               {(isB2B || isAdmin) && (
                 <Link
                   to="/dashboard/b2b"
-                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label="Partner Dashboard"
                 >
                   <LayoutDashboard className="h-4 w-4" />
                 </Link>
@@ -104,14 +105,16 @@ const Header = () => {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label="Admin Panel"
                 >
                   <Shield className="h-4 w-4" />
                 </Link>
               )}
               <Link
                 to="/settings"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="Account Settings"
               >
                 <Settings className="h-4 w-4" />
               </Link>
@@ -138,8 +141,9 @@ const Header = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-foreground md:hidden"
-          aria-label="Menu"
+          className="text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -154,7 +158,7 @@ const Header = () => {
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-border bg-background md:hidden"
           >
-            <nav className="container mx-auto flex flex-col gap-1 px-4 py-4">
+            <nav aria-label="Mobile navigation" className="container mx-auto flex flex-col gap-1 px-4 py-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}

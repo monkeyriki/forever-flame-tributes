@@ -3,12 +3,12 @@ import flameIcon from "@/assets/flame-icon.png";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border bg-card">
+    <footer role="contentinfo" className="border-t border-border bg-card">
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <Link to="/" className="mb-3 flex items-center gap-2">
+            <Link to="/" className="mb-3 flex items-center gap-2" aria-label="Eternal Memory - Home">
               <img src={flameIcon} alt="Flame" className="h-7 w-7" />
               <span className="font-display text-xl font-bold text-foreground">
                 Eternal Memory
@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="grid grid-cols-2 gap-8">
+          <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-8">
             <div>
               <h4 className="mb-3 font-display text-sm font-semibold text-foreground uppercase tracking-wide">
                 Useful Links
@@ -41,7 +41,7 @@ const Footer = () => {
                 <li><Link to="/settings" className="transition-colors hover:text-primary">Account</Link></li>
               </ul>
             </div>
-          </div>
+          </nav>
 
           {/* Empty spacer for alignment */}
           <div />

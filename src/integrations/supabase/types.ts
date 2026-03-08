@@ -73,6 +73,35 @@ export type Database = {
           },
         ]
       }
+      memorial_views: {
+        Row: {
+          id: string
+          memorial_id: string
+          viewed_at: string
+          viewer_ip: string | null
+        }
+        Insert: {
+          id?: string
+          memorial_id: string
+          viewed_at?: string
+          viewer_ip?: string | null
+        }
+        Update: {
+          id?: string
+          memorial_id?: string
+          viewed_at?: string
+          viewer_ip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memorial_views_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       memorials: {
         Row: {
           b2b_logo_url: string | null

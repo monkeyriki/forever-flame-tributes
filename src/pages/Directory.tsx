@@ -27,6 +27,7 @@ const Directory = () => {
   const [yearBirthFilter, setYearBirthFilter] = useState("");
   const [yearDeathFilter, setYearDeathFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
@@ -36,7 +37,7 @@ const Directory = () => {
   const categoryLabel = isHuman ? "Human Memorials" : "Pet Memorials";
   const categoryEmoji = isHuman ? "🕊️" : "🐾";
 
-  const hasActiveFilters = city || state || yearBirthFilter || yearDeathFilter || tagFilter;
+  const hasActiveFilters = city || state || yearBirthFilter || yearDeathFilter || tagFilter || selectedTags.length > 0;
 
   const clearFilters = () => {
     setCity("");
@@ -44,9 +45,16 @@ const Directory = () => {
     setYearBirthFilter("");
     setYearDeathFilter("");
     setTagFilter("");
+    setSelectedTags([]);
   };
 
-  useEffect(() => { setPage(1); }, [query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy, type]);
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  useEffect(() => { setPage(1); }, [query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, selectedTags, sortBy, type]);
 
   const { data: dbMemorials = [], isLoading } = useQuery({
     queryKey: ["directory", memorialType],
@@ -67,6 +75,13 @@ const Directory = () => {
     },
   });
 
+  // Collect all unique tags from memorials for chip display
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    dbMemorials.forEach((m) => m.tags.forEach((t) => tagSet.add(t)));
+    return Array.from(tagSet).sort();
+  }, [dbMemorials]);
+
   const filtered = useMemo(() => {
     let result = dbMemorials.filter((m) => {
       const fullName = `${m.firstName} ${m.lastName}`.toLowerCase();
@@ -83,6 +98,9 @@ const Directory = () => {
         const searchTag = tagFilter.toLowerCase();
         if (!m.tags.some((t) => t.toLowerCase().includes(searchTag))) return false;
       }
+      if (selectedTags.length > 0) {
+        if (!selectedTags.every((st) => m.tags.some((t) => t.toLowerCase() === st.toLowerCase()))) return false;
+      }
       return true;
     });
     result.sort((a, b) => {
@@ -91,7 +109,7 @@ const Directory = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return result;
-  }, [dbMemorials, query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy]);
+  }, [dbMemorials, query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, selectedTags, sortBy]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -129,11 +147,12 @@ const Directory = () => {
 
           <div className="mx-auto mb-10 max-w-2xl">
             {/* Search Bar */}
-            <div className="flex items-center gap-2 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
-              <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
+            <div role="search" aria-label="Search memorials" className="flex items-center gap-2 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
+              <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
               <input
                 type="text" value={query} onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by name..."
+                aria-label="Search memorials by name"
                 className="flex-1 bg-transparent px-2 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               <button
@@ -212,6 +231,24 @@ const Directory = () => {
                     placeholder={isHuman ? "e.g. Veteran, Musician, Teacher" : "e.g. Golden Retriever, Labrador"}
                     className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   />
+                  {allTags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleTag(tag)}
+                          className={`rounded-full px-2.5 py-1 text-xs transition-colors ${
+                            selectedTags.includes(tag)
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -249,6 +286,12 @@ const Directory = () => {
                     <button onClick={() => setTagFilter("")}><X className="h-3 w-3" /></button>
                   </span>
                 )}
+                {selectedTags.map((tag) => (
+                  <span key={`sel-${tag}`} className="inline-flex items-center gap-1 rounded-full bg-primary/20 px-2.5 py-1 text-xs text-primary">
+                    {tag}
+                    <button onClick={() => toggleTag(tag)}><X className="h-3 w-3" /></button>
+                  </span>
+                ))}
               </div>
             )}
 
