@@ -62,6 +62,7 @@ const Directory = () => {
         location: m.location || "", photoUrl: m.image_url || "/placeholder.svg",
         bio: m.bio || "", tags: m.tags || [], visibility: m.visibility as any,
         tributeCount: 0, guestbookEntries: 0, createdAt: m.created_at,
+        updatedAt: m.updated_at,
       }));
     },
   });
@@ -86,6 +87,7 @@ const Directory = () => {
     });
     result.sort((a, b) => {
       if (sortBy === "alpha") return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
+      if (sortBy === "updated") return new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime();
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return result;
