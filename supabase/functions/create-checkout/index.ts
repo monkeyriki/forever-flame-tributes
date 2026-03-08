@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
 
     // Create a pending tribute in Supabase
 
-    const { data: tribute, error: tributeError } = await supabase
+    const { data: tribute, error: tributeError } = await supabaseAdmin
       .from("tributes")
       .insert({
         memorial_id,
