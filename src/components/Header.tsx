@@ -20,8 +20,8 @@ const Header = () => {
     { to: "/", label: "Home" },
     { to: "/#about", label: "About Us", isAnchor: true },
     { to: "/directory/human", label: "Memorials" },
+    { to: "/directory/pet", label: "Pet Memorials" },
     { to: "/#features", label: "Features", isAnchor: true },
-    { to: "/#testimonials", label: "Testimonials", isAnchor: true },
   ];
 
   const isActive = (path: string) => location.pathname === path;

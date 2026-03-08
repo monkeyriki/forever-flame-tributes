@@ -108,6 +108,20 @@ const Directory = () => {
           <div className="mb-8 text-center">
             <span className="mb-2 inline-block text-3xl">{categoryEmoji}</span>
             <h1 className="mb-2 font-serif text-3xl font-semibold text-foreground md:text-4xl">{categoryLabel}</h1>
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <a
+                href="/directory/human"
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+              >
+                🕊️ People
+              </a>
+              <a
+                href="/directory/pet"
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${!isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+              >
+                🐾 Pets
+              </a>
+            </div>
             <p className="text-muted-foreground">
               {filtered.length} {filtered.length === 1 ? "memorial found" : "memorials found"}
             </p>
