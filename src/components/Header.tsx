@@ -79,7 +79,7 @@ const Header = () => {
         </nav>
 
         {/* Desktop right side */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 md:flex ml-auto">
           <form onSubmit={handleSearch} role="search" aria-label="Search memorials" className="flex items-center rounded-lg border border-border bg-card px-3">
             <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
