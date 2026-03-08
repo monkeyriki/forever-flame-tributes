@@ -105,7 +105,8 @@ const Header = () => {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label="Admin Panel"
                 >
                   <Shield className="h-4 w-4" />
                 </Link>
