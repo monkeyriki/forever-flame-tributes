@@ -48,13 +48,6 @@ const Directory = () => {
     setSelectedTags([]);
   };
 
-  // Collect all unique tags from memorials for chip display
-  const allTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    dbMemorials.forEach((m) => m.tags.forEach((t) => tagSet.add(t)));
-    return Array.from(tagSet).sort();
-  }, [dbMemorials]);
-
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
