@@ -40,6 +40,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/settings" element={<UserSettings />} />
+              <Route path="/pricing" element={<PricingPage />} />
               <Route
                 path="/dashboard/b2b"
                 element={
