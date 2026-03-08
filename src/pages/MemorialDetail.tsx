@@ -1,10 +1,11 @@
 import { useState, useRef, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Calendar, MessageSquare, Share2,
-  QrCode, ChevronLeft, Download, X, Play
+  QrCode, ChevronLeft, Download, X, Play, Trash2
 } from "lucide-react";
+import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { QRCodeCanvas } from "qrcode.react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +19,11 @@ import MemorialGallery from "@/components/MemorialGallery";
 import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
@@ -31,8 +37,10 @@ const getVideoEmbedUrl = (url: string): string | null => {
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showQr, setShowQr] = useState(false);
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
   const { data: memorial, isLoading } = useQuery({
@@ -131,6 +139,24 @@ const MemorialDetail = () => {
   }
 
   const isOwner = !!user && user.id === memorial.user_id;
+
+  const handleDeleteMemorial = async () => {
+    if (!memorial) return;
+    setDeleting(true);
+    try {
+      // Delete related data first
+      await supabase.from("tributes").delete().eq("memorial_id", memorial.id);
+      await supabase.from("memorial_images").delete().eq("memorial_id", memorial.id);
+      const { error } = await supabase.from("memorials").delete().eq("id", memorial.id);
+      if (error) throw error;
+      toast.success("Memorial deleted");
+      navigate(`/directory/${memorial.type}`);
+    } catch (e: any) {
+      toast.error("Failed to delete memorial");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const fullName = memorial.last_name
     ? `${memorial.first_name} ${memorial.last_name}`
@@ -233,6 +259,34 @@ const MemorialDetail = () => {
                 >
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
+
+                {isOwner && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="gap-1.5">
+                        <Trash2 className="h-4 w-4" /> Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this memorial?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete {fullName}'s memorial, all tributes, and gallery images. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteMemorial}
+                          disabled={deleting}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {deleting ? "Deleting..." : "Delete permanently"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
 
               {b2bLogo && (

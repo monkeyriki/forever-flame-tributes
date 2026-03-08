@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,18 +9,54 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Trash2, Shield } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
+import { User, Trash2, Shield, BookOpen, Eye } from "lucide-react";
 
 const UserSettings = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [deletingMemorialId, setDeletingMemorialId] = useState<string | null>(null);
+
+  const { data: memorials = [], isLoading: memorialsLoading } = useQuery({
+    queryKey: ["user-memorials", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("memorials")
+        .select("id, first_name, last_name, type, created_at, is_draft, visibility")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  const handleDeleteMemorial = async (memorialId: string) => {
+    setDeletingMemorialId(memorialId);
+    try {
+      await supabase.from("tributes").delete().eq("memorial_id", memorialId);
+      await supabase.from("memorial_images").delete().eq("memorial_id", memorialId);
+      const { error } = await supabase.from("memorials").delete().eq("id", memorialId);
+      if (error) throw error;
+      sonnerToast.success("Memorial deleted");
+      queryClient.invalidateQueries({ queryKey: ["user-memorials"] });
+    } catch {
+      sonnerToast.error("Failed to delete memorial");
+    } finally {
+      setDeletingMemorialId(null);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (confirmText !== "DELETE") return;
@@ -96,6 +133,74 @@ const UserSettings = () => {
                   You can request complete deletion of your account and all associated data
                   (memorials, tributes, profile). This action is irreversible.
                 </p>
+              </CardContent>
+            </Card>
+
+            {/* My Memorials */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-sans">
+                  <BookOpen className="mr-2 inline h-5 w-5" />
+                  My Memorials
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {memorialsLoading ? (
+                  <p className="text-sm text-muted-foreground">Loading...</p>
+                ) : memorials.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">You haven't created any memorials yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {memorials.map((m) => (
+                      <div key={m.id} className="flex items-center justify-between rounded-lg border border-border p-3">
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/memorial/${m.id}`} className="text-sm font-medium text-foreground hover:text-primary hover:underline">
+                            {m.first_name} {m.last_name}
+                          </Link>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{m.type === "pet" ? "🐾 Pet" : "👤 Human"}</span>
+                            <span>•</span>
+                            <span>{m.is_draft ? "Draft" : "Published"}</span>
+                            <span>•</span>
+                            <span>{m.visibility}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" asChild>
+                            <Link to={`/memorial/${m.id}`}>
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete memorial?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete {m.first_name} {m.last_name}'s memorial and all associated data.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteMemorial(m.id)}
+                                  disabled={deletingMemorialId === m.id}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  {deletingMemorialId === m.id ? "Deleting..." : "Delete"}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
