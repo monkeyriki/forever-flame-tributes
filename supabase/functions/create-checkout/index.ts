@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
     });
 
     // Save stripe session id on tribute
-    await supabase
+    await supabaseAdmin
       .from("tributes")
       .update({ stripe_session_id: session.id })
       .eq("id", tribute.id);
