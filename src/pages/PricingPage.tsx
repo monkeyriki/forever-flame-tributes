@@ -57,11 +57,26 @@ const plans = [
     ],
   },
   {
+    key: "business_monthly" as const,
+    name: "Business Monthly",
+    price: "$19.99",
+    period: "/month",
+    icon: "🏢",
+    features: [
+      "All Premium features",
+      "Bulk memorial management",
+      "Custom branding / logo",
+      "CSV import",
+      "Priority support",
+    ],
+  },
+  {
     key: "business_annual" as const,
-    name: "Business",
+    name: "Business Annual",
     price: "$199.99",
     period: "/year",
     icon: "🏢",
+    badge: "Save 17%",
     features: [
       "All Premium features",
       "Bulk memorial management",
