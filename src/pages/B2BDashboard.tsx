@@ -188,7 +188,12 @@ const B2BDashboard = () => {
             <h1 className="text-3xl font-bold text-foreground">Partner Dashboard</h1>
             <p className="text-muted-foreground font-sans">Manage your agency's memorials</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            {hasSubscription && (
+              <Button variant="outline" onClick={handleManageSubscription}>
+                <Settings className="mr-2 h-4 w-4" />Manage Subscription
+              </Button>
+            )}
             <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
               <Upload className="mr-2 h-4 w-4" />Import CSV
             </Button>
