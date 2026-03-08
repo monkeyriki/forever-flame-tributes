@@ -27,6 +27,7 @@ const Directory = () => {
   const [yearBirthFilter, setYearBirthFilter] = useState("");
   const [yearDeathFilter, setYearDeathFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
