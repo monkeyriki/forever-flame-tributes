@@ -71,6 +71,13 @@ export type Database = {
             referencedRelation: "memorials"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "memorial_images_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       memorial_views: {
@@ -98,6 +105,13 @@ export type Database = {
             columns: ["memorial_id"]
             isOneToOne: false
             referencedRelation: "memorials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memorial_views_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials_public"
             referencedColumns: ["id"]
           },
         ]
@@ -307,6 +321,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transactions_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transactions_tribute_id_fkey"
             columns: ["tribute_id"]
             isOneToOne: false
@@ -366,6 +387,13 @@ export type Database = {
             referencedRelation: "memorials"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "tributes_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -388,7 +416,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      memorials_public: {
+        Row: {
+          b2b_logo_url: string | null
+          bio: string | null
+          birth_date: string | null
+          created_at: string | null
+          death_date: string | null
+          first_name: string | null
+          id: string | null
+          image_url: string | null
+          is_draft: boolean | null
+          last_name: string | null
+          location: string | null
+          plan: string | null
+          tags: string[] | null
+          type: string | null
+          updated_at: string | null
+          user_id: string | null
+          video_url: string | null
+          visibility: string | null
+        }
+        Insert: {
+          b2b_logo_url?: string | null
+          bio?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          death_date?: string | null
+          first_name?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_draft?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          plan?: string | null
+          tags?: string[] | null
+          type?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_url?: string | null
+          visibility?: string | null
+        }
+        Update: {
+          b2b_logo_url?: string | null
+          bio?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          death_date?: string | null
+          first_name?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_draft?: boolean | null
+          last_name?: string | null
+          location?: string | null
+          plan?: string | null
+          tags?: string[] | null
+          type?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_url?: string | null
+          visibility?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_approve_tribute: {
@@ -398,6 +488,30 @@ export type Database = {
       delete_user_account: {
         Args: { target_user_id: string }
         Returns: undefined
+      }
+      get_memorial_public: {
+        Args: { _memorial_id: string }
+        Returns: {
+          b2b_logo_url: string
+          bio: string
+          birth_date: string
+          created_at: string
+          death_date: string
+          first_name: string
+          has_password: boolean
+          id: string
+          image_url: string
+          is_draft: boolean
+          last_name: string
+          location: string
+          plan: string
+          tags: string[]
+          type: string
+          updated_at: string
+          user_id: string
+          video_url: string
+          visibility: string
+        }[]
       }
       get_memorial_view_count: {
         Args: { _memorial_id: string }
