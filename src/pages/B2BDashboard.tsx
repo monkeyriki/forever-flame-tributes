@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSubscription } from "@/hooks/useSubscription";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,7 +68,7 @@ const B2BDashboard = () => {
   const totalMemorials = memorials.length;
   const totalTributes = Object.values(tributeCounts).reduce((sum, c) => sum + c, 0);
   const publishedCount = memorials.filter((m) => !m.is_draft).length;
-  const hasSubscription = false; // Placeholder for Stripe subscription check
+  const { subscribed: hasSubscription, plan, subscriptionEnd } = useSubscription();
   const isAtLimit = !hasSubscription && totalMemorials >= B2B_FREE_LIMIT;
 
   const deleteMutation = useMutation({
