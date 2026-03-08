@@ -254,7 +254,8 @@ const Directory = () => {
                   <input
                     type="text" value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}
                     placeholder={isHuman ? "e.g. Veteran, Musician, Teacher" : "e.g. Golden Retriever, Labrador"}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    aria-label="Filter by tag name"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   />
                   {allTags.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
