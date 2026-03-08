@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Send, Mail, Loader2 } from "lucide-react";
-import { tributeTiers, TributeTier } from "@/data/tributeTiers";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { loadProfanityWords, checkProfanity } from "@/lib/profanityFilter";
 import { Input } from "@/components/ui/input";
+import { useQuery } from "@tanstack/react-query";
+import { tributeTiers as fallbackTiers, TributeTier } from "@/data/tributeTiers";
 
 interface TributeSelectorProps {
   memorialId: string;
@@ -25,12 +26,63 @@ const tierSelectedColors: Record<string, string> = {
 };
 
 const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelectorProps) => {
-  const [selected, setSelected] = useState<TributeTier>(tributeTiers[0]);
+  const [selected, setSelected] = useState<TributeTier | null>(null);
   const [message, setMessage] = useState("");
   const [senderName, setSenderName] = useState("");
   const [senderEmail, setSenderEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [profanityWords, setProfanityWords] = useState<string[]>([]);
+
+  // Fetch store_items from DB, fallback to hardcoded tiers
+  const { data: tiers = fallbackTiers } = useQuery({
+    queryKey: ["store_items_tribute"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("store_items")
+        .select("*")
+        .eq("category", "tribute")
+        .eq("is_active", true)
+        .order("price", { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        return fallbackTiers;
+      }
+
+      // Always include a free "Message" option first
+      const freeOption: TributeTier = {
+        id: "base-message",
+        tier: "base",
+        name: "Message",
+        icon: "✉️",
+        price: 0,
+        description: "Leave a condolence message",
+        animated: false,
+      };
+
+      const dbItems: TributeTier[] = data.map((item: any) => ({
+        id: item.id,
+        tier: item.tier as "base" | "standard" | "premium",
+        name: item.name,
+        icon: item.type === "image" && item.icon_url ? item.icon_url : (item.emoji || "🕯️"),
+        price: Number(item.price),
+        description: item.name,
+        animated: item.tier === "premium",
+        duration: item.tier === "premium" ? "30 days" : undefined,
+        iconUrl: item.type === "image" ? item.icon_url : undefined,
+        iconType: item.type as "emoji" | "image",
+      }));
+
+      return [freeOption, ...dbItems];
+    },
+    staleTime: 60_000,
+  });
+
+  // Set default selection when tiers load
+  useEffect(() => {
+    if (tiers.length > 0 && !selected) {
+      setSelected(tiers[0]);
+    }
+  }, [tiers, selected]);
 
   useEffect(() => {
     loadProfanityWords(async () => {
@@ -44,7 +96,6 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     const params = new URLSearchParams(window.location.search);
     if (params.get("payment") === "success") {
       toast.success("Payment successful! Your tribute has been added.");
-      // Clean URL
       const url = new URL(window.location.href);
       url.searchParams.delete("payment");
       url.searchParams.delete("tribute_id");
@@ -57,6 +108,8 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       window.history.replaceState({}, "", url.toString());
     }
   }, [onTributeAdded]);
+
+  if (!selected) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +172,6 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         toast.success("Tribute sent!");
       }
 
-      // Fire-and-forget email notifications
       supabase.functions.invoke("notify-tribute", {
         body: {
           tribute_id: null,
@@ -148,10 +200,21 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       setMessage("");
       setSenderName("");
       setSenderEmail("");
-      setSelected(tributeTiers[0]);
+      setSelected(tiers[0]);
       onTributeAdded();
     }
     setSending(false);
+  };
+
+  const renderIcon = (tier: TributeTier & { iconUrl?: string; iconType?: string }) => {
+    if (tier.iconType === "image" && tier.iconUrl) {
+      return <img src={tier.iconUrl} alt={tier.name} className="mb-1 mx-auto h-8 w-8 object-contain" />;
+    }
+    return (
+      <span className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}>
+        {tier.icon}
+      </span>
+    );
   };
 
   return (
@@ -161,18 +224,18 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       </h3>
       <p className="mb-5 text-xs text-muted-foreground">Choose the type of tribute — no account required</p>
 
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {tributeTiers.map((tier) => {
+      <div className={`mb-5 grid grid-cols-2 gap-3 ${tiers.length <= 4 ? "sm:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-4"}`}>
+        {tiers.map((tier) => {
           const isSelected = selected.id === tier.id;
           return (
             <button
               key={tier.id} type="button" onClick={() => setSelected(tier)}
-              className={`relative rounded-lg border p-3.5 text-center transition-all ${isSelected ? tierSelectedColors[tier.tier] : tierColors[tier.tier]}`}
+              className={`relative rounded-lg border p-3.5 text-center transition-all ${isSelected ? tierSelectedColors[tier.tier] || tierSelectedColors.standard : tierColors[tier.tier] || tierColors.standard}`}
             >
               {tier.tier === "premium" && (
                 <span className="absolute -right-1 -top-1 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">TOP</span>
               )}
-              <span className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}>{tier.icon}</span>
+              {renderIcon(tier as any)}
               <p className="text-xs font-medium text-foreground">{tier.name}</p>
               <p className="text-[11px] text-muted-foreground">
                 {tier.price === 0 ? "Free" : `$${tier.price.toFixed(2)}`}
@@ -208,7 +271,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
             {selected.tier !== "base" && (
-              <><span className="mr-1">{selected.icon}</span>{selected.name} – ${selected.price.toFixed(2)}</>
+              <><span className="mr-1">{typeof selected.icon === "string" && !selected.icon.startsWith("http") ? selected.icon : "🎁"}</span>{selected.name} – ${selected.price.toFixed(2)}</>
             )}
           </p>
           <button
