@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import UserSettings from "./pages/UserSettings";
+import PricingPage from "./pages/PricingPage";
 
 const queryClient = new QueryClient();
 
