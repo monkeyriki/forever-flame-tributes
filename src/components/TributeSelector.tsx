@@ -70,6 +70,19 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       } else {
         toast.success("Tribute sent!");
       }
+
+      // Fire-and-forget email notification to memorial owner
+      supabase.functions.invoke("notify-tribute", {
+        body: {
+          tribute_id: null,
+          memorial_id: memorialId,
+          sender_name: senderName.trim() || "Anonymous",
+          message,
+          tier: selected.tier,
+          is_flagged: isFlagged,
+        },
+      }).catch((err) => console.error("notify-tribute error:", err));
+
       setMessage("");
       setSenderName("");
       setSelected(tributeTiers[0]);
