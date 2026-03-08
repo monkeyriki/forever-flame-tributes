@@ -19,7 +19,7 @@ const testimonials = [
   },
 ];
 
-const TestimonialsSection = () => {
+const TestimonialsSection = React.forwardRef<HTMLElement>((_, ref) => {
   return (
     <section id="testimonials" className="py-20 bg-background">
       <div className="container max-w-5xl">
