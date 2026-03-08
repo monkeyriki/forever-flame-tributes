@@ -136,7 +136,74 @@ const UserSettings = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-destructive/30">
+            {/* My Memorials */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-sans">
+                  <BookOpen className="mr-2 inline h-5 w-5" />
+                  My Memorials
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {memorialsLoading ? (
+                  <p className="text-sm text-muted-foreground">Loading...</p>
+                ) : memorials.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">You haven't created any memorials yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {memorials.map((m) => (
+                      <div key={m.id} className="flex items-center justify-between rounded-lg border border-border p-3">
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/memorial/${m.id}`} className="text-sm font-medium text-foreground hover:text-primary hover:underline">
+                            {m.first_name} {m.last_name}
+                          </Link>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{m.type === "pet" ? "🐾 Pet" : "👤 Human"}</span>
+                            <span>•</span>
+                            <span>{m.is_draft ? "Draft" : "Published"}</span>
+                            <span>•</span>
+                            <span>{m.visibility}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" asChild>
+                            <Link to={`/memorial/${m.id}`}>
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete memorial?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete {m.first_name} {m.last_name}'s memorial and all associated data.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteMemorial(m.id)}
+                                  disabled={deletingMemorialId === m.id}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  {deletingMemorialId === m.id ? "Deleting..." : "Delete"}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
               <CardHeader>
                 <CardTitle className="text-lg font-sans text-destructive">
                   <Trash2 className="mr-2 inline h-5 w-5" />
