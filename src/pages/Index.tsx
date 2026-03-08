@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Eternal Embrace – Online Memorials</title>
+        <title>Eternal Memory – Online Memorials</title>
         <meta
           name="description"
           content="Create online memorials to honor and remember your loved ones. A respectful space to preserve memories."

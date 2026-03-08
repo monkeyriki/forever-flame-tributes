@@ -50,7 +50,7 @@ const Footer = () => {
         <div className="golden-divider my-8" />
 
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Eternal Embrace. All rights reserved.
+          © {new Date().getFullYear()} Eternal Memory. All rights reserved.
         </p>
       </div>
     </footer>
