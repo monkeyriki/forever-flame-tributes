@@ -259,6 +259,35 @@ const MemorialDetail = () => {
                 >
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
+
+                {isOwner && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="gap-1.5">
+                        <Trash2 className="h-4 w-4" /> Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this memorial?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently delete {fullName}'s memorial, all tributes, and gallery images. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteMemorial}
+                          disabled={deleting}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {deleting ? "Deleting..." : "Delete permanently"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+                </button>
               </div>
 
               {b2bLogo && (
