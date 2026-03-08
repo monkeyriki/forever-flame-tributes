@@ -19,7 +19,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[520px] flex items-center justify-center overflow-hidden">
+    <section aria-label="Create a memorial" className="relative min-h-[520px] flex items-center justify-center overflow-hidden">
       <img
         src={heroBg}
         alt=""
