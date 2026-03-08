@@ -230,18 +230,18 @@ const Directory = () => {
                   <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" /> Lifespan
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="text" value={yearBirthFilter} onChange={(e) => setYearBirthFilter(e.target.value)}
-                      placeholder="Birth year (e.g. 1950)"
+                      placeholder="Birth year (e.g. 1950)" aria-label="Filter by birth year"
                       maxLength={4}
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                     <input
                       type="text" value={yearDeathFilter} onChange={(e) => setYearDeathFilter(e.target.value)}
-                      placeholder="Death year (e.g. 2024)"
+                      placeholder="Death year (e.g. 2024)" aria-label="Filter by death year"
                       maxLength={4}
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                   </div>
                 </div>
