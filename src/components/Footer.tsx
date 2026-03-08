@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          <div className="grid grid-cols-2 gap-8">
+          <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-8">
             <div>
               <h4 className="mb-3 font-display text-sm font-semibold text-foreground uppercase tracking-wide">
                 Useful Links
