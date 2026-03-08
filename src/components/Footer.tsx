@@ -11,7 +11,7 @@ const Footer = () => {
             <Link to="/" className="mb-3 flex items-center gap-2">
               <img src={flameIcon} alt="Flame" className="h-7 w-7" />
               <span className="font-display text-xl font-bold text-foreground">
-                Eternal Embrace
+                Eternal Memory
               </span>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -50,7 +50,7 @@ const Footer = () => {
         <div className="golden-divider my-8" />
 
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Eternal Embrace. All rights reserved.
+          © {new Date().getFullYear()} Eternal Memory. All rights reserved.
         </p>
       </div>
     </footer>
