@@ -15,6 +15,7 @@ const PRODUCT_TO_PLAN: Record<string, string> = {
   "prod_U71fHmvktOBUbq": "premium",
   "prod_U71guBVwU3pjGw": "premium",
   "prod_U71i7jaxAId6re": "business",
+  "prod_U71rbrWJHacqKi": "business",
 };
 
 Deno.serve(async (req) => {

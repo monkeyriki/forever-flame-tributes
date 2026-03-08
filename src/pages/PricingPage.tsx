@@ -57,11 +57,26 @@ const plans = [
     ],
   },
   {
+    key: "business_monthly" as const,
+    name: "Business Monthly",
+    price: "$19.99",
+    period: "/month",
+    icon: "🏢",
+    features: [
+      "All Premium features",
+      "Bulk memorial management",
+      "Custom branding / logo",
+      "CSV import",
+      "Priority support",
+    ],
+  },
+  {
     key: "business_annual" as const,
-    name: "Business",
+    name: "Business Annual",
     price: "$199.99",
     period: "/year",
     icon: "🏢",
+    badge: "Save 17%",
     features: [
       "All Premium features",
       "Bulk memorial management",
@@ -115,7 +130,7 @@ const PricingPage = () => {
   const isCurrentPlan = (planKey: string) => {
     if (planKey === "free") return currentPlan === "free";
     if (planKey === "premium_annual" || planKey === "premium_lifetime") return currentPlan === "premium";
-    if (planKey === "business_annual") return currentPlan === "business";
+    if (planKey === "business_annual" || planKey === "business_monthly") return currentPlan === "business";
     return false;
   };
 
@@ -136,7 +151,7 @@ const PricingPage = () => {
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {plans.map((plan) => {
               const isCurrent = isCurrentPlan(plan.key);
               const isUpgradeable = plan.key !== "free" && !isCurrent;
@@ -146,7 +161,12 @@ const PricingPage = () => {
                   key={plan.key}
                   className={`relative flex flex-col ${plan.popular ? "border-2 border-primary shadow-lg" : "border-border"}`}
                 >
-                  {plan.popular && (
+                  {(plan as any).badge && (
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
+                      {(plan as any).badge}
+                    </Badge>
+                  )}
+                  {plan.popular && !(plan as any).badge && (
                     <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                       Most Popular
                     </Badge>

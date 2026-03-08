@@ -15,6 +15,14 @@ export const STRIPE_PLANS = {
     amount: 99.99,
     mode: "payment" as const,
   },
+  business_monthly: {
+    price_id: "price_1T8nnqBA2gyBJFRK9VpYy7oN",
+    product_id: "prod_U71rbrWJHacqKi",
+    name: "Business (Monthly)",
+    amount: 19.99,
+    mode: "subscription" as const,
+    interval: "month",
+  },
   business_annual: {
     price_id: "price_1T8nf5BA2gyBJFRKmWSl8tnh",
     product_id: "prod_U71i7jaxAId6re",
