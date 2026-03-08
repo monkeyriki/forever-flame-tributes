@@ -287,7 +287,6 @@ const MemorialDetail = () => {
                     </AlertDialogContent>
                   </AlertDialog>
                 )}
-                </button>
               </div>
 
               {b2bLogo && (
