@@ -10,12 +10,12 @@ const HeroSection = () => {
   const [lastName, setLastName] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
-    const query = `${firstName} ${lastName}`.trim();
-    if (query) {
-      navigate(`/directory/human?q=${encodeURIComponent(query)}`);
-    }
+    const params = new URLSearchParams();
+    if (firstName.trim()) params.set("first_name", firstName.trim());
+    if (lastName.trim()) params.set("last_name", lastName.trim());
+    navigate(`/create?${params.toString()}`);
   };
 
   return (
@@ -36,7 +36,7 @@ const HeroSection = () => {
           Preserve and share the memories of your loved ones
         </p>
 
-        <form onSubmit={handleSearch} className="bg-card/80 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg max-w-2xl mx-auto">
+        <form onSubmit={handleStart} className="bg-card/80 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground mb-4 text-left">
             I want to share the memories of
           </p>

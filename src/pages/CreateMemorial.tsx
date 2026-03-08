@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Upload, Save, Eye } from "lucide-react";
@@ -19,12 +19,13 @@ interface GalleryItem {
 const CreateMemorial = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const [form, setForm] = useState({
     type: "human" as "human" | "pet",
-    first_name: "",
-    last_name: "",
+    first_name: searchParams.get("first_name") || "",
+    last_name: searchParams.get("last_name") || "",
     bio: "",
     birth_date: "",
     death_date: "",
