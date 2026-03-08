@@ -166,11 +166,6 @@ const UserSettings = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" asChild>
-                            <Link to={`/memorial/${m.id}`}>
-                              <Eye className="h-4 w-4" />
-                            </Link>
-                          </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="ghost" size="icon">
