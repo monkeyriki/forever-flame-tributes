@@ -24,8 +24,8 @@ const CreateMemorial = () => {
 
   const [form, setForm] = useState({
     type: "human" as "human" | "pet",
-    first_name: "",
-    last_name: "",
+    first_name: searchParams.get("first_name") || "",
+    last_name: searchParams.get("last_name") || "",
     bio: "",
     birth_date: "",
     death_date: "",
