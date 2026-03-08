@@ -141,7 +141,7 @@ const StoreItemsTab = () => {
                       ) : (<span className="text-2xl">{item.emoji}</span>)}
                     </TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>€{Number(item.price).toFixed(2)}</TableCell>
+                    <TableCell>${Number(item.price).toFixed(2)}</TableCell>
                     <TableCell><Badge variant={item.tier === "premium" ? "default" : "outline"}>{item.tier}</Badge></TableCell>
                     <TableCell><Switch checked={item.is_active} onCheckedChange={(v) => toggleMutation.mutate({ id: item.id, is_active: v })} /></TableCell>
                     <TableCell className="text-right space-x-1">
@@ -163,7 +163,7 @@ const StoreItemsTab = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} /></div>
-            <div><Label>Price (€)</Label><Input type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></div>
+            <div><Label>Price ($)</Label><Input type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></div>
             <div>
               <Label>Tier</Label>
               <Select value={form.tier} onValueChange={(v) => setForm((f) => ({ ...f, tier: v }))}>

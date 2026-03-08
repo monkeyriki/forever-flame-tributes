@@ -45,7 +45,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
 
     if (selected.tier !== "base") {
       toast.info("Stripe payment coming soon!", {
-        description: `The "${selected.name}" tribute at €${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
+        description: `The "${selected.name}" tribute at $${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
       });
       return;
     }
@@ -130,7 +130,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
               <span className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}>{tier.icon}</span>
               <p className="text-xs font-medium text-foreground">{tier.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {tier.price === 0 ? "Free" : `€${tier.price.toFixed(2)}`}
+                {tier.price === 0 ? "Free" : `$${tier.price.toFixed(2)}`}
               </p>
               {tier.duration && <p className="mt-0.5 text-[10px] text-accent">{tier.duration}</p>}
             </button>
@@ -163,7 +163,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
             {selected.tier !== "base" && (
-              <><span className="mr-1">{selected.icon}</span>{selected.name} – €{selected.price.toFixed(2)}</>
+              <><span className="mr-1">{selected.icon}</span>{selected.name} – ${selected.price.toFixed(2)}</>
             )}
           </p>
           <button
@@ -171,7 +171,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
             className="flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             <Send className="h-3.5 w-3.5" />
-            {selected.tier === "base" ? "Send" : `Pay €${selected.price.toFixed(2)}`}
+            {selected.tier === "base" ? "Send" : `Pay $${selected.price.toFixed(2)}`}
           </button>
         </div>
       </form>

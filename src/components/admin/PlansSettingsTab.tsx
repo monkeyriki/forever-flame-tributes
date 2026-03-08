@@ -88,11 +88,11 @@ const PlansSettingsTab = () => {
               <h3 className="font-serif text-lg font-semibold text-foreground">⭐ Premium</h3>
               <p className="text-sm text-muted-foreground">No ads, unlimited photos, video</p>
               <div>
-                <Label>Annual price (€)</Label>
+                <Label>Annual price ($)</Label>
                 <Input type="number" step="0.01" value={premiumPrice} onChange={(e) => setPremiumPrice(e.target.value)} />
               </div>
               <div>
-                <Label>Lifetime price (€)</Label>
+                <Label>Lifetime price ($)</Label>
                 <Input type="number" step="0.01" value={lifetimePrice} onChange={(e) => setLifetimePrice(e.target.value)} />
               </div>
             </div>
@@ -100,7 +100,7 @@ const PlansSettingsTab = () => {
               <h3 className="font-serif text-lg font-semibold text-foreground">🏢 Business</h3>
               <p className="text-sm text-muted-foreground">For funeral agencies / B2B</p>
               <div>
-                <Label>Annual price (€)</Label>
+                <Label>Annual price ($)</Label>
                 <Input type="number" step="0.01" value={businessPrice} onChange={(e) => setBusinessPrice(e.target.value)} />
               </div>
             </div>

@@ -75,21 +75,21 @@ const RevenueTab = () => {
             <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Total Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent><div className="text-3xl font-bold text-foreground">€{totalRevenue.toFixed(2)}</div></CardContent>
+          <CardContent><div className="text-3xl font-bold text-foreground">${totalRevenue.toFixed(2)}</div></CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-sans font-medium text-muted-foreground">From Tributes</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent><div className="text-3xl font-bold text-foreground">€{totalTributes.toFixed(2)}</div></CardContent>
+          <CardContent><div className="text-3xl font-bold text-foreground">${totalTributes.toFixed(2)}</div></CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-sans font-medium text-muted-foreground">From Plans</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent><div className="text-3xl font-bold text-foreground">€{totalPlans.toFixed(2)}</div></CardContent>
+          <CardContent><div className="text-3xl font-bold text-foreground">${totalPlans.toFixed(2)}</div></CardContent>
         </Card>
       </div>
 
