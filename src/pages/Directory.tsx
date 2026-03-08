@@ -285,6 +285,12 @@ const Directory = () => {
                     <button onClick={() => setTagFilter("")}><X className="h-3 w-3" /></button>
                   </span>
                 )}
+                {selectedTags.map((tag) => (
+                  <span key={`sel-${tag}`} className="inline-flex items-center gap-1 rounded-full bg-primary/20 px-2.5 py-1 text-xs text-primary">
+                    {tag}
+                    <button onClick={() => toggleTag(tag)}><X className="h-3 w-3" /></button>
+                  </span>
+                ))}
               </div>
             )}
 
