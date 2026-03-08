@@ -18,3 +18,10 @@ verify_jwt = false
 [functions.og-memorial]
 verify_jwt = false
 
+[functions.create-plan-checkout]
+verify_jwt = false
+
+[functions.check-subscription]
+verify_jwt = false
+
+
