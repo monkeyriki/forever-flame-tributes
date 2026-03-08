@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,8 +11,11 @@ import StoreItemsTab from "@/components/admin/StoreItemsTab";
 import ModerationTab from "@/components/admin/ModerationTab";
 import PlansSettingsTab from "@/components/admin/PlansSettingsTab";
 import RevenueTab from "@/components/admin/RevenueTab";
+import MemorialsTab from "@/components/admin/MemorialsTab";
 
 const AdminPanel = () => {
+  const [activeTab, setActiveTab] = useState("users");
+
   const { data: profiles = [] } = useQuery({
     queryKey: ["admin-profiles"],
     queryFn: async () => {
@@ -48,6 +52,14 @@ const AdminPanel = () => {
     },
   });
 
+  const kpiCards = [
+    { label: "Users", value: profiles.length, icon: Users, tab: "users", color: "" },
+    { label: "Memorials", value: memorialCount, icon: BookOpen, tab: "memorials", color: "" },
+    { label: "Tributes", value: tributeCount, icon: MessageSquare, tab: "moderation", color: "" },
+    { label: "Flagged", value: flaggedCount, icon: Shield, tab: "moderation", color: "text-destructive" },
+    { label: "Admin", value: profiles.filter((p) => p.role === "admin").length, icon: Shield, tab: "users", color: "" },
+  ];
+
   return (
     <Layout>
       <Helmet><title>Admin Panel — Eternal Memory</title></Helmet>
@@ -58,52 +70,34 @@ const AdminPanel = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Users</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent><div className="text-3xl font-bold text-foreground">{profiles.length}</div></CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Memorials</CardTitle>
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent><div className="text-3xl font-bold text-foreground">{memorialCount}</div></CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Tributes</CardTitle>
-              <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent><div className="text-3xl font-bold text-foreground">{tributeCount}</div></CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Flagged</CardTitle>
-              <Shield className="h-4 w-4 text-destructive" />
-            </CardHeader>
-            <CardContent><div className="text-3xl font-bold text-destructive">{flaggedCount}</div></CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-sans font-medium text-muted-foreground">Admin</CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent><div className="text-3xl font-bold text-foreground">{profiles.filter((p) => p.role === "admin").length}</div></CardContent>
-          </Card>
+          {kpiCards.map((kpi) => (
+            <Card
+              key={kpi.label}
+              className="cursor-pointer transition-colors hover:border-primary/50 hover:shadow-md"
+              onClick={() => setActiveTab(kpi.tab)}
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-sans font-medium text-muted-foreground">{kpi.label}</CardTitle>
+                <kpi.icon className={`h-4 w-4 ${kpi.color || "text-muted-foreground"}`} />
+              </CardHeader>
+              <CardContent>
+                <div className={`text-3xl font-bold ${kpi.color || "text-foreground"}`}>{kpi.value}</div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="users"><Users className="mr-1 h-4 w-4" />Users</TabsTrigger>
+            <TabsTrigger value="memorials"><BookOpen className="mr-1 h-4 w-4" />Memorials</TabsTrigger>
             <TabsTrigger value="store"><Package className="mr-1 h-4 w-4" />Store</TabsTrigger>
             <TabsTrigger value="moderation"><MessageSquare className="mr-1 h-4 w-4" />Moderation</TabsTrigger>
             <TabsTrigger value="settings"><Settings className="mr-1 h-4 w-4" />Plans & Ads</TabsTrigger>
             <TabsTrigger value="revenue"><BarChart3 className="mr-1 h-4 w-4" />Revenue</TabsTrigger>
           </TabsList>
           <TabsContent value="users"><UsersTab /></TabsContent>
+          <TabsContent value="memorials"><MemorialsTab /></TabsContent>
           <TabsContent value="store"><StoreItemsTab /></TabsContent>
           <TabsContent value="moderation"><ModerationTab /></TabsContent>
           <TabsContent value="settings"><PlansSettingsTab /></TabsContent>
