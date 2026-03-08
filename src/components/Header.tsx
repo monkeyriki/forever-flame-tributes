@@ -50,9 +50,9 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+      <div className="container mx-auto flex items-center px-4 py-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2" aria-label="Eternal Memory - Home">
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
           <img
             src={flameIcon}
             alt="Flame"
@@ -64,7 +64,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex ml-8">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -79,7 +79,7 @@ const Header = () => {
         </nav>
 
         {/* Desktop right side */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 md:flex ml-auto">
           <form onSubmit={handleSearch} role="search" aria-label="Search memorials" className="flex items-center rounded-lg border border-border bg-card px-3">
             <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
@@ -141,7 +141,7 @@ const Header = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+          className="ml-auto text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
