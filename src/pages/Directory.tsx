@@ -62,6 +62,7 @@ const Directory = () => {
         location: m.location || "", photoUrl: m.image_url || "/placeholder.svg",
         bio: m.bio || "", tags: m.tags || [], visibility: m.visibility as any,
         tributeCount: 0, guestbookEntries: 0, createdAt: m.created_at,
+        updatedAt: m.updated_at,
       }));
     },
   });
