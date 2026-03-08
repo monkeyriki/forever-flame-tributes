@@ -1,10 +1,11 @@
 import { useState, useRef, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Calendar, MessageSquare, Share2,
-  QrCode, ChevronLeft, Download, X, Play
+  QrCode, ChevronLeft, Download, X, Play, Trash2
 } from "lucide-react";
+import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { QRCodeCanvas } from "qrcode.react";
 import { useQuery } from "@tanstack/react-query";
