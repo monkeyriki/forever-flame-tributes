@@ -163,7 +163,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
             {selected.tier !== "base" && (
-              <><span className="mr-1">{selected.icon}</span>{selected.name} – €{selected.price.toFixed(2)}</>
+              <><span className="mr-1">{selected.icon}</span>{selected.name} – ${selected.price.toFixed(2)}</>
             )}
           </p>
           <button
