@@ -295,6 +295,7 @@ export type Database = {
           item_type: string | null
           memorial_id: string
           message: string | null
+          sender_email: string | null
           sender_name: string
           status: string
           stripe_session_id: string | null
@@ -308,6 +309,7 @@ export type Database = {
           item_type?: string | null
           memorial_id: string
           message?: string | null
+          sender_email?: string | null
           sender_name?: string
           status?: string
           stripe_session_id?: string | null
@@ -321,6 +323,7 @@ export type Database = {
           item_type?: string | null
           memorial_id?: string
           message?: string | null
+          sender_email?: string | null
           sender_name?: string
           status?: string
           stripe_session_id?: string | null
