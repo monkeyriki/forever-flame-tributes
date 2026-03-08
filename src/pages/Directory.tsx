@@ -211,16 +211,16 @@ const Directory = () => {
                   <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5" /> Location
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="text" value={city} onChange={(e) => setCity(e.target.value)}
-                      placeholder="City"
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="City" aria-label="Filter by city"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                     <input
                       type="text" value={state} onChange={(e) => setState(e.target.value)}
-                      placeholder="State / Province"
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="State / Province" aria-label="Filter by state"
+                      className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     />
                   </div>
                 </div>
