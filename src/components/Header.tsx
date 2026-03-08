@@ -141,7 +141,7 @@ const Header = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+          className="ml-auto text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
