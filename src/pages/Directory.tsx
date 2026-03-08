@@ -37,7 +37,7 @@ const Directory = () => {
   const categoryLabel = isHuman ? "Human Memorials" : "Pet Memorials";
   const categoryEmoji = isHuman ? "🕊️" : "🐾";
 
-  const hasActiveFilters = city || state || yearBirthFilter || yearDeathFilter || tagFilter;
+  const hasActiveFilters = city || state || yearBirthFilter || yearDeathFilter || tagFilter || selectedTags.length > 0;
 
   const clearFilters = () => {
     setCity("");
