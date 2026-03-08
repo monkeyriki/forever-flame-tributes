@@ -44,6 +44,8 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const tributeId = session.metadata?.tribute_id;
@@ -52,7 +54,6 @@ Deno.serve(async (req) => {
 
     if (tributeId) {
       // === TRIBUTE PAYMENT ===
-      // Look up the tribute to check its tier
       const { data: tributeRow } = await supabase
         .from("tributes")
         .select("tier")
@@ -88,7 +89,6 @@ Deno.serve(async (req) => {
       console.log(`Tribute ${tributeId} marked as paid ($${amount})`);
     } else if (userId) {
       // === PLAN UPGRADE ===
-      // Determine which plan was purchased
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 5 });
       let planName = "premium";
 
@@ -99,7 +99,6 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Update all user's memorials to the new plan
       const { error: memError } = await supabase
         .from("memorials")
         .update({ plan: planName })
@@ -107,7 +106,6 @@ Deno.serve(async (req) => {
 
       if (memError) console.error("Failed to update memorials plan:", memError);
 
-      // Record transaction
       const amount = (session.amount_total || 0) / 100;
       await supabase.from("transactions").insert({
         type: "plan_upgrade",
@@ -117,6 +115,102 @@ Deno.serve(async (req) => {
       });
 
       console.log(`User ${userId} upgraded to ${planName} ($${amount})`);
+    }
+  }
+
+  // === B2B RENEWAL CONFIRMATION EMAIL ===
+  if (event.type === "invoice.paid") {
+    const invoice = event.data.object as Stripe.Invoice;
+    // Only send for subscription renewals (not the first payment)
+    if (invoice.billing_reason === "subscription_cycle" && invoice.customer_email) {
+      const amount = (invoice.amount_paid || 0) / 100;
+      const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+      const nextDate = periodEnd
+        ? new Date(periodEnd * 1000).toLocaleDateString("it-IT", { day: "2-digit", month: "long", year: "numeric" })
+        : "N/A";
+
+      const emailHtml = `
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px; background: #ffffff;">
+          <h2 style="color: #1a1a2e; margin-bottom: 8px;">Rinnovo abbonamento confermato ✅</h2>
+          <p style="color: #555; line-height: 1.6;">
+            Il tuo abbonamento B2B su <strong>Eternal Memory</strong> è stato rinnovato con successo.
+          </p>
+          <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
+            <tr><td style="padding: 8px 0; color: #888;">Importo</td><td style="padding: 8px 0; font-weight: 600;">€${amount.toFixed(2)}</td></tr>
+            <tr><td style="padding: 8px 0; color: #888;">Prossimo rinnovo</td><td style="padding: 8px 0; font-weight: 600;">${nextDate}</td></tr>
+          </table>
+          <p style="color: #555; font-size: 14px;">
+            Puoi gestire il tuo abbonamento dalla <a href="https://forever-flame-tributes.lovable.app/b2b" style="color: #6366f1;">dashboard B2B</a>.
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+          <p style="color: #aaa; font-size: 12px;">Eternal Memory — Ricordi che durano per sempre</p>
+        </div>
+      `;
+
+      if (RESEND_API_KEY) {
+        try {
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "Eternal Memory <onboarding@resend.dev>",
+              to: [invoice.customer_email],
+              subject: "Rinnovo abbonamento confermato — Eternal Memory",
+              html: emailHtml,
+            }),
+          });
+          console.log(`Renewal confirmation email sent to ${invoice.customer_email}`);
+        } catch (emailErr) {
+          console.error("Failed to send renewal email:", emailErr);
+        }
+      }
+    }
+  }
+
+  // === SUBSCRIPTION EXPIRING SOON (upcoming invoice) ===
+  if (event.type === "invoice.upcoming") {
+    const invoice = event.data.object as Stripe.Invoice;
+    if (invoice.customer_email) {
+      const amount = (invoice.amount_due || 0) / 100;
+      const dueDate = invoice.due_date
+        ? new Date(invoice.due_date * 1000).toLocaleDateString("it-IT", { day: "2-digit", month: "long", year: "numeric" })
+        : "tra pochi giorni";
+
+      const emailHtml = `
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px; background: #ffffff;">
+          <h2 style="color: #1a1a2e; margin-bottom: 8px;">Promemoria: rinnovo imminente 🔔</h2>
+          <p style="color: #555; line-height: 1.6;">
+            Il tuo abbonamento B2B su <strong>Eternal Memory</strong> si rinnoverà automaticamente a breve.
+          </p>
+          <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
+            <tr><td style="padding: 8px 0; color: #888;">Importo</td><td style="padding: 8px 0; font-weight: 600;">€${amount.toFixed(2)}</td></tr>
+            <tr><td style="padding: 8px 0; color: #888;">Data rinnovo</td><td style="padding: 8px 0; font-weight: 600;">${dueDate}</td></tr>
+          </table>
+          <p style="color: #555; font-size: 14px;">
+            Se non desideri rinnovare, puoi annullare dalla <a href="https://forever-flame-tributes.lovable.app/b2b" style="color: #6366f1;">dashboard B2B</a> prima della data di rinnovo.
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+          <p style="color: #aaa; font-size: 12px;">Eternal Memory — Ricordi che durano per sempre</p>
+        </div>
+      `;
+
+      if (RESEND_API_KEY) {
+        try {
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "Eternal Memory <onboarding@resend.dev>",
+              to: [invoice.customer_email],
+              subject: "Promemoria rinnovo abbonamento — Eternal Memory",
+              html: emailHtml,
+            }),
+          });
+          console.log(`Renewal reminder email sent to ${invoice.customer_email}`);
+        } catch (emailErr) {
+          console.error("Failed to send renewal reminder:", emailErr);
+        }
+      }
     }
   }
 
