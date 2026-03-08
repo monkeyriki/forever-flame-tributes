@@ -256,8 +256,8 @@ const B2BDashboard = () => {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">—</div>
-              <p className="text-xs text-muted-foreground mt-1">Coming soon</p>
+              <div className="text-3xl font-bold text-foreground">{totalViews}</div>
+              <p className="text-xs text-muted-foreground mt-1">All-time page views</p>
             </CardContent>
           </Card>
           <Card>
