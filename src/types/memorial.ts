@@ -13,6 +13,7 @@ export interface Memorial {
   tributeCount: number;
   guestbookEntries: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface VirtualTribute {
