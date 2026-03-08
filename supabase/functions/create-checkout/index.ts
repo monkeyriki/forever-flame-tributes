@@ -48,10 +48,6 @@ Deno.serve(async (req) => {
     const price = storeItem.price;
 
     // Create a pending tribute in Supabase
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
 
     const { data: tribute, error: tributeError } = await supabase
       .from("tributes")
