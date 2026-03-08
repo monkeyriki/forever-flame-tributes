@@ -130,7 +130,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
               <span className={`mb-1 inline-block text-2xl ${tier.animated ? "animate-candle-flicker" : ""}`}>{tier.icon}</span>
               <p className="text-xs font-medium text-foreground">{tier.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {tier.price === 0 ? "Free" : `€${tier.price.toFixed(2)}`}
+                {tier.price === 0 ? "Free" : `$${tier.price.toFixed(2)}`}
               </p>
               {tier.duration && <p className="mt-0.5 text-[10px] text-accent">{tier.duration}</p>}
             </button>
