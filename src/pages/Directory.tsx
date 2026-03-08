@@ -180,7 +180,9 @@ const Directory = () => {
               />
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`mr-2 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                aria-expanded={showFilters}
+                aria-controls="filter-panel"
+                className={`mr-2 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${showFilters ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 <span className="hidden sm:inline">Filters</span>
