@@ -50,21 +50,21 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex items-center px-4 py-3">
+      <div className="container mx-auto flex h-16 items-center gap-8 px-4">
         {/* Logo */}
         <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
           <img
             src={flameIcon}
             alt="Flame"
-            className="h-8 w-8 animate-flame-flicker"
+            className="h-7 w-7 animate-flame-flicker"
           />
-          <span className="font-display text-xl font-bold tracking-wide text-foreground">
+          <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none">
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex ml-8">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.to}
