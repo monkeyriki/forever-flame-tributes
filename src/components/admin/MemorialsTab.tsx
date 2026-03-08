@@ -86,7 +86,10 @@ const MemorialsTab = () => {
                 {memorials.map((m) => (
                   <TableRow key={m.id}>
                     <TableCell className="font-medium">
-                      {m.first_name} {m.last_name}
+                      <Link to={`/memorial/${m.id}`} className="text-primary hover:underline inline-flex items-center gap-1">
+                        {m.first_name} {m.last_name}
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{m.type}</Badge>
