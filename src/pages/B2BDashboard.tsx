@@ -165,6 +165,20 @@ const B2BDashboard = () => {
     window.location.href = "/create";
   };
 
+  const handleManageSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast({ title: "Not authenticated", variant: "destructive" }); return; }
+      const { data, error } = await supabase.functions.invoke("customer-portal", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error || !data?.url) throw new Error(data?.error || "Failed to open portal");
+      window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   return (
     <Layout>
       <Helmet><title>B2B Dashboard — Eternal Memory</title></Helmet>
