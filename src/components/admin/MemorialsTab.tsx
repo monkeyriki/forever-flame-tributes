@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { BookOpen, Trash2, Eye, EyeOff } from "lucide-react";
+import { BookOpen, Trash2, Eye, EyeOff, Pencil, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -85,7 +86,10 @@ const MemorialsTab = () => {
                 {memorials.map((m) => (
                   <TableRow key={m.id}>
                     <TableCell className="font-medium">
-                      {m.first_name} {m.last_name}
+                      <Link to={`/memorial/${m.id}`} className="text-primary hover:underline inline-flex items-center gap-1">
+                        {m.first_name} {m.last_name}
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{m.type}</Badge>
@@ -106,13 +110,23 @@ const MemorialsTab = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
+                        <Button variant="ghost" size="icon" asChild title="Edit memorial">
+                          <Link to={`/memorial/${m.id}/edit`}>
+                            <Pencil className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button variant="ghost" size="icon" asChild title="View memorial">
+                          <Link to={`/memorial/${m.id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           title={m.is_draft ? "Publish" : "Unpublish"}
                           onClick={() => handleToggleDraft(m.id, m.is_draft)}
                         >
-                          {m.is_draft ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                          {m.is_draft ? <Eye className="h-4 w-4 text-green-600" /> : <EyeOff className="h-4 w-4" />}
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
