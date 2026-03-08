@@ -19,6 +19,7 @@ interface GalleryItem {
 const CreateMemorial = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const [form, setForm] = useState({
