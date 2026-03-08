@@ -45,7 +45,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
 
     if (selected.tier !== "base") {
       toast.info("Stripe payment coming soon!", {
-        description: `The "${selected.name}" tribute at €${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
+        description: `The "${selected.name}" tribute at $${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
       });
       return;
     }
