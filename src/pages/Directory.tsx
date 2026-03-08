@@ -325,7 +325,8 @@ const Directory = () => {
             <div className="mt-3 flex items-center justify-end gap-2">
               <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+                aria-label="Sort memorials"
+                className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 <option value="recent">Most Recent</option>
                 <option value="updated">Recently Updated</option>
                 <option value="alpha">Alphabetical</option>
