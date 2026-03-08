@@ -162,7 +162,7 @@ const PricingPage = () => {
                   className={`relative flex flex-col ${plan.popular ? "border-2 border-primary shadow-lg" : "border-border"}`}
                 >
                   {(plan as any).badge && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white">
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
                       {(plan as any).badge}
                     </Badge>
                   )}
