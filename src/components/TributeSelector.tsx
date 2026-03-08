@@ -128,7 +128,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
             message,
             item_type: selected.name,
             tier: selected.tier,
-            price: selected.price,
+            // price is resolved server-side from store_items
             return_url: window.location.href.split("?")[0],
           },
         });
