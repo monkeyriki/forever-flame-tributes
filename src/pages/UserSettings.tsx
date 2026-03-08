@@ -23,9 +23,40 @@ const UserSettings = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [deletingMemorialId, setDeletingMemorialId] = useState<string | null>(null);
+
+  const { data: memorials = [], isLoading: memorialsLoading } = useQuery({
+    queryKey: ["user-memorials", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("memorials")
+        .select("id, first_name, last_name, type, created_at, is_draft, visibility")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
+  const handleDeleteMemorial = async (memorialId: string) => {
+    setDeletingMemorialId(memorialId);
+    try {
+      await supabase.from("tributes").delete().eq("memorial_id", memorialId);
+      await supabase.from("memorial_images").delete().eq("memorial_id", memorialId);
+      const { error } = await supabase.from("memorials").delete().eq("id", memorialId);
+      if (error) throw error;
+      sonnerToast.success("Memorial deleted");
+      queryClient.invalidateQueries({ queryKey: ["user-memorials"] });
+    } catch {
+      sonnerToast.error("Failed to delete memorial");
+    } finally {
+      setDeletingMemorialId(null);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (confirmText !== "DELETE") return;
