@@ -129,13 +129,15 @@ const Directory = () => {
             <div className="mb-2 flex items-center justify-center gap-2">
               <a
                 href="/directory/human"
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                aria-current={isHuman ? "page" : undefined}
               >
                 🕊️ People
               </a>
               <a
                 href="/directory/pet"
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${!isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${!isHuman ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                aria-current={!isHuman ? "page" : undefined}
               >
                 🐾 Pets
               </a>
@@ -143,6 +145,27 @@ const Directory = () => {
             <p className="text-muted-foreground">
               {filtered.length} {filtered.length === 1 ? "memorial found" : "memorials found"}
             </p>
+
+            {/* Quick tag filters - always visible */}
+            {allTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap justify-center gap-1.5" role="group" aria-label="Filter by tag">
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 ${
+                      selectedTags.includes(tag)
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    }`}
+                    aria-pressed={selectedTags.includes(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mx-auto mb-10 max-w-2xl">
