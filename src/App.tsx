@@ -35,6 +35,7 @@ const App = () => (
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/create" element={<CreateMemorial />} />
+              <Route path="/memorial/:id/edit" element={<EditMemorial />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/settings" element={<UserSettings />} />
