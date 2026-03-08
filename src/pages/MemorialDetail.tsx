@@ -37,8 +37,10 @@ const getVideoEmbedUrl = (url: string): string | null => {
 const MemorialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showQr, setShowQr] = useState(false);
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
   const { data: memorial, isLoading } = useQuery({
