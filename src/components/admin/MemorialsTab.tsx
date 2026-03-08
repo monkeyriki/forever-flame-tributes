@@ -110,13 +110,23 @@ const MemorialsTab = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
+                        <Button variant="ghost" size="icon" asChild title="Edit memorial">
+                          <Link to={`/memorial/${m.id}/edit`}>
+                            <Pencil className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button variant="ghost" size="icon" asChild title="View memorial">
+                          <Link to={`/memorial/${m.id}`}>
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           title={m.is_draft ? "Publish" : "Unpublish"}
                           onClick={() => handleToggleDraft(m.id, m.is_draft)}
                         >
-                          {m.is_draft ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                          {m.is_draft ? <Eye className="h-4 w-4 text-green-600" /> : <EyeOff className="h-4 w-4" />}
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
