@@ -61,7 +61,7 @@ const Directory = () => {
     );
   };
 
-  useEffect(() => { setPage(1); }, [query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy, type]);
+  useEffect(() => { setPage(1); }, [query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, selectedTags, sortBy, type]);
 
   const { data: dbMemorials = [], isLoading } = useQuery({
     queryKey: ["directory", memorialType],
