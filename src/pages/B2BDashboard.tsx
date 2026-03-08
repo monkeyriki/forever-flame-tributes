@@ -189,9 +189,13 @@ const B2BDashboard = () => {
             <p className="text-muted-foreground font-sans">Manage your agency's memorials</p>
           </div>
           <div className="flex gap-3 flex-wrap">
-            {hasSubscription && (
+            {hasSubscription ? (
               <Button variant="outline" onClick={handleManageSubscription}>
                 <Settings className="mr-2 h-4 w-4" />Manage Subscription
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={() => (window.location.href = "/pricing")}>
+                <Settings className="mr-2 h-4 w-4" />Upgrade Plan
               </Button>
             )}
             <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
