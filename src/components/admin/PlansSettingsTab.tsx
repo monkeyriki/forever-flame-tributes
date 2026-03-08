@@ -92,7 +92,7 @@ const PlansSettingsTab = () => {
                 <Input type="number" step="0.01" value={premiumPrice} onChange={(e) => setPremiumPrice(e.target.value)} />
               </div>
               <div>
-                <Label>Lifetime price (€)</Label>
+                <Label>Lifetime price ($)</Label>
                 <Input type="number" step="0.01" value={lifetimePrice} onChange={(e) => setLifetimePrice(e.target.value)} />
               </div>
             </div>
