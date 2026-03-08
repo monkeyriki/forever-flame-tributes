@@ -388,7 +388,32 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      memorial_views_safe: {
+        Row: {
+          id: string | null
+          memorial_id: string | null
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string | null
+          memorial_id?: string | null
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string | null
+          memorial_id?: string | null
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memorial_views_memorial_id_fkey"
+            columns: ["memorial_id"]
+            isOneToOne: false
+            referencedRelation: "memorials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       admin_approve_tribute: {
