@@ -75,6 +75,13 @@ const Directory = () => {
     },
   });
 
+  // Collect all unique tags from memorials for chip display
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    dbMemorials.forEach((m) => m.tags.forEach((t) => tagSet.add(t)));
+    return Array.from(tagSet).sort();
+  }, [dbMemorials]);
+
   const filtered = useMemo(() => {
     let result = dbMemorials.filter((m) => {
       const fullName = `${m.firstName} ${m.lastName}`.toLowerCase();
