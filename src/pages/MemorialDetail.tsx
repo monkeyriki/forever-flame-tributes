@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Calendar, MessageSquare, Share2,
-  QrCode, ChevronLeft, Download, X, Play, Trash2
+  QrCode, ChevronLeft, Download, X, Play, Trash2, Pencil
 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
@@ -259,6 +259,14 @@ const MemorialDetail = () => {
                 >
                   <QrCode className="h-4 w-4" /> QR Code
                 </button>
+
+                {isOwner && (
+                  <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                    <Link to={`/memorial/${memorial.id}/edit`}>
+                      <Pencil className="h-4 w-4" /> Edit
+                    </Link>
+                  </Button>
+                )}
 
                 {isOwner && (
                   <AlertDialog>

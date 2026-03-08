@@ -10,6 +10,7 @@ import Directory from "./pages/Directory";
 import MemorialDetail from "./pages/MemorialDetail";
 import Auth from "./pages/Auth";
 import CreateMemorial from "./pages/CreateMemorial";
+import EditMemorial from "./pages/EditMemorial";
 import B2BDashboard from "./pages/B2BDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/create" element={<CreateMemorial />} />
+              <Route path="/memorial/:id/edit" element={<EditMemorial />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/settings" element={<UserSettings />} />
