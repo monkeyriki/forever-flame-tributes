@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image } from "lucide-react";
+import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image, Settings } from "lucide-react";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 
@@ -165,6 +165,20 @@ const B2BDashboard = () => {
     window.location.href = "/create";
   };
 
+  const handleManageSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast({ title: "Not authenticated", variant: "destructive" }); return; }
+      const { data, error } = await supabase.functions.invoke("customer-portal", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error || !data?.url) throw new Error(data?.error || "Failed to open portal");
+      window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+
   return (
     <Layout>
       <Helmet><title>B2B Dashboard — Eternal Memory</title></Helmet>
@@ -174,7 +188,12 @@ const B2BDashboard = () => {
             <h1 className="text-3xl font-bold text-foreground">Partner Dashboard</h1>
             <p className="text-muted-foreground font-sans">Manage your agency's memorials</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            {hasSubscription && (
+              <Button variant="outline" onClick={handleManageSubscription}>
+                <Settings className="mr-2 h-4 w-4" />Manage Subscription
+              </Button>
+            )}
             <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
               <Upload className="mr-2 h-4 w-4" />Import CSV
             </Button>
