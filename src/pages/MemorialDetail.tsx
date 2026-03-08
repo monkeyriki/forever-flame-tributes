@@ -19,6 +19,11 @@ import MemorialGallery from "@/components/MemorialGallery";
 import { SkeletonMemorialDetail } from "@/components/SkeletonLoaders";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 const getVideoEmbedUrl = (url: string): string | null => {
   if (!url) return null;
