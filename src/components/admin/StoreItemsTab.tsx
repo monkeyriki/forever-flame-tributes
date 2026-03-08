@@ -141,7 +141,7 @@ const StoreItemsTab = () => {
                       ) : (<span className="text-2xl">{item.emoji}</span>)}
                     </TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>€{Number(item.price).toFixed(2)}</TableCell>
+                    <TableCell>${Number(item.price).toFixed(2)}</TableCell>
                     <TableCell><Badge variant={item.tier === "premium" ? "default" : "outline"}>{item.tier}</Badge></TableCell>
                     <TableCell><Switch checked={item.is_active} onCheckedChange={(v) => toggleMutation.mutate({ id: item.id, is_active: v })} /></TableCell>
                     <TableCell className="text-right space-x-1">
