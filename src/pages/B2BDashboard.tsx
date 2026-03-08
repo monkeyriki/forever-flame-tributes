@@ -81,6 +81,7 @@ const B2BDashboard = () => {
 
   const totalMemorials = memorials.length;
   const totalTributes = Object.values(tributeCounts).reduce((sum, c) => sum + c, 0);
+  const totalViews = Object.values(viewCounts).reduce((sum, c) => sum + c, 0);
   const publishedCount = memorials.filter((m) => !m.is_draft).length;
   const { subscribed: hasSubscription, plan, subscriptionEnd } = useSubscription();
   const isAtLimit = !hasSubscription && totalMemorials >= B2B_FREE_LIMIT;
