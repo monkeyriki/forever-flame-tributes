@@ -10,6 +10,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Map Stripe product IDs to plan names
+const PRODUCT_TO_PLAN: Record<string, string> = {
+  "prod_U71fHmvktOBUbq": "premium",
+  "prod_U71guBVwU3pjGw": "premium",
+  "prod_U71i7jaxAId6re": "business",
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -24,7 +31,6 @@ Deno.serve(async (req) => {
     if (endpointSecret && signature) {
       event = await stripe.webhooks.constructEventAsync(body, signature, endpointSecret);
     } else {
-      // Fallback for dev/testing without webhook secret
       event = JSON.parse(body);
     }
   } catch (err) {
@@ -41,9 +47,10 @@ Deno.serve(async (req) => {
     const session = event.data.object as Stripe.Checkout.Session;
     const tributeId = session.metadata?.tribute_id;
     const memorialId = session.metadata?.memorial_id;
+    const userId = session.metadata?.supabase_user_id;
 
     if (tributeId) {
-      // Mark tribute as paid and approved
+      // === TRIBUTE PAYMENT ===
       const { error: updateError } = await supabase
         .from("tributes")
         .update({
@@ -53,21 +60,49 @@ Deno.serve(async (req) => {
         })
         .eq("id", tributeId);
 
-      if (updateError) {
-        console.error("Failed to update tribute:", updateError);
-      }
+      if (updateError) console.error("Failed to update tribute:", updateError);
 
-      // Record transaction
       const amount = (session.amount_total || 0) / 100;
       await supabase.from("transactions").insert({
         type: "tribute",
         amount,
         tribute_id: tributeId,
-        memorial_id: memorialId,
+        memorial_id: memorialId || null,
         description: `Paid tribute`,
       });
 
       console.log(`Tribute ${tributeId} marked as paid ($${amount})`);
+    } else if (userId) {
+      // === PLAN UPGRADE ===
+      // Determine which plan was purchased
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 5 });
+      let planName = "premium";
+
+      for (const item of lineItems.data) {
+        const productId = item.price?.product as string;
+        if (productId && PRODUCT_TO_PLAN[productId]) {
+          planName = PRODUCT_TO_PLAN[productId];
+        }
+      }
+
+      // Update all user's memorials to the new plan
+      const { error: memError } = await supabase
+        .from("memorials")
+        .update({ plan: planName })
+        .eq("user_id", userId);
+
+      if (memError) console.error("Failed to update memorials plan:", memError);
+
+      // Record transaction
+      const amount = (session.amount_total || 0) / 100;
+      await supabase.from("transactions").insert({
+        type: "plan_upgrade",
+        amount,
+        user_id: userId,
+        description: `Plan upgrade to ${planName}`,
+      });
+
+      console.log(`User ${userId} upgraded to ${planName} ($${amount})`);
     }
   }
 
