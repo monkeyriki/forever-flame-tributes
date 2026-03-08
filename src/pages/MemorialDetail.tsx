@@ -140,6 +140,24 @@ const MemorialDetail = () => {
 
   const isOwner = !!user && user.id === memorial.user_id;
 
+  const handleDeleteMemorial = async () => {
+    if (!memorial) return;
+    setDeleting(true);
+    try {
+      // Delete related data first
+      await supabase.from("tributes").delete().eq("memorial_id", memorial.id);
+      await supabase.from("memorial_images").delete().eq("memorial_id", memorial.id);
+      const { error } = await supabase.from("memorials").delete().eq("id", memorial.id);
+      if (error) throw error;
+      toast.success("Memorial deleted");
+      navigate(`/directory/${memorial.type}`);
+    } catch (e: any) {
+      toast.error("Failed to delete memorial");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const fullName = memorial.last_name
     ? `${memorial.first_name} ${memorial.last_name}`
     : memorial.first_name;
