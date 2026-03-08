@@ -399,6 +399,18 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
+      get_memorial_view_count: {
+        Args: { _memorial_id: string }
+        Returns: number
+      }
+      get_my_memorial_views: {
+        Args: { _memorial_id: string }
+        Returns: {
+          id: string
+          memorial_id: string
+          viewed_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

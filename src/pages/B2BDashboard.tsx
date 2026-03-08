@@ -74,10 +74,11 @@ const B2BDashboard = () => {
     queryFn: async () => {
       const ids = memorials.map((m) => m.id);
       if (ids.length === 0) return {};
-      const { data, error } = await supabase.from("memorial_views" as any).select("memorial_id").in("memorial_id", ids);
-      if (error) throw error;
       const counts: Record<string, number> = {};
-      (data as any[]).forEach((v: any) => { counts[v.memorial_id] = (counts[v.memorial_id] || 0) + 1; });
+      await Promise.all(ids.map(async (mid) => {
+        const { data, error } = await supabase.rpc("get_memorial_view_count", { _memorial_id: mid });
+        if (!error && data != null) counts[mid] = Number(data);
+      }));
       return counts;
     },
     enabled: memorials.length > 0,
