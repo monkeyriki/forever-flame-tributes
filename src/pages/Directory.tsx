@@ -230,6 +230,24 @@ const Directory = () => {
                     placeholder={isHuman ? "e.g. Veteran, Musician, Teacher" : "e.g. Golden Retriever, Labrador"}
                     className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   />
+                  {allTags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {allTags.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => toggleTag(tag)}
+                          className={`rounded-full px-2.5 py-1 text-xs transition-colors ${
+                            selectedTags.includes(tag)
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
