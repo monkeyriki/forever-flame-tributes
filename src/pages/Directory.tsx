@@ -109,7 +109,7 @@ const Directory = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return result;
-  }, [dbMemorials, query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, sortBy]);
+  }, [dbMemorials, query, city, state, yearBirthFilter, yearDeathFilter, tagFilter, selectedTags, sortBy]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
