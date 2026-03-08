@@ -147,11 +147,12 @@ const Directory = () => {
 
           <div className="mx-auto mb-10 max-w-2xl">
             {/* Search Bar */}
-            <div className="flex items-center gap-2 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
-              <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
+            <div role="search" aria-label="Search memorials" className="flex items-center gap-2 overflow-hidden rounded-lg border border-border bg-card shadow-soft">
+              <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
               <input
                 type="text" value={query} onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by name..."
+                aria-label="Search memorials by name"
                 className="flex-1 bg-transparent px-2 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               <button
