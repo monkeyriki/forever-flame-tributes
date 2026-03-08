@@ -36,7 +36,7 @@ const HeroSection = () => {
           Preserve and share the memories of your loved ones
         </p>
 
-        <form onSubmit={handleSearch} className="bg-card/80 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg max-w-2xl mx-auto">
+        <form onSubmit={handleStart} className="bg-card/80 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground mb-4 text-left">
             I want to share the memories of
           </p>
