@@ -1,9 +1,10 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import flameIcon from "@/assets/flame-icon.png";
 
-const Footer = () => {
+const Footer = React.forwardRef<HTMLElement>((_, ref) => {
   return (
-    <footer role="contentinfo" className="border-t border-border bg-card">
+    <footer ref={ref} role="contentinfo" className="border-t border-border bg-card">
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-10 md:grid-cols-3">
           {/* Brand */}
@@ -55,6 +56,8 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";
 
 export default Footer;

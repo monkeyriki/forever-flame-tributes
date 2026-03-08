@@ -1,3 +1,4 @@
+import React from "react";
 import { Quote } from "lucide-react";
 
 const testimonials = [
@@ -18,9 +19,9 @@ const testimonials = [
   },
 ];
 
-const TestimonialsSection = () => {
+const TestimonialsSection = React.forwardRef<HTMLElement>((_, ref) => {
   return (
-    <section id="testimonials" className="py-20 bg-background">
+    <section ref={ref} id="testimonials" className="py-20 bg-background">
       <div className="container max-w-5xl">
         <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-foreground mb-14 uppercase tracking-wide">
           Testimonials
@@ -47,6 +48,8 @@ const TestimonialsSection = () => {
       </div>
     </section>
   );
-};
+});
+
+TestimonialsSection.displayName = "TestimonialsSection";
 
 export default TestimonialsSection;
