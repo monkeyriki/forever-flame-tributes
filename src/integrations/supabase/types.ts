@@ -406,6 +406,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      verify_memorial_password: {
+        Args: { _attempt: string; _memorial_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "registered" | "b2b_partner" | "admin"
