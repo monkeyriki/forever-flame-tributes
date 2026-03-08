@@ -2,19 +2,19 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
-    text: "Questo memoriale ci ha permesso di riunire i ricordi di tutta la famiglia in un unico posto. È diventato il nostro luogo speciale per ricordare.",
-    author: "Lucia M.",
-    relation: "Figlia",
+    text: "This memorial allowed us to gather our family's memories in one place. It has become our special space to remember.",
+    author: "Lucy M.",
+    relation: "Daughter",
   },
   {
-    text: "Anche amici lontani hanno potuto lasciare un tributo. È stato commovente vedere quante persone lo ricordavano con affetto.",
-    author: "Roberto C.",
-    relation: "Marito",
+    text: "Even distant friends were able to leave a tribute. It was touching to see how many people remembered him with love.",
+    author: "Robert C.",
+    relation: "Husband",
   },
   {
-    text: "La facilità di utilizzo è incredibile. In pochi minuti avevo già creato un memoriale bellissimo per mia nonna.",
-    author: "Sara T.",
-    relation: "Nipote",
+    text: "The ease of use is incredible. In just a few minutes I had already created a beautiful memorial for my grandmother.",
+    author: "Sarah T.",
+    relation: "Granddaughter",
   },
 ];
 
@@ -23,7 +23,7 @@ const TestimonialsSection = () => {
     <section id="testimonials" className="py-20 bg-background">
       <div className="container max-w-5xl">
         <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-foreground mb-14 uppercase tracking-wide">
-          Testimonianze
+          Testimonials
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t) => (

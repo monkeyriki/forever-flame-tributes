@@ -3,33 +3,33 @@ import { Heart, Image, MessageSquare, Shield, Share2, Clock } from "lucide-react
 const features = [
   {
     icon: Heart,
-    title: "Tributi e Messaggi",
-    desc: "Amici e familiari possono lasciare messaggi, condoglianze e ricordi condivisi.",
+    title: "Tributes & Messages",
+    desc: "Friends and family can leave messages, condolences, and shared memories.",
   },
   {
     icon: Image,
-    title: "Galleria Fotografica",
-    desc: "Carica e organizza foto e video per preservare i momenti più preziosi.",
+    title: "Photo Gallery",
+    desc: "Upload and organize photos and videos to preserve the most precious moments.",
   },
   {
     icon: MessageSquare,
-    title: "Biografia Completa",
-    desc: "Racconta la storia della vita con una timeline interattiva e dettagliata.",
+    title: "Full Biography",
+    desc: "Tell the life story with an interactive and detailed timeline.",
   },
   {
     icon: Share2,
-    title: "Condivisione Facile",
-    desc: "Condividi il memoriale con familiari e amici attraverso qualsiasi canale.",
+    title: "Easy Sharing",
+    desc: "Share the memorial with family and friends through any channel.",
   },
   {
     icon: Shield,
-    title: "Privacy e Sicurezza",
-    desc: "Controlla chi può vedere e contribuire al memoriale con impostazioni di privacy.",
+    title: "Privacy & Security",
+    desc: "Control who can view and contribute to the memorial with privacy settings.",
   },
   {
     icon: Clock,
-    title: "Online Per Sempre",
-    desc: "Il memoriale rimarrà online per sempre, preservando i ricordi nel tempo.",
+    title: "Online Forever",
+    desc: "The memorial will stay online forever, preserving memories through time.",
   },
 ];
 
@@ -38,10 +38,10 @@ const FeaturesSection = () => {
     <section id="features" className="py-20 bg-secondary">
       <div className="container">
         <h2 className="font-display text-3xl md:text-4xl font-bold text-center text-foreground mb-4 uppercase tracking-wide">
-          Funzionalità
+          Features
         </h2>
         <p className="text-center text-muted-foreground mb-14 max-w-xl mx-auto">
-          Tutto ciò di cui hai bisogno per creare un memoriale significativo e duraturo.
+          Everything you need to create a meaningful and lasting memorial.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((f) => (

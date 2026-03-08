@@ -29,29 +29,29 @@ const HeroSection = () => {
 
       <div className="relative z-10 container max-w-3xl text-center py-20 animate-fade-up">
         <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
-          Crea un Memoriale Online
+          Create an Online Memorial
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground mb-10 tracking-wide uppercase font-light">
-          Preserva e condividi i ricordi delle persone care
+          Preserve and share the memories of your loved ones
         </p>
 
         <form onSubmit={handleSearch} className="bg-card/80 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-lg max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground mb-4 text-left">
-            Voglio condividere i ricordi di
+            I want to share the memories of
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Input
               type="text"
-              placeholder="Nome"
+              placeholder="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="bg-background border-border"
             />
             <Input
               type="text"
-              placeholder="Cognome"
+              placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="bg-background border-border"
@@ -60,7 +60,7 @@ const HeroSection = () => {
               type="submit"
               className="shrink-0 gap-1 uppercase tracking-wider text-sm font-semibold px-8"
             >
-              Inizia <ChevronRight className="h-4 w-4" />
+              Start <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </form>
@@ -69,7 +69,7 @@ const HeroSection = () => {
           href="#memorials"
           className="inline-flex items-center gap-1 mt-6 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          Scopri i memoriali online <ChevronRight className="h-4 w-4" />
+          Discover online memorials <ChevronRight className="h-4 w-4" />
         </a>
       </div>
     </section>

@@ -18,10 +18,10 @@ const Header = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/#about", label: "Chi Siamo", isAnchor: true },
-    { to: "/directory/human", label: "Memoriali" },
-    { to: "/#features", label: "Funzionalità", isAnchor: true },
-    { to: "/#testimonials", label: "Testimonianze", isAnchor: true },
+    { to: "/#about", label: "About Us", isAnchor: true },
+    { to: "/directory/human", label: "Memorials" },
+    { to: "/#features", label: "Features", isAnchor: true },
+    { to: "/#testimonials", label: "Testimonials", isAnchor: true },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -58,7 +58,7 @@ const Header = () => {
             className="h-8 w-8 animate-flame-flicker"
           />
           <span className="font-display text-xl font-bold tracking-wide text-foreground">
-            Per Sempre <span className="text-primary">Ricordati</span>
+            Eternal <span className="text-primary">Embrace</span>
           </span>
         </Link>
 
@@ -83,7 +83,7 @@ const Header = () => {
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Cerca un memoriale..."
+              placeholder="Search a memorial..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-9 w-40 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -115,12 +115,12 @@ const Header = () => {
                 <Settings className="h-4 w-4" />
               </Link>
               <Button onClick={handleCreateClick} size="sm">
-                Crea Memoriale
+                Create Memorial
               </Button>
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                title="Esci"
+                title="Sign Out"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -128,7 +128,7 @@ const Header = () => {
           ) : (
             <Button variant="outline" size="sm" asChild>
               <Link to="/auth">
-                <User className="h-4 w-4 mr-1" /> Accedi
+                <User className="h-4 w-4 mr-1" /> Sign In
               </Link>
             </Button>
           )}
@@ -182,19 +182,19 @@ const Header = () => {
                     </Link>
                   )}
                   <Button onClick={() => { setIsMenuOpen(false); handleCreateClick(); }} className="mt-1">
-                    Crea Memoriale
+                    Create Memorial
                   </Button>
                   <button
                     onClick={() => { setIsMenuOpen(false); handleSignOut(); }}
                     className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
                   >
-                    Esci
+                    Sign Out
                   </button>
                 </>
               ) : (
                 <Button variant="outline" asChild className="mt-1">
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                    <User className="h-4 w-4 mr-1" /> Accedi
+                    <User className="h-4 w-4 mr-1" /> Sign In
                   </Link>
                 </Button>
               )}
