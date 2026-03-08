@@ -151,7 +151,7 @@ const PricingPage = () => {
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {plans.map((plan) => {
               const isCurrent = isCurrentPlan(plan.key);
               const isUpgradeable = plan.key !== "free" && !isCurrent;
