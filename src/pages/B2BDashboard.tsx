@@ -340,12 +340,33 @@ const B2BDashboard = () => {
                         <TableCell>{viewCounts[m.id] || 0}</TableCell>
                         <TableCell>{format(new Date(m.created_at), "dd MMM yyyy", { locale: enUS })}</TableCell>
                         <TableCell className="text-right space-x-2">
-                          <Button size="icon" variant="ghost" onClick={() => (window.location.href = `/memorial/${m.id}`)}>
+                          <Button size="icon" variant="ghost" onClick={() => (window.location.href = `/memorial/${m.id}`)} aria-label={`View ${m.first_name} ${m.last_name}`}>
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(m.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="icon" variant="ghost" aria-label={`Delete ${m.first_name} ${m.last_name}`}>
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete memorial?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete {m.first_name} {m.last_name}'s memorial and all associated data.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteMutation.mutate(m.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete permanently
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </TableCell>
                       </TableRow>
                     ))}

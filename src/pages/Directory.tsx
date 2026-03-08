@@ -196,7 +196,7 @@ const Directory = () => {
 
             {/* Filter Panel */}
             {showFilters && (
-              <div className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4 shadow-soft">
+              <div id="filter-panel" className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4 shadow-soft">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-foreground">Advanced Filters</h3>
                   {hasActiveFilters && (
