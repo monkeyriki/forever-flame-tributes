@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send, Mail } from "lucide-react";
+import { Send, Mail, Loader2 } from "lucide-react";
 import { tributeTiers, TributeTier } from "@/data/tributeTiers";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -39,18 +39,64 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     }).then(setProfanityWords);
   }, []);
 
+  // Check for payment return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      toast.success("Payment successful! Your tribute has been added.");
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment");
+      url.searchParams.delete("tribute_id");
+      window.history.replaceState({}, "", url.toString());
+      onTributeAdded();
+    } else if (params.get("payment") === "cancelled") {
+      toast.info("Payment cancelled.");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [onTributeAdded]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+    setSending(true);
+
+    // For paid tributes, redirect to Stripe Checkout
     if (selected.tier !== "base") {
-      toast.info("Stripe payment coming soon!", {
-        description: `The "${selected.name}" tribute at $${selected.price.toFixed(2)} requires payment. Stripe integration will be available shortly.`,
-      });
-      return;
+      try {
+        const { data, error } = await supabase.functions.invoke("create-checkout", {
+          body: {
+            memorial_id: memorialId,
+            sender_name: senderName.trim() || "Anonymous",
+            sender_email: senderEmail.trim() || null,
+            message,
+            item_type: selected.name,
+            tier: selected.tier,
+            price: selected.price,
+            return_url: window.location.href.split("?")[0],
+          },
+        });
+
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        }
+        throw new Error("No checkout URL returned");
+      } catch (err: any) {
+        console.error("Checkout error:", err);
+        toast.error("Payment failed. Please try again.", {
+          description: err.message,
+        });
+        setSending(false);
+        return;
+      }
     }
 
-    setSending(true);
+    // Free tribute — insert directly
     const isFlagged = checkProfanity(message, profanityWords);
 
     const { error } = await supabase.from("tributes").insert({
@@ -73,7 +119,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         toast.success("Tribute sent!");
       }
 
-      // Fire-and-forget email notification to memorial owner
+      // Fire-and-forget email notifications
       supabase.functions.invoke("notify-tribute", {
         body: {
           tribute_id: null,
@@ -85,7 +131,6 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
         },
       }).catch((err) => console.error("notify-tribute error:", err));
 
-      // Fire-and-forget receipt email to guest
       if (senderEmail.trim()) {
         supabase.functions.invoke("send-receipt", {
           body: {
@@ -170,7 +215,11 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
             type="submit" disabled={sending || !message.trim()}
             className="flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
-            <Send className="h-3.5 w-3.5" />
+            {sending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Send className="h-3.5 w-3.5" />
+            )}
             {selected.tier === "base" ? "Send" : `Pay $${selected.price.toFixed(2)}`}
           </button>
         </div>
