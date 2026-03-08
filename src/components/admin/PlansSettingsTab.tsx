@@ -100,7 +100,7 @@ const PlansSettingsTab = () => {
               <h3 className="font-serif text-lg font-semibold text-foreground">🏢 Business</h3>
               <p className="text-sm text-muted-foreground">For funeral agencies / B2B</p>
               <div>
-                <Label>Annual price (€)</Label>
+                <Label>Annual price ($)</Label>
                 <Input type="number" step="0.01" value={businessPrice} onChange={(e) => setBusinessPrice(e.target.value)} />
               </div>
             </div>

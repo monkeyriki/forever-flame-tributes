@@ -171,7 +171,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
             className="flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             <Send className="h-3.5 w-3.5" />
-            {selected.tier === "base" ? "Send" : `Pay €${selected.price.toFixed(2)}`}
+            {selected.tier === "base" ? "Send" : `Pay $${selected.price.toFixed(2)}`}
           </button>
         </div>
       </form>
