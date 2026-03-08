@@ -42,6 +42,7 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      // Search across both human and pet directories
       navigate(`/directory/human?q=${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
     }

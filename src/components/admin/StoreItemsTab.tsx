@@ -163,7 +163,7 @@ const StoreItemsTab = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} /></div>
-            <div><Label>Price (€)</Label><Input type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></div>
+            <div><Label>Price ($)</Label><Input type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></div>
             <div>
               <Label>Tier</Label>
               <Select value={form.tier} onValueChange={(v) => setForm((f) => ({ ...f, tier: v }))}>
