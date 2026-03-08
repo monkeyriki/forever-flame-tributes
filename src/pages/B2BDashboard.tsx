@@ -333,6 +333,7 @@ const B2BDashboard = () => {
                           )}
                         </TableCell>
                         <TableCell>{tributeCounts[m.id] || 0}</TableCell>
+                        <TableCell>{viewCounts[m.id] || 0}</TableCell>
                         <TableCell>{format(new Date(m.created_at), "dd MMM yyyy", { locale: enUS })}</TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button size="icon" variant="ghost" onClick={() => (window.location.href = `/memorial/${m.id}`)}>
