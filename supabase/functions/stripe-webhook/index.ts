@@ -52,12 +52,25 @@ Deno.serve(async (req) => {
 
     if (tributeId) {
       // === TRIBUTE PAYMENT ===
+      // Look up the tribute to check its tier
+      const { data: tributeRow } = await supabase
+        .from("tributes")
+        .select("tier")
+        .eq("id", tributeId)
+        .single();
+
+      const isPremiumTribute = tributeRow?.tier === "premium";
+      const expiresAt = isPremiumTribute
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
       const { error: updateError } = await supabase
         .from("tributes")
         .update({
           is_paid: true,
           status: "approved",
           stripe_session_id: session.id,
+          ...(expiresAt ? { expires_at: expiresAt } : {}),
         })
         .eq("id", tributeId);
 
