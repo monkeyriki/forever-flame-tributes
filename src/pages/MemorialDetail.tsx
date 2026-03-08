@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   MapPin, Calendar, MessageSquare, Share2,
-  QrCode, ChevronLeft, Download, X, Play, Trash2
+  QrCode, ChevronLeft, Download, X, Play, Trash2, Pencil
 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
