@@ -53,7 +53,7 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
           <img src={flameIcon} alt="Flame" className="h-7 w-7 animate-flame-flicker" />
-          <span className="font-display text-xl font-bold tracking-wide text-foreground">
+          <span className="font-display text-xl font-bold tracking-wide text-foreground" style={{ lineHeight: 1, transform: "translateY(-2px)" }}>
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
