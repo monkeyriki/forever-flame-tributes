@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lock } from "lucide-react";
 
 interface PasswordGateProps {
-  onUnlock: () => void;
+  onUnlock: (password: string) => void;
   memorialName: string;
 }
 
@@ -12,8 +12,7 @@ const PasswordGate = ({ onUnlock, memorialName }: PasswordGateProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.setItem("memorial_pin_attempt", pin);
-    onUnlock();
+    onUnlock(pin);
   };
 
   return (
