@@ -8,6 +8,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import flameIcon from "@/assets/flame-icon.png";
 
+const NAV_LINKS = [
+  { to: "/", label: "Home" },
+  { to: "/#about", label: "About Us", isAnchor: true },
+  { to: "/directory/human", label: "Memorials" },
+  { to: "/directory/pet", label: "Pet Memorials" },
+  { to: "/pricing", label: "Pricing" },
+];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,23 +24,9 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const { isAdmin, isB2B } = useUserRole();
 
-  const navLinks = [
-    { to: "/", label: "Home" },
-    { to: "/#about", label: "About Us", isAnchor: true },
-    { to: "/directory/human", label: "Memorials" },
-    { to: "/directory/pet", label: "Pet Memorials" },
-    { to: "/pricing", label: "Pricing" },
-  ];
-
   const isActive = (path: string) => location.pathname === path;
 
-  const handleCreateClick = () => {
-    if (user) {
-      navigate("/create");
-    } else {
-      navigate("/auth");
-    }
-  };
+  const handleCreateClick = () => navigate(user ? "/create" : "/auth");
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,42 +43,33 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center gap-8 px-4">
-        {/* Logo + Nav grouped for baseline alignment */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link to="/" className="flex shrink-0 items-baseline gap-2" aria-label="Eternal Memory - Home">
-            <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker self-center" />
-            <span className="font-display text-xl font-bold tracking-wide text-foreground" style={{ lineHeight: '1' }}>
-              Eternal <span className="text-primary">Memory</span>
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <nav aria-label="Main navigation" className="flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`whitespace-nowrap font-body text-sm tracking-wide transition-colors hover:text-primary ${
-                  isActive(link.to) ? "text-primary font-medium" : "text-muted-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        {/* Mobile logo */}
-        <Link to="/" className="flex shrink-0 items-center gap-2 md:hidden" aria-label="Eternal Memory - Home">
-          <img src={flameIcon} alt="Flame" className="h-7 w-7 animate-flame-flicker" />
+      {/* ── Main bar ── */}
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
+        {/* LEFT – Logo */}
+        <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Eternal Memory - Home">
+          <img src={flameIcon} alt="" className="h-6 w-6 animate-flame-flicker" />
           <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none">
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
 
-        {/* Desktop right side */}
-        <div className="hidden md:flex items-center gap-3 ml-auto">
+        {/* CENTER – Desktop nav */}
+        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-6">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`text-sm font-medium tracking-wide transition-colors hover:text-primary whitespace-nowrap ${
+                isActive(link.to) ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* RIGHT – Search + actions (desktop) */}
+        <div className="hidden md:flex items-center gap-3 shrink-0">
           <form
             onSubmit={handleSearch}
             role="search"
@@ -94,64 +79,44 @@ const Header = () => {
             <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
               type="text"
-              placeholder="Search a memorial..."
+              placeholder="Search…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 w-40 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-9 w-36 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </form>
 
           {user ? (
             <>
               {(isB2B || isAdmin) && (
-                <Link
-                  to="/dashboard/b2b"
-                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  aria-label="Partner Dashboard"
-                >
+                <Link to="/dashboard/b2b" className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Partner Dashboard">
                   <LayoutDashboard className="h-4 w-4" />
                 </Link>
               )}
               {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  aria-label="Admin Panel"
-                >
+                <Link to="/admin" className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Admin Panel">
                   <Shield className="h-4 w-4" />
                 </Link>
               )}
-              <Link
-                to="/settings"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label="Account Settings"
-              >
+              <Link to="/settings" className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Account Settings">
                 <Settings className="h-4 w-4" />
               </Link>
-              <Button onClick={handleCreateClick} size="sm">
-                Create Memorial
-              </Button>
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                title="Sign Out"
-              >
+              <Button onClick={handleCreateClick} size="sm">Create Memorial</Button>
+              <button onClick={handleSignOut} className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground" title="Sign Out">
                 <LogOut className="h-4 w-4" />
               </button>
             </>
           ) : (
             <Button variant="outline" size="sm" asChild>
-              <Link to="/auth">
-                <User className="h-4 w-4 mr-1" /> Sign In
-              </Link>
+              <Link to="/auth"><User className="h-4 w-4 mr-1" /> Sign In</Link>
             </Button>
           )}
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile hamburger */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="ml-auto text-foreground md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+          className="ml-auto md:hidden rounded-md p-2 text-foreground"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
@@ -159,67 +124,47 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* ── Mobile drawer ── */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border bg-background md:hidden"
+            className="border-t border-border bg-background md:hidden overflow-hidden"
           >
-            <nav aria-label="Mobile navigation" className="container mx-auto flex flex-col gap-1 px-4 py-4">
-              {navLinks.map((link) => (
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-1 px-6 py-4">
+              {NAV_LINKS.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
                   onClick={() => setIsMenuOpen(false)}
                   className={`rounded-md px-3 py-2.5 text-sm transition-colors ${
-                    isActive(link.to)
-                      ? "bg-secondary text-primary font-medium"
-                      : "text-muted-foreground hover:bg-secondary"
+                    isActive(link.to) ? "bg-secondary text-primary font-medium" : "text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
+
               <div className="golden-divider my-2" />
+
               {user ? (
                 <>
                   {(isB2B || isAdmin) && (
-                    <Link
-                      to="/dashboard/b2b"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/dashboard/b2b" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       📊 Dashboard
                     </Link>
                   )}
                   {isAdmin && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       🛡️ Admin
                     </Link>
                   )}
-                  <Button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleCreateClick();
-                    }}
-                    className="mt-1"
-                  >
+                  <Button onClick={() => { setIsMenuOpen(false); handleCreateClick(); }} className="mt-1">
                     Create Memorial
                   </Button>
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleSignOut();
-                    }}
-                    className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
-                  >
+                  <button onClick={() => { setIsMenuOpen(false); handleSignOut(); }} className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary">
                     Sign Out
                   </button>
                 </>
