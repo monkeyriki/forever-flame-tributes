@@ -170,6 +170,8 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded, requireApprova
     } else {
       if (isFlagged) {
         toast.info("Your tribute is pending review by a moderator.");
+      } else if (requireApproval) {
+        toast.info("Your tribute is awaiting approval by the memorial owner.");
       } else {
         toast.success("Tribute sent!");
       }
