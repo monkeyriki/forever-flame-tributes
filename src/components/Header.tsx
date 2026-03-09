@@ -52,9 +52,9 @@ const Header = () => {
       <div className="container mx-auto flex h-16 items-center gap-8 px-4">
         {/* Logo + Nav grouped for baseline alignment */}
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
-            <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker" />
-            <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none" style={{ transform: 'translateY(1px)' }}>
+          <Link to="/" className="flex shrink-0 items-baseline gap-2" aria-label="Eternal Memory - Home">
+            <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker self-center" />
+            <span className="font-display text-xl font-bold tracking-wide text-foreground" style={{ lineHeight: '1' }}>
               Eternal <span className="text-primary">Memory</span>
             </span>
           </Link>
@@ -65,7 +65,7 @@ const Header = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`whitespace-nowrap font-body text-sm leading-none tracking-wide transition-colors hover:text-primary ${
+                className={`whitespace-nowrap font-body text-sm tracking-wide transition-colors hover:text-primary ${
                   isActive(link.to) ? "text-primary font-medium" : "text-muted-foreground"
                 }`}
               >
