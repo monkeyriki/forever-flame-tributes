@@ -138,7 +138,7 @@ const MemorialDetail = () => {
     return (
       <Layout>
         <PasswordGate
-141:           memorialName={name}
+memorialName={name}
           onUnlock={async (password: string) => {
             const { data, error } = await supabase.rpc("verify_memorial_password", {
               _memorial_id: id!,
