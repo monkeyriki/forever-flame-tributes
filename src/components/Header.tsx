@@ -53,7 +53,7 @@ const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex shrink-0 gap-2" style={{ alignItems: 'center' }} aria-label="Eternal Memory - Home">
           <img src={flameIcon} alt="Flame" className="h-7 w-7 animate-flame-flicker" />
-          <span className="font-display text-xl font-bold leading-none tracking-wide text-foreground" style={{ position: 'relative', top: '2px' }}>
+          <span className="font-display text-xl font-bold leading-none tracking-wide text-foreground" style={{ position: 'relative', top: '4px' }}>
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
