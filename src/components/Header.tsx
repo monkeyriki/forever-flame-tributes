@@ -51,17 +51,17 @@ const Header = () => {
         }}
       >
         {/* COLONNA 1 — Logo (allineato a sinistra) */}
-        <div className="flex items-center gap-2.5">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <img
             src={flameIcon}
             alt=""
-            className="h-7 w-7 animate-flame-flicker flex-shrink-0"
-            style={{ display: "block" }}
+            className="animate-flame-flicker"
+            style={{ display: "block", width: "22px", height: "22px", flexShrink: 0 }}
           />
           <Link
             to="/"
             className="font-display font-bold tracking-wide text-foreground whitespace-nowrap"
-            style={{ fontSize: "1.2rem", lineHeight: 1 }}
+            style={{ fontSize: "1.15rem", lineHeight: "22px", display: "block" }}
           >
             Eternal <span className="text-primary">Memory</span>
           </Link>
