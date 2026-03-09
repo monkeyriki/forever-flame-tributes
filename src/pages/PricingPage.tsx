@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Check, Crown, Building2, Loader2 } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -10,7 +10,8 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { STRIPE_PLANS, PlanKey } from "@/data/stripePlans";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const plans = [
   {
@@ -91,8 +92,24 @@ const plans = [
 const PricingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { plan: currentPlan, subscribed, lifetime, isLoading: subLoading } = useSubscription();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+  const { plan: currentPlan, subscribed, lifetime, isLoading: subLoading, refetch } = useSubscription();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get("upgrade") === "success") {
+      toast.success("Plan upgraded successfully!");
+      queryClient.invalidateQueries({ queryKey: ["subscription"] });
+      refetch();
+      searchParams.delete("upgrade");
+      setSearchParams(searchParams, { replace: true });
+    } else if (searchParams.get("upgrade") === "cancelled") {
+      toast.info("Upgrade cancelled.");
+      searchParams.delete("upgrade");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   const handleUpgrade = async (planKey: PlanKey) => {
     if (!user) {
