@@ -26,7 +26,10 @@ const Header = () => {
 
   const isActive = (path: string) => location.pathname === path;
   const handleCreate = () => navigate(user ? "/create" : "/auth");
-  const handleSignOut = async () => { await signOut(); navigate("/"); };
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -37,20 +40,34 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      {/* ========== DESKTOP ========== */}
+      {/* ========== DESKTOP — CSS Grid 3 colonne ========== */}
       <div
-        className="hidden md:flex items-center justify-between"
-        style={{ height: 80, paddingInline: "2rem" }}
+        className="hidden md:grid"
+        style={{
+          height: 72,
+          paddingInline: "2rem",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+        }}
       >
-        {/* LEFT – Logo (fixed width so center is truly centered) */}
-        <div className="flex items-center gap-2" style={{ minWidth: 200 }}>
-          <img src={flameIcon} alt="" className="h-7 w-7 animate-flame-flicker" />
-          <Link to="/" className="font-display text-xl font-bold tracking-wide leading-none text-foreground whitespace-nowrap">
+        {/* COLONNA 1 — Logo (allineato a sinistra) */}
+        <div className="flex items-center gap-2.5">
+          <img
+            src={flameIcon}
+            alt=""
+            className="h-7 w-7 animate-flame-flicker flex-shrink-0"
+            style={{ display: "block" }}
+          />
+          <Link
+            to="/"
+            className="font-display font-bold tracking-wide text-foreground whitespace-nowrap"
+            style={{ fontSize: "1.2rem", lineHeight: 1 }}
+          >
             Eternal <span className="text-primary">Memory</span>
           </Link>
         </div>
 
-        {/* CENTER – Nav */}
+        {/* COLONNA 2 — Nav (centrata esattamente) */}
         <nav aria-label="Main navigation" className="flex items-center gap-6">
           {NAV_LINKS.map((link) => (
             <Link
@@ -65,9 +82,13 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* RIGHT – Actions (fixed width to balance logo) */}
-        <div className="flex items-center gap-4 justify-end" style={{ minWidth: 200 }}>
-          <form onSubmit={handleSearch} role="search" className="flex items-center gap-1 rounded-lg border border-border bg-card px-2">
+        {/* COLONNA 3 — Azioni (allineate a destra) */}
+        <div className="flex items-center gap-3 justify-end">
+          <form
+            onSubmit={handleSearch}
+            role="search"
+            className="flex items-center gap-1 rounded-lg border border-border bg-card px-2"
+          >
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <Input
               type="text"
@@ -81,32 +102,73 @@ const Header = () => {
           {user ? (
             <>
               {(isB2B || isAdmin) && (
-                <Link to="/dashboard/b2b" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Dashboard"><LayoutDashboard className="h-4 w-4" /></Link>
+                <Link
+                  to="/dashboard/b2b"
+                  className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  aria-label="Dashboard"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                </Link>
               )}
               {isAdmin && (
-                <Link to="/admin" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Admin"><Shield className="h-4 w-4" /></Link>
+                <Link
+                  to="/admin"
+                  className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  aria-label="Admin"
+                >
+                  <Shield className="h-4 w-4" />
+                </Link>
               )}
-              <Link to="/settings" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Settings"><Settings className="h-4 w-4" /></Link>
-              <Button onClick={handleCreate} size="sm">Create Memorial</Button>
-              <button onClick={handleSignOut} className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" title="Sign Out"><LogOut className="h-4 w-4" /></button>
+              <Link
+                to="/settings"
+                className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                aria-label="Settings"
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
+              <Button onClick={handleCreate} size="sm">
+                Create Memorial
+              </Button>
+              <button
+                onClick={handleSignOut}
+                className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                title="Sign Out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
             </>
           ) : (
             <Button variant="outline" size="sm" asChild>
-              <Link to="/auth"><User className="h-4 w-4 mr-1" /> Sign In</Link>
+              <Link to="/auth">
+                <User className="h-4 w-4 mr-1" /> Sign In
+              </Link>
             </Button>
           )}
         </div>
       </div>
 
       {/* ========== MOBILE BAR ========== */}
-      <div className="flex md:hidden items-center justify-between" style={{ height: 64, paddingInline: "1rem" }}>
+      <div className="flex md:hidden items-center justify-between" style={{ height: 60, paddingInline: "1rem" }}>
         <Link to="/" className="flex items-center gap-2">
-          <img src={flameIcon} alt="" className="h-6 w-6 animate-flame-flicker" />
-          <span className="font-display text-lg font-bold tracking-wide leading-none text-foreground">
+          <img
+            src={flameIcon}
+            alt=""
+            className="h-6 w-6 animate-flame-flicker flex-shrink-0"
+            style={{ display: "block" }}
+          />
+          <span
+            className="font-display font-bold tracking-wide text-foreground whitespace-nowrap"
+            style={{ fontSize: "1.1rem", lineHeight: 1 }}
+          >
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
-        <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-md text-foreground" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="p-2 rounded-md text-foreground"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
           {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
@@ -114,21 +176,73 @@ const Header = () => {
       {/* ========== MOBILE DRAWER ========== */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="border-t border-border bg-background md:hidden overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border-t border-border bg-background md:hidden overflow-hidden"
+          >
             <nav className="flex flex-col gap-1 p-4">
               {NAV_LINKS.map((link) => (
-                <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)} className={`rounded-md px-3 py-2.5 text-sm ${isActive(link.to) ? "bg-secondary text-primary font-medium" : "text-muted-foreground hover:bg-secondary"}`}>{link.label}</Link>
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={`rounded-md px-3 py-2.5 text-sm ${
+                    isActive(link.to)
+                      ? "bg-secondary text-primary font-medium"
+                      : "text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {link.label}
+                </Link>
               ))}
               <div className="golden-divider my-2" />
               {user ? (
                 <>
-                  {(isB2B || isAdmin) && <Link to="/dashboard/b2b" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">📊 Dashboard</Link>}
-                  {isAdmin && <Link to="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">🛡️ Admin</Link>}
-                  <Button onClick={() => { setMenuOpen(false); handleCreate(); }} className="mt-1">Create Memorial</Button>
-                  <button onClick={() => { setMenuOpen(false); handleSignOut(); }} className="mt-1 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">Sign Out</button>
+                  {(isB2B || isAdmin) && (
+                    <Link
+                      to="/dashboard/b2b"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      📊 Dashboard
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
+                      🛡️ Admin
+                    </Link>
+                  )}
+                  <Button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      handleCreate();
+                    }}
+                    className="mt-1"
+                  >
+                    Create Memorial
+                  </Button>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="mt-1 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                  >
+                    Sign Out
+                  </button>
                 </>
               ) : (
-                <Button variant="outline" asChild className="mt-1"><Link to="/auth" onClick={() => setMenuOpen(false)}><User className="h-4 w-4 mr-1" /> Sign In</Link></Button>
+                <Button variant="outline" asChild className="mt-1">
+                  <Link to="/auth" onClick={() => setMenuOpen(false)}>
+                    <User className="h-4 w-4 mr-1" /> Sign In
+                  </Link>
+                </Button>
               )}
             </nav>
           </motion.div>
