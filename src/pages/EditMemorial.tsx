@@ -37,6 +37,7 @@ const EditMemorial = () => {
     video_url: "",
     password_hash: "",
     is_draft: true,
+    require_tribute_approval: false,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
