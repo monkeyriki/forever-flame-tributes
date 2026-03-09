@@ -18,7 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image, Settings } from "lucide-react";
+import { BookOpen, Eye, Heart, Plus, Upload, Trash2, AlertTriangle, Image, Settings, Loader2 } from "lucide-react";
+import { STRIPE_PLANS } from "@/data/stripePlans";
+import { toast as sonnerToast } from "sonner";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 
@@ -28,6 +30,7 @@ const B2BDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -229,17 +232,45 @@ const B2BDashboard = () => {
 
         {/* Subscription gate banner */}
         {isAtLimit && (
-          <Card className="border-yellow-300 bg-yellow-50 dark:border-yellow-700 dark:bg-yellow-950/30">
-            <CardContent className="flex items-center gap-3 py-4">
-              <AlertTriangle className="h-5 w-5 text-yellow-600" />
-              <div>
-                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                  Free plan limit reached ({B2B_FREE_LIMIT} memorials)
-                </p>
-                <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                  Upgrade to a B2B subscription to create unlimited memorials. Stripe integration coming soon.
-                </p>
+          <Card className="border-destructive/30 bg-destructive/5">
+            <CardContent className="flex items-center justify-between gap-3 py-4">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    Free plan limit reached ({B2B_FREE_LIMIT} memorials)
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Upgrade to a B2B subscription to create unlimited memorials.
+                  </p>
+                </div>
               </div>
+              <Button
+                size="sm"
+                disabled={upgradeLoading}
+                onClick={async () => {
+                  setUpgradeLoading(true);
+                  try {
+                    const plan = STRIPE_PLANS.business_monthly;
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) throw new Error("Not authenticated");
+                    const { data, error } = await supabase.functions.invoke("create-plan-checkout", {
+                      headers: { Authorization: `Bearer ${session.access_token}` },
+                      body: { price_id: plan.price_id, mode: plan.mode },
+                    });
+                    if (error) throw error;
+                    if (data?.url) { window.location.href = data.url; return; }
+                    throw new Error("No checkout URL");
+                  } catch (err: any) {
+                    sonnerToast.error("Failed to start checkout", { description: err.message });
+                  } finally {
+                    setUpgradeLoading(false);
+                  }
+                }}
+              >
+                {upgradeLoading ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
+                Upgrade Plan
+              </Button>
             </CardContent>
           </Card>
         )}
