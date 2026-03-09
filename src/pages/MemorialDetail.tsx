@@ -156,11 +156,49 @@ const MemorialDetail = () => {
 
   const isOwner = !!user && user.id === memorial.user_id;
 
+  const extractStoragePath = (url: string): string | null => {
+    try {
+      const marker = "/storage/v1/object/public/memorial-images/";
+      const idx = url.indexOf(marker);
+      if (idx !== -1) return decodeURIComponent(url.substring(idx + marker.length));
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const handleDeleteMemorial = async () => {
     if (!memorial) return;
     setDeleting(true);
     try {
-      // Delete related data first
+      // 1. Fetch all gallery images to get storage paths
+      const { data: galleryImages } = await supabase
+        .from("memorial_images")
+        .select("url")
+        .eq("memorial_id", memorial.id);
+
+      const storagePaths: string[] = [];
+
+      // Collect gallery image paths
+      if (galleryImages) {
+        for (const img of galleryImages) {
+          const path = extractStoragePath(img.url);
+          if (path) storagePaths.push(path);
+        }
+      }
+
+      // Collect main image path
+      if (memorial.image_url) {
+        const mainPath = extractStoragePath(memorial.image_url);
+        if (mainPath) storagePaths.push(mainPath);
+      }
+
+      // 2. Delete files from storage bucket
+      if (storagePaths.length > 0) {
+        await supabase.storage.from("memorial-images").remove(storagePaths);
+      }
+
+      // 3. Delete DB rows
       await supabase.from("tributes").delete().eq("memorial_id", memorial.id);
       await supabase.from("memorial_images").delete().eq("memorial_id", memorial.id);
       const { error } = await supabase.from("memorials").delete().eq("id", memorial.id);
