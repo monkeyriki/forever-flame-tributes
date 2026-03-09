@@ -26,10 +26,7 @@ const Header = () => {
 
   const isActive = (path: string) => location.pathname === path;
   const handleCreate = () => navigate(user ? "/create" : "/auth");
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
+  const handleSignOut = async () => { await signOut(); navigate("/"); };
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -40,6 +37,7 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
+
       {/* ========== DESKTOP — CSS Grid 3 colonne ========== */}
       <div
         className="hidden md:grid"
@@ -60,7 +58,7 @@ const Header = () => {
           />
           <Link
             to="/"
-            className="font-display font-bold tracking-wide text-foreground whitespace-nowrap"
+            className="font-sans font-bold tracking-wide text-foreground whitespace-nowrap"
             style={{ fontSize: "1.15rem", lineHeight: "22px", display: "block" }}
           >
             Eternal <span className="text-primary">Memory</span>
@@ -84,11 +82,7 @@ const Header = () => {
 
         {/* COLONNA 3 — Azioni (allineate a destra) */}
         <div className="flex items-center gap-3 justify-end">
-          <form
-            onSubmit={handleSearch}
-            role="search"
-            className="flex items-center gap-1 rounded-lg border border-border bg-card px-2"
-          >
+          <form onSubmit={handleSearch} role="search" className="flex items-center gap-1 rounded-lg border border-border bg-card px-2">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <Input
               type="text"
@@ -102,46 +96,26 @@ const Header = () => {
           {user ? (
             <>
               {(isB2B || isAdmin) && (
-                <Link
-                  to="/dashboard/b2b"
-                  className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  aria-label="Dashboard"
-                >
+                <Link to="/dashboard/b2b" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Dashboard">
                   <LayoutDashboard className="h-4 w-4" />
                 </Link>
               )}
               {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  aria-label="Admin"
-                >
+                <Link to="/admin" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Admin">
                   <Shield className="h-4 w-4" />
                 </Link>
               )}
-              <Link
-                to="/settings"
-                className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-                aria-label="Settings"
-              >
+              <Link to="/settings" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Settings">
                 <Settings className="h-4 w-4" />
               </Link>
-              <Button onClick={handleCreate} size="sm">
-                Create Memorial
-              </Button>
-              <button
-                onClick={handleSignOut}
-                className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-                title="Sign Out"
-              >
+              <Button onClick={handleCreate} size="sm">Create Memorial</Button>
+              <button onClick={handleSignOut} className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" title="Sign Out">
                 <LogOut className="h-4 w-4" />
               </button>
             </>
           ) : (
             <Button variant="outline" size="sm" asChild>
-              <Link to="/auth">
-                <User className="h-4 w-4 mr-1" /> Sign In
-              </Link>
+              <Link to="/auth"><User className="h-4 w-4 mr-1" /> Sign In</Link>
             </Button>
           )}
         </div>
@@ -150,14 +124,9 @@ const Header = () => {
       {/* ========== MOBILE BAR ========== */}
       <div className="flex md:hidden items-center justify-between" style={{ height: 60, paddingInline: "1rem" }}>
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src={flameIcon}
-            alt=""
-            className="h-6 w-6 animate-flame-flicker flex-shrink-0"
-            style={{ display: "block" }}
-          />
+          <img src={flameIcon} alt="" className="h-6 w-6 animate-flame-flicker flex-shrink-0" style={{ display: "block" }} />
           <span
-            className="font-display font-bold tracking-wide text-foreground whitespace-nowrap"
+            className="font-sans font-bold tracking-wide text-foreground whitespace-nowrap"
             style={{ fontSize: "1.1rem", lineHeight: 1 }}
           >
             Eternal <span className="text-primary">Memory</span>
@@ -189,9 +158,7 @@ const Header = () => {
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
                   className={`rounded-md px-3 py-2.5 text-sm ${
-                    isActive(link.to)
-                      ? "bg-secondary text-primary font-medium"
-                      : "text-muted-foreground hover:bg-secondary"
+                    isActive(link.to) ? "bg-secondary text-primary font-medium" : "text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   {link.label}
@@ -201,37 +168,20 @@ const Header = () => {
               {user ? (
                 <>
                   {(isB2B || isAdmin) && (
-                    <Link
-                      to="/dashboard/b2b"
-                      onClick={() => setMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/dashboard/b2b" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       📊 Dashboard
                     </Link>
                   )}
                   {isAdmin && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-                    >
+                    <Link to="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
                       🛡️ Admin
                     </Link>
                   )}
-                  <Button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      handleCreate();
-                    }}
-                    className="mt-1"
-                  >
+                  <Button onClick={() => { setMenuOpen(false); handleCreate(); }} className="mt-1">
                     Create Memorial
                   </Button>
                   <button
-                    onClick={() => {
-                      setMenuOpen(false);
-                      handleSignOut();
-                    }}
+                    onClick={() => { setMenuOpen(false); handleSignOut(); }}
                     className="mt-1 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
                   >
                     Sign Out
