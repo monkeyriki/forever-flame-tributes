@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Check, Crown, Building2, Loader2 } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -10,7 +10,8 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { STRIPE_PLANS, PlanKey } from "@/data/stripePlans";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const plans = [
   {
