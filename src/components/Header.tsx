@@ -54,7 +54,7 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-8">
           <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
             <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker" />
-            <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none" style={{ transform: 'translateY(-1px)' }}>
+            <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none" style={{ transform: 'translateY(1px)' }}>
               Eternal <span className="text-primary">Memory</span>
             </span>
           </Link>
