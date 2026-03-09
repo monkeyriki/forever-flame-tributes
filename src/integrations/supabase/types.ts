@@ -131,6 +131,7 @@ export type Database = {
           location: string | null
           password_hash: string | null
           plan: string
+          require_tribute_approval: boolean
           tags: string[] | null
           type: string
           updated_at: string
@@ -152,6 +153,7 @@ export type Database = {
           location?: string | null
           password_hash?: string | null
           plan?: string
+          require_tribute_approval?: boolean
           tags?: string[] | null
           type?: string
           updated_at?: string
@@ -173,6 +175,7 @@ export type Database = {
           location?: string | null
           password_hash?: string | null
           plan?: string
+          require_tribute_approval?: boolean
           tags?: string[] | null
           type?: string
           updated_at?: string

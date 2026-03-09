@@ -34,6 +34,7 @@ const CreateMemorial = () => {
     tags: "",
     video_url: "",
     password_hash: "",
+    require_tribute_approval: false,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -90,6 +91,7 @@ const CreateMemorial = () => {
         is_draft: isDraft,
         visibility: form.visibility,
         password_hash: form.visibility === "password" ? form.password_hash : "",
+        require_tribute_approval: form.require_tribute_approval,
       } as any).select("id").single();
 
       if (error) throw error;
@@ -332,6 +334,23 @@ const CreateMemorial = () => {
                   <p className="mt-1 text-xs text-muted-foreground">Visitors will need to enter this password to view the memorial.</p>
                 </div>
               )}
+
+              {/* Require Tribute Approval */}
+              <div className="flex items-center justify-between rounded-md border border-border px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">Require tribute approval</p>
+                  <p className="text-xs text-muted-foreground">Tributes must be approved before appearing publicly</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={form.require_tribute_approval}
+                  onClick={() => setForm((prev) => ({ ...prev, require_tribute_approval: !prev.require_tribute_approval }))}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${form.require_tribute_approval ? "bg-primary" : "bg-muted"}`}
+                >
+                  <span className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg transition-transform ${form.require_tribute_approval ? "translate-x-5" : "translate-x-0"}`} />
+                </button>
+              </div>
 
               {/* Actions */}
               <div className="flex flex-col gap-3 pt-2 sm:flex-row">

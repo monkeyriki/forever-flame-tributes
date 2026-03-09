@@ -11,6 +11,7 @@ interface TributeSelectorProps {
   memorialId: string;
   firstName: string;
   onTributeAdded: () => void;
+  requireApproval?: boolean;
 }
 
 const tierColors: Record<string, string> = {
@@ -25,7 +26,7 @@ const tierSelectedColors: Record<string, string> = {
   premium: "border-accent bg-accent/5 shadow-soft ring-1 ring-accent/20",
 };
 
-const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelectorProps) => {
+const TributeSelector = ({ memorialId, firstName, onTributeAdded, requireApproval = false }: TributeSelectorProps) => {
   const [selected, setSelected] = useState<TributeTier | null>(null);
   const [message, setMessage] = useState("");
   const [senderName, setSenderName] = useState("");
@@ -151,6 +152,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
 
     // Free tribute — insert directly
     const isFlagged = checkProfanity(message, profanityWords);
+    const tributeStatus = isFlagged ? "flagged" : requireApproval ? "pending" : "approved";
 
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
@@ -159,7 +161,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
       item_type: selected.name,
       tier: selected.tier,
       is_paid: false,
-      status: isFlagged ? "flagged" : "approved",
+      status: tributeStatus,
       sender_email: senderEmail.trim() || null,
     });
 
@@ -168,6 +170,8 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelec
     } else {
       if (isFlagged) {
         toast.info("Your tribute is pending review by a moderator.");
+      } else if (requireApproval) {
+        toast.info("Your tribute is awaiting approval by the memorial owner.");
       } else {
         toast.success("Tribute sent!");
       }
