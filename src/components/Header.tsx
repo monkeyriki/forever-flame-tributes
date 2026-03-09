@@ -51,16 +51,16 @@ const Header = () => {
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center gap-8 px-4">
         {/* Logo + Nav grouped for baseline alignment */}
-        <div className="hidden md:flex items-baseline gap-8">
-          <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
-            <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker" />
-            <span className="font-display text-xl font-bold tracking-wide text-foreground">
+        <div className="hidden md:flex items-center gap-8">
+          <Link to="/" className="flex shrink-0 items-baseline gap-2" aria-label="Eternal Memory - Home">
+            <img src={flameIcon} alt="Flame" className="h-6 w-6 animate-flame-flicker self-center" />
+            <span className="font-display text-xl font-bold tracking-wide text-foreground" style={{ lineHeight: '1' }}>
               Eternal <span className="text-primary">Memory</span>
             </span>
           </Link>
 
           {/* Desktop nav */}
-          <nav aria-label="Main navigation" className="flex items-baseline gap-6">
+          <nav aria-label="Main navigation" className="flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
