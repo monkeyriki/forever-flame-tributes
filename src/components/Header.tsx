@@ -58,7 +58,7 @@ const Header = () => {
             alt="Flame"
             className="h-7 w-7 animate-flame-flicker"
           />
-          <span className="font-display text-xl font-bold tracking-wide text-foreground" style={{ lineHeight: 1, transform: 'translateY(-3px)' }}>
+          <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none">
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
