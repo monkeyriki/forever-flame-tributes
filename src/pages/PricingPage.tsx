@@ -92,8 +92,24 @@ const plans = [
 const PricingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { plan: currentPlan, subscribed, lifetime, isLoading: subLoading } = useSubscription();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+  const { plan: currentPlan, subscribed, lifetime, isLoading: subLoading, refetch } = useSubscription();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get("upgrade") === "success") {
+      toast.success("Plan upgraded successfully!");
+      queryClient.invalidateQueries({ queryKey: ["subscription"] });
+      refetch();
+      searchParams.delete("upgrade");
+      setSearchParams(searchParams, { replace: true });
+    } else if (searchParams.get("upgrade") === "cancelled") {
+      toast.info("Upgrade cancelled.");
+      searchParams.delete("upgrade");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams]);
 
   const handleUpgrade = async (planKey: PlanKey) => {
     if (!user) {
