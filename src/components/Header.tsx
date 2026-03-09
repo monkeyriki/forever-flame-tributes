@@ -51,9 +51,9 @@ const Header = () => {
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center gap-8 px-4">
         {/* Logo */}
-        <Link to="/" className="flex shrink-0 gap-2" style={{ alignItems: 'baseline' }} aria-label="Eternal Memory - Home">
+        <Link to="/" className="flex shrink-0 gap-2" style={{ alignItems: 'center' }} aria-label="Eternal Memory - Home">
           <img src={flameIcon} alt="Flame" className="h-7 w-7 animate-flame-flicker" />
-          <span className="font-display text-xl font-bold leading-none tracking-wide text-foreground">
+          <span className="font-display text-xl font-bold leading-none tracking-wide text-foreground" style={{ position: 'relative', top: '2px' }}>
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
