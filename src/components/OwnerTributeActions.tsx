@@ -51,7 +51,7 @@ const OwnerTributeActions = ({ tributeId, status, onActionComplete }: OwnerTribu
 
   return (
     <div className="flex items-center gap-1">
-      {status === "flagged" && (
+      {(status === "flagged" || status === "pending") && (
         <Button size="icon" variant="ghost" onClick={handleApprove} title="Approve">
           <Check className="h-3.5 w-3.5 text-green-600" />
         </Button>
