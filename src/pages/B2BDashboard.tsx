@@ -251,12 +251,11 @@ const B2BDashboard = () => {
                 onClick={async () => {
                   setUpgradeLoading(true);
                   try {
-                    const plan = STRIPE_PLANS.business_monthly;
                     const { data: { session } } = await supabase.auth.getSession();
                     if (!session) throw new Error("Not authenticated");
                     const { data, error } = await supabase.functions.invoke("create-plan-checkout", {
                       headers: { Authorization: `Bearer ${session.access_token}` },
-                      body: { price_id: plan.price_id, mode: plan.mode },
+                      body: { price_id: "price_1T8nf5BA2gyBJFRKmWSl8tnh", mode: "subscription" },
                     });
                     if (error) throw error;
                     if (data?.url) { window.location.href = data.url; return; }
