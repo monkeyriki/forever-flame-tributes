@@ -195,7 +195,10 @@ const MemorialDetail = () => {
 
       // 2. Delete files from storage bucket
       if (storagePaths.length > 0) {
-        await supabase.storage.from("memorial-images").remove(storagePaths);
+        const { error: storageError } = await supabase.storage.from("memorial-images").remove(storagePaths);
+        if (storageError) {
+          console.error("Storage deletion partially failed, proceeding with DB cleanup:", storageError);
+        }
       }
 
       // 3. Delete DB rows
