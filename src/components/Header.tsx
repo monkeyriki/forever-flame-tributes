@@ -37,18 +37,21 @@ const Header = () => {
 
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      {/* ===== DESKTOP BAR ===== */}
-      <div className="hidden md:flex h-[80px] w-full items-center justify-between px-8">
-        {/* GROUP 1 – Left: Logo */}
-        <div className="flex items-center gap-2 shrink-0">
+      {/* ========== DESKTOP ========== */}
+      <div
+        className="hidden md:flex items-center justify-between"
+        style={{ height: 80, paddingInline: "2rem" }}
+      >
+        {/* LEFT – Logo (fixed width so center is truly centered) */}
+        <div className="flex items-center gap-2" style={{ minWidth: 200 }}>
           <img src={flameIcon} alt="" className="h-7 w-7 animate-flame-flicker" />
-          <Link to="/" className="font-display text-xl font-bold tracking-wide leading-none text-foreground">
+          <Link to="/" className="font-display text-xl font-bold tracking-wide leading-none text-foreground whitespace-nowrap">
             Eternal <span className="text-primary">Memory</span>
           </Link>
         </div>
 
-        {/* GROUP 2 – Center: Nav links */}
-        <nav aria-label="Main navigation" className="flex items-center gap-8">
+        {/* CENTER – Nav */}
+        <nav aria-label="Main navigation" className="flex items-center gap-6">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.to}
@@ -62,38 +65,30 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* GROUP 3 – Right: Search + Actions */}
-        <div className="flex items-center gap-3 shrink-0">
-          <form onSubmit={handleSearch} role="search" className="flex items-center rounded-lg border border-border bg-card px-3">
-            <Search className="h-4 w-4 text-muted-foreground" />
+        {/* RIGHT – Actions (fixed width to balance logo) */}
+        <div className="flex items-center gap-4 justify-end" style={{ minWidth: 200 }}>
+          <form onSubmit={handleSearch} role="search" className="flex items-center gap-1 rounded-lg border border-border bg-card px-2">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <Input
               type="text"
               placeholder="Search…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 w-32 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-8 w-28 border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-1"
             />
           </form>
 
           {user ? (
             <>
               {(isB2B || isAdmin) && (
-                <Link to="/dashboard/b2b" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Dashboard">
-                  <LayoutDashboard className="h-4 w-4" />
-                </Link>
+                <Link to="/dashboard/b2b" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Dashboard"><LayoutDashboard className="h-4 w-4" /></Link>
               )}
               {isAdmin && (
-                <Link to="/admin" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Admin">
-                  <Shield className="h-4 w-4" />
-                </Link>
+                <Link to="/admin" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Admin"><Shield className="h-4 w-4" /></Link>
               )}
-              <Link to="/settings" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Settings">
-                <Settings className="h-4 w-4" />
-              </Link>
+              <Link to="/settings" className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Settings"><Settings className="h-4 w-4" /></Link>
               <Button onClick={handleCreate} size="sm">Create Memorial</Button>
-              <button onClick={handleSignOut} className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" title="Sign Out">
-                <LogOut className="h-4 w-4" />
-              </button>
+              <button onClick={handleSignOut} className="p-2 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground" title="Sign Out"><LogOut className="h-4 w-4" /></button>
             </>
           ) : (
             <Button variant="outline" size="sm" asChild>
@@ -103,9 +98,9 @@ const Header = () => {
         </div>
       </div>
 
-      {/* ===== MOBILE BAR ===== */}
-      <div className="flex md:hidden h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2" aria-label="Home">
+      {/* ========== MOBILE BAR ========== */}
+      <div className="flex md:hidden items-center justify-between" style={{ height: 64, paddingInline: "1rem" }}>
+        <Link to="/" className="flex items-center gap-2">
           <img src={flameIcon} alt="" className="h-6 w-6 animate-flame-flicker" />
           <span className="font-display text-lg font-bold tracking-wide leading-none text-foreground">
             Eternal <span className="text-primary">Memory</span>
@@ -116,15 +111,13 @@ const Header = () => {
         </button>
       </div>
 
-      {/* ===== MOBILE DRAWER ===== */}
+      {/* ========== MOBILE DRAWER ========== */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="border-t border-border bg-background md:hidden overflow-hidden">
-            <nav className="flex flex-col gap-1 px-4 py-4">
+            <nav className="flex flex-col gap-1 p-4">
               {NAV_LINKS.map((link) => (
-                <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)} className={`rounded-md px-3 py-2.5 text-sm ${isActive(link.to) ? "bg-secondary text-primary font-medium" : "text-muted-foreground hover:bg-secondary"}`}>
-                  {link.label}
-                </Link>
+                <Link key={link.to} to={link.to} onClick={() => setMenuOpen(false)} className={`rounded-md px-3 py-2.5 text-sm ${isActive(link.to) ? "bg-secondary text-primary font-medium" : "text-muted-foreground hover:bg-secondary"}`}>{link.label}</Link>
               ))}
               <div className="golden-divider my-2" />
               {user ? (
@@ -135,9 +128,7 @@ const Header = () => {
                   <button onClick={() => { setMenuOpen(false); handleSignOut(); }} className="mt-1 rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">Sign Out</button>
                 </>
               ) : (
-                <Button variant="outline" asChild className="mt-1">
-                  <Link to="/auth" onClick={() => setMenuOpen(false)}><User className="h-4 w-4 mr-1" /> Sign In</Link>
-                </Button>
+                <Button variant="outline" asChild className="mt-1"><Link to="/auth" onClick={() => setMenuOpen(false)}><User className="h-4 w-4 mr-1" /> Sign In</Link></Button>
               )}
             </nav>
           </motion.div>
