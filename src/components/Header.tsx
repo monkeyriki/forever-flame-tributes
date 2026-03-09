@@ -42,7 +42,6 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Search across both human and pet directories
       navigate(`/directory/human?q=${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
     }
@@ -51,20 +50,16 @@ const Header = () => {
   return (
     <header role="banner" className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center gap-8 px-4">
-        {/* Logo */}
-        <Link to="/" className="flex shrink-0 items-center gap-2 self-center" aria-label="Eternal Memory - Home">
-          <img
-            src={flameIcon}
-            alt="Flame"
-            className="h-7 w-7 animate-flame-flicker"
-          />
+        {/* Logo — FIX: removed self-center */}
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Eternal Memory - Home">
+          <img src={flameIcon} alt="Flame" className="h-7 w-7 animate-flame-flicker" />
           <span className="font-display text-xl font-bold tracking-wide text-foreground leading-none">
             Eternal <span className="text-primary">Memory</span>
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
+        {/* Desktop nav — FIX: moved items-center after md:flex */}
+        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -79,8 +74,13 @@ const Header = () => {
         </nav>
 
         {/* Desktop right side */}
-        <div className="hidden items-center gap-3 md:flex ml-auto">
-          <form onSubmit={handleSearch} role="search" aria-label="Search memorials" className="flex items-center rounded-lg border border-border bg-card px-3">
+        <div className="hidden md:flex items-center gap-3 ml-auto">
+          <form
+            onSubmit={handleSearch}
+            role="search"
+            aria-label="Search memorials"
+            className="flex items-center rounded-lg border border-border bg-card px-3"
+          >
             <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Input
               type="text"
@@ -177,20 +177,37 @@ const Header = () => {
               {user ? (
                 <>
                   {(isB2B || isAdmin) && (
-                    <Link to="/dashboard/b2b" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
+                    <Link
+                      to="/dashboard/b2b"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
                       📊 Dashboard
                     </Link>
                   )}
                   {isAdmin && (
-                    <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
+                    >
                       🛡️ Admin
                     </Link>
                   )}
-                  <Button onClick={() => { setIsMenuOpen(false); handleCreateClick(); }} className="mt-1">
+                  <Button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleCreateClick();
+                    }}
+                    className="mt-1"
+                  >
                     Create Memorial
                   </Button>
                   <button
-                    onClick={() => { setIsMenuOpen(false); handleSignOut(); }}
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSignOut();
+                    }}
                     className="mt-1 rounded-md px-3 py-2.5 text-center text-sm text-muted-foreground hover:bg-secondary"
                   >
                     Sign Out
