@@ -152,6 +152,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded, requireApprova
 
     // Free tribute — insert directly
     const isFlagged = checkProfanity(message, profanityWords);
+    const tributeStatus = isFlagged ? "flagged" : requireApproval ? "pending" : "approved";
 
     const { error } = await supabase.from("tributes").insert({
       memorial_id: memorialId,
@@ -160,7 +161,7 @@ const TributeSelector = ({ memorialId, firstName, onTributeAdded, requireApprova
       item_type: selected.name,
       tier: selected.tier,
       is_paid: false,
-      status: isFlagged ? "flagged" : "approved",
+      status: tributeStatus,
       sender_email: senderEmail.trim() || null,
     });
 
