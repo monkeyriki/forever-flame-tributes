@@ -11,6 +11,7 @@ interface TributeSelectorProps {
   memorialId: string;
   firstName: string;
   onTributeAdded: () => void;
+  requireApproval?: boolean;
 }
 
 const tierColors: Record<string, string> = {
