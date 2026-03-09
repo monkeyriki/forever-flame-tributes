@@ -88,6 +88,7 @@ const EditMemorial = () => {
         video_url: memorial.video_url || "",
         password_hash: memorial.password_hash || "",
         is_draft: memorial.is_draft,
+        require_tribute_approval: (memorial as any).require_tribute_approval || false,
       });
       setExistingImageUrl(memorial.image_url || "");
       setImagePreview(memorial.image_url || null);
