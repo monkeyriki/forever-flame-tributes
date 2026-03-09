@@ -91,6 +91,7 @@ const CreateMemorial = () => {
         is_draft: isDraft,
         visibility: form.visibility,
         password_hash: form.visibility === "password" ? form.password_hash : "",
+        require_tribute_approval: form.require_tribute_approval,
       } as any).select("id").single();
 
       if (error) throw error;
