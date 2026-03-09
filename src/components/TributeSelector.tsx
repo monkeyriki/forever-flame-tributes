@@ -26,7 +26,7 @@ const tierSelectedColors: Record<string, string> = {
   premium: "border-accent bg-accent/5 shadow-soft ring-1 ring-accent/20",
 };
 
-const TributeSelector = ({ memorialId, firstName, onTributeAdded }: TributeSelectorProps) => {
+const TributeSelector = ({ memorialId, firstName, onTributeAdded, requireApproval = false }: TributeSelectorProps) => {
   const [selected, setSelected] = useState<TributeTier | null>(null);
   const [message, setMessage] = useState("");
   const [senderName, setSenderName] = useState("");
